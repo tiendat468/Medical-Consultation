@@ -24,4 +24,9 @@ public interface ShareConstant {
         public static final String TOKEN_PREFIX = "bearer ";
         public static final String AUTHORIZATION = "Authorization";
     }
+
+    class SEX {
+        public static final String MALE = "MALE";
+        public static final String FEMALE = "FEMALE";
+    }
 }

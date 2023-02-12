@@ -20,24 +20,24 @@ public class BaseResponse<T> {
         this.data = data;
     }
 
-    public BaseResponse(){
-        this.message = ERROR.SUCCESS.getMessage();
-    }
-
-    public BaseResponse(ERROR error){
-        this.code = error.getCode();
-        this.message = error.getMessage();
-    }
-
-    public BaseResponse(ApiException apiException){
-        this.code = apiException.getErrorCode();
-        this.message = apiException.getErrorMsg();
-        this.messageCode = apiException.getMessageCode();
-    }
-
     public BaseResponse(int code, String message, String messageCode){
         this.code = code;
         this.message = message;
         this.messageCode = messageCode;
+    }
+
+    public BaseResponse(String messageCode){
+        this.messageCode = messageCode;
+    }
+
+    public BaseResponse(IMessageCode iMessageCode, T data){
+        this.data = data;
+        this.messageCode = iMessageCode.getCode();
+        this.message = iMessageCode.getMessage();
+    }
+
+    public BaseResponse(IMessageCode iMessageCode){
+        this.messageCode = iMessageCode.getCode();
+        this.message = iMessageCode.getMessage();
     }
 }
