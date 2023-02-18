@@ -13,7 +13,7 @@ import java.util.Collection;
 public class MedicalSchedule extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private OffsetDateTime medical_date;

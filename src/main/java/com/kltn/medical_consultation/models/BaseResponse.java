@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class BaseResponse<T> {
     @Schema(defaultValue = "1" , description = "Mã code thành công hoặc mã lỗi của api")
-    private int code  = ERROR.SUCCESS.getCode();
+    private int code = ERROR.SUCCESS.getCode();
 
     @Schema(defaultValue = "Message" , description = "message của server trả về")
     private String message;

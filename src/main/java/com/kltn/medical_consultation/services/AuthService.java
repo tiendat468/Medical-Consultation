@@ -6,7 +6,7 @@ import com.kltn.medical_consultation.enumeration.UserType;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
-import com.kltn.medical_consultation.models.auth.AuthMessageCode;
+import com.kltn.medical_consultation.models.AuthMessageCode;
 import com.kltn.medical_consultation.models.auth.LoginRequest;
 import com.kltn.medical_consultation.models.auth.LoginResponse;
 import com.kltn.medical_consultation.models.auth.UserProfileResponse;
@@ -86,13 +86,17 @@ public class AuthService extends BaseService{
         return new BaseResponse<>(AuthMessageCode.AUTH_1_1, response);
     }
 
-    public BaseResponse logout(HttpServletRequest httpServletRequest) {
+    public BaseResponse logout(HttpServletRequest httpServletRequest) throws ApiException {
         tokenRepository.deleteById(RestUtils.getTokenFromHeader(httpServletRequest));
         return new BaseResponse(AuthMessageCode.AUTH_2_1);
     }
 
-    public BaseResponse<UserProfileResponse> getProfileUser(HttpServletRequest httpServletRequest) {
+    public BaseResponse<UserProfileResponse> getProfileUser(HttpServletRequest httpServletRequest) throws ApiException {
         TokenDTO tokenDTO = tokenRepository.findById(RestUtils.getTokenFromHeader(httpServletRequest)).get();
+//        TokenDTO tokenDTO = checkExpiredToken(httpServletRequest);
+//        if (tokenDTO == null) {
+//            return null;
+//        }
         User user = userRepository.findByPhoneNumber(tokenDTO.getPhoneNumber()).orElse(null);
 
         UserProfileResponse userProfileResponse = new UserProfileResponse();

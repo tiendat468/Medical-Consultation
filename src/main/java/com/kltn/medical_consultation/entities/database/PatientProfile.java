@@ -12,7 +12,7 @@ import java.util.Collection;
 public class PatientProfile extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "full_name")

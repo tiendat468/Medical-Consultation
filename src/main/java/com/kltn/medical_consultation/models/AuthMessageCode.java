@@ -1,4 +1,4 @@
-package com.kltn.medical_consultation.models.auth;
+package com.kltn.medical_consultation.models;
 
 import com.kltn.medical_consultation.models.IMessageCode;
 

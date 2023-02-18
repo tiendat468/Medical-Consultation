@@ -16,11 +16,17 @@ public class InitDataService implements CommandLineRunner {
     @Value("${mc.admin_email:tangtiendat911@gmail.com}")
     String superEmail;
 
+    @Value("${mc.admin_email:tangtiendat@gmail.com}")
+    String userEmail;
+
     @Value("${mc.admin_password:mc@123456}")
     String superPassword;
 
     @Value("${mc.admin_phone:0123456789}")
     String superPhone;
+
+    @Value("${mc.admin_phone:0123456799}")
+    String userPhone;
 
     @Autowired
     UserRepository userRepository;
@@ -44,6 +50,15 @@ public class InitDataService implements CommandLineRunner {
             admin.setActive(Boolean.TRUE);
             admin.setPassword(passwordEncoder.encode(superPassword));
             userRepository.save(admin);
+
+            User user = new User();
+            user.setName("USER");
+            user.setEmail(userEmail);
+            user.setPhoneNumber(userPhone);
+            user.setType(UserType.PATIENT.getType());
+            user.setActive(Boolean.TRUE);
+            user.setPassword(passwordEncoder.encode(superPassword));
+            userRepository.save(user);
         }
     }
 }

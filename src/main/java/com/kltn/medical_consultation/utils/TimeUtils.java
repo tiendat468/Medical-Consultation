@@ -1,13 +1,17 @@
 package com.kltn.medical_consultation.utils;
 
+import com.kltn.medical_consultation.models.ApiException;
+import com.kltn.medical_consultation.models.ERROR;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -36,6 +40,18 @@ public class TimeUtils {
 
         }
         return null;
+    }
+
+    public static void validateBirthday(String birthday) {
+        if (StringUtils.isBlank(birthday)) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("birthday"));
+        }
+
+        try {
+            LocalDate.parse(birthday, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        } catch (DateTimeParseException e) {
+            throw new ApiException(ERROR.INVALID_PARAM, "birthday wrong format - Date format: dd-MM-yyyy");
+        }
     }
 
     public static String dateToStringSimpleDateFormat(Date date) {

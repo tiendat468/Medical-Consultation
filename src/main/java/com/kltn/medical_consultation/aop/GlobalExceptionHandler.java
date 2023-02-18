@@ -3,7 +3,7 @@ package com.kltn.medical_consultation.aop;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
-import com.kltn.medical_consultation.models.auth.AuthMessageCode;
+import com.kltn.medical_consultation.models.AuthMessageCode;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (StringUtils.isEmpty(e.getMessageCode())){
             e.setMessageCode(AuthMessageCode.UNKNOWN.getCode());
         }
-        return new ResponseEntity<>(new BaseResponse(e), e.getHttpStatus());
+        return new ResponseEntity<>(new BaseResponse(e.getErrorCode(), e.getErrorMsg(), e.getMessageCode()), e.getHttpStatus());
     }
 
     @ExceptionHandler

@@ -1,5 +1,6 @@
 package com.kltn.medical_consultation.controller;
 
+import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.auth.LoginRequest;
 import com.kltn.medical_consultation.models.auth.LoginResponse;
@@ -23,12 +24,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public BaseResponse logout(HttpServletRequest httpServletRequest) {
+    public BaseResponse logout(HttpServletRequest httpServletRequest) throws ApiException {
         return authService.logout(httpServletRequest);
     }
 
     @GetMapping("/profile")
-    public BaseResponse<UserProfileResponse> getProfileUser(HttpServletRequest httpServletRequest) {
+    public BaseResponse<UserProfileResponse> getProfileUser(HttpServletRequest httpServletRequest) throws ApiException {
         return authService.getProfileUser(httpServletRequest);
     }
 }

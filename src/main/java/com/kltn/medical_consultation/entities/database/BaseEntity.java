@@ -29,4 +29,7 @@ public class BaseEntity {
     @LastModifiedBy
     @Column(name = "modified_by")
     private Long modifiedBy;
+
+    @Column(name = "is_delete")
+    private Boolean isDelete = false;
 }
