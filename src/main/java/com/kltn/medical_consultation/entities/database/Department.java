@@ -23,10 +23,9 @@ public class Department extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<DoctorDepartment> doctorDepartments;
-
+    private Collection<Doctor> doctors;
 
     @JsonIgnore
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<MedicalScheduleDetail> medicalScheduleDetails;
+    private Collection<Symptom> symptoms;
 }

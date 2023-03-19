@@ -5,7 +5,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.Collection;
 
 @Data
 @Entity
@@ -24,13 +23,17 @@ public class MedicalSchedule extends BaseEntity{
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "patient_id")
-    private PatientProfile patient;
+    @JoinColumn(name = "patient_profile_id")
+    private PatientProfile patientProfile;
 
-    @Column(name = "patient_id", insertable = false, updatable = false)
-    private Long patientId;
+    @Column(name = "patient_profile_id", insertable = false, updatable = false)
+    private Long patientProfileId;
 
+    @ManyToOne
     @JsonIgnore
-    @OneToMany(mappedBy = "medicalSchedule", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<MedicalScheduleDetail> medicalScheduleDetails;
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
+
+    @Column(name = "doctor_id", insertable = false, updatable = false)
+    private Long doctorId;
 }

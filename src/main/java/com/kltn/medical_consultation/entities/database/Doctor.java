@@ -8,8 +8,8 @@ import java.util.Collection;
 
 @Data
 @Entity
-@Table(name = "doctor_profile")
-public class DoctorProfile extends BaseEntity{
+@Table(name = "doctor")
+public class Doctor extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +19,6 @@ public class DoctorProfile extends BaseEntity{
     private String fullName;
 
     private String sex;
-
-    private String email;
-
-    @Column(name = "phone_number")
-    private String phoneNumber;
 
     @Column(name = "identity_number")
     private String identityNumber;
@@ -36,15 +31,15 @@ public class DoctorProfile extends BaseEntity{
     @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @Column(name = "department_id", insertable = false, updatable = false)
+    private Long departmentId;
+
     @JsonIgnore
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<DoctorRank> doctorRanks;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<DoctorDepartment> doctorDepartments;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<MedicalScheduleDetail> medicalScheduleDetails;
 }

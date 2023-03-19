@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface PatientProfileRepository extends JpaRepository<PatientProfile, Long>, JpaSpecificationExecutor<PatientProfile> {
-    Optional<PatientProfile> findByIdAndUserId(Long id, Long userId);
+//    Optional<PatientProfile> findByIdAndUserId(Long id, Long userId);
 }

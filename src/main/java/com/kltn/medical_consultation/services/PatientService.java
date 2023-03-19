@@ -33,150 +33,150 @@ public class PatientService extends BaseService{
     @Autowired
     PatientProfileRepository patientRepository;
 
-    public BaseResponse createPatientProfile(CreatePatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
-        if (StringUtils.isBlank(request.getFullName())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("fullName"));
-        }
-
-        if (StringUtils.isBlank(request.getBirthday())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("birthday"));
-        }
-        TimeUtils.validateBirthday(request.getBirthday());
-
-        if (StringUtils.isBlank(request.getSex())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("sex"));
-        }
-
-        if (StringUtils.isBlank(request.getPhoneNumber())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("phoneNumber"));
-        }
-
-        if (StringUtils.isBlank(request.getJob())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("job"));
-        }
-
-        if (StringUtils.isBlank(request.getAddress())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("address"));
-        }
-
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new ApiException(ERROR.USER_NOT_FOUND);
-        }
-        User currentUser = optionalUser.get();
-
-        PatientProfile profile = new PatientProfile();
-        profile.setFullName(request.getFullName());
-        profile.setBirthday(request.getBirthday());
-        profile.setPhoneNumber(request.getPhoneNumber());
-        profile.setSex(request.getSex());
-        profile.setJob(request.getJob());
-        profile.setEmail(request.getEmail());
-        profile.setIdentityNumber(request.getIdentityNumber());
-        profile.setEthnic(request.getEthnic());
-        profile.setAddress(request.getAddress());
-        profile.setUser(currentUser);
-        profile.setUserId(currentUser.getId());
-        profile = patientRepository.save(profile);
-        return new BaseResponse<>(ERROR.SUCCESS.getMessage());
-    }
-
-    public BasePaginationResponse<PatientProfileResponse> listProfile(Long userId, Pageable pageable, HttpServletRequest httpServletRequest) throws ApiException{
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new ApiException(ERROR.USER_NOT_FOUND);
-        }
-        User currentUser = optionalUser.get();
-
-        ListPatientProfileRequest request = new ListPatientProfileRequest();
-
-        Page<PatientProfileResponse> pageResult = patientRepository.findAll(
-                request.getSpecification(currentUser.getId()),
-                pageable).map(profile -> PatientProfileResponse.of(profile));
-        return new BasePaginationResponse<>(pageResult.getContent(), pageable.getPageNumber(), pageable.getPageSize(), pageResult.getTotalElements());
-    }
-
-    public BaseResponse<PatientProfileResponse> detailProfile(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new ApiException(ERROR.USER_NOT_FOUND);
-        }
-        User currentUser = optionalUser.get();
-
-        Optional<PatientProfile> optionalProfile = patientRepository.findByIdAndUserId(request.getId(), currentUser.getId());
-        if (optionalProfile.isEmpty()) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("PatientProfile"));
-        }
-
-        return new BaseResponse<>(PatientProfileResponse.of(optionalProfile.get()));
-    }
-
-    public BaseResponse<PatientProfileResponse> editPatientProfile(EditPatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
-        if (StringUtils.isBlank(request.getFullName())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("fullName"));
-        }
-
-        if (StringUtils.isBlank(request.getBirthday())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("birthday"));
-        }
-
-        if (StringUtils.isBlank(request.getSex())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("sex"));
-        }
-
-        if (StringUtils.isBlank(request.getPhoneNumber())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("phoneNumber"));
-        }
-
-        if (StringUtils.isBlank(request.getJob())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("job"));
-        }
-
-        if (StringUtils.isBlank(request.getAddress())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("address"));
-        }
-
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new ApiException(ERROR.USER_NOT_FOUND);
-        }
-        User currentUser = optionalUser.get();
-
-        Optional<PatientProfile> optionalProfile = patientRepository.findByIdAndUserId(request.getId(), currentUser.getId());
-        if (optionalProfile.isEmpty()) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("PatientProfile"));
-        }
-
-        PatientProfile profile = optionalProfile.get();
-        profile.setFullName(request.getFullName());
-        profile.setBirthday(request.getBirthday());
-        profile.setPhoneNumber(request.getPhoneNumber());
-        profile.setSex(request.getSex());
-        profile.setJob(request.getJob());
-        profile.setEmail(request.getEmail());
-        profile.setIdentityNumber(request.getIdentityNumber());
-        profile.setEthnic(request.getEthnic());
-        profile.setAddress(request.getAddress());
-        profile = patientRepository.save(profile);
-        return new BaseResponse<>(PatientProfileResponse.of(profile));
-    }
-
-    public BaseResponse deleteProfile(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new ApiException(ERROR.USER_NOT_FOUND);
-        }
-        User currentUser = optionalUser.get();
-
-        Optional<PatientProfile> optionalProfile = patientRepository.findByIdAndUserId(request.getId(), currentUser.getId());
-        if (optionalProfile.isEmpty()) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("PatientProfile"));
-        }
-
-        PatientProfile patientProfile = optionalProfile.get();
-        patientProfile.setIsDelete(true);
-        patientRepository.save(patientProfile);
-
-        return new BaseResponse<>(ERROR.SUCCESS.getMessage());
-    }
+//    public BaseResponse createPatientProfile(CreatePatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
+//        if (StringUtils.isBlank(request.getFullName())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("fullName"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getBirthday())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("birthday"));
+//        }
+//        TimeUtils.validateBirthday(request.getBirthday());
+//
+//        if (StringUtils.isBlank(request.getSex())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("sex"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getPhoneNumber())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("phoneNumber"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getJob())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("job"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getAddress())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("address"));
+//        }
+//
+//        Optional<User> optionalUser = userRepository.findById(userId);
+//        if (optionalUser.isEmpty()) {
+//            throw new ApiException(ERROR.USER_NOT_FOUND);
+//        }
+//        User currentUser = optionalUser.get();
+//
+//        PatientProfile profile = new PatientProfile();
+//        profile.setFullName(request.getFullName());
+//        profile.setBirthday(request.getBirthday());
+//        profile.setPhoneNumber(request.getPhoneNumber());
+//        profile.setSex(request.getSex());
+//        profile.setJob(request.getJob());
+//        profile.setEmail(request.getEmail());
+//        profile.setIdentityNumber(request.getIdentityNumber());
+//        profile.setEthnic(request.getEthnic());
+//        profile.setAddress(request.getAddress());
+//        profile.setUser(currentUser);
+//        profile.setUserId(currentUser.getId());
+//        profile = patientRepository.save(profile);
+//        return new BaseResponse<>(ERROR.SUCCESS.getMessage());
+//    }
+//
+//    public BasePaginationResponse<PatientProfileResponse> listProfile(Long userId, Pageable pageable, HttpServletRequest httpServletRequest) throws ApiException{
+//        Optional<User> optionalUser = userRepository.findById(userId);
+//        if (optionalUser.isEmpty()) {
+//            throw new ApiException(ERROR.USER_NOT_FOUND);
+//        }
+//        User currentUser = optionalUser.get();
+//
+//        ListPatientProfileRequest request = new ListPatientProfileRequest();
+//
+//        Page<PatientProfileResponse> pageResult = patientRepository.findAll(
+//                request.getSpecification(currentUser.getId()),
+//                pageable).map(profile -> PatientProfileResponse.of(profile));
+//        return new BasePaginationResponse<>(pageResult.getContent(), pageable.getPageNumber(), pageable.getPageSize(), pageResult.getTotalElements());
+//    }
+//
+//    public BaseResponse<PatientProfileResponse> detailProfile(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException {
+//        Optional<User> optionalUser = userRepository.findById(userId);
+//        if (optionalUser.isEmpty()) {
+//            throw new ApiException(ERROR.USER_NOT_FOUND);
+//        }
+//        User currentUser = optionalUser.get();
+//
+//        Optional<PatientProfile> optionalProfile = patientRepository.findByIdAndUserId(request.getId(), currentUser.getId());
+//        if (optionalProfile.isEmpty()) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("PatientProfile"));
+//        }
+//
+//        return new BaseResponse<>(PatientProfileResponse.of(optionalProfile.get()));
+//    }
+//
+//    public BaseResponse<PatientProfileResponse> editPatientProfile(EditPatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
+//        if (StringUtils.isBlank(request.getFullName())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("fullName"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getBirthday())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("birthday"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getSex())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("sex"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getPhoneNumber())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("phoneNumber"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getJob())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("job"));
+//        }
+//
+//        if (StringUtils.isBlank(request.getAddress())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("address"));
+//        }
+//
+//        Optional<User> optionalUser = userRepository.findById(userId);
+//        if (optionalUser.isEmpty()) {
+//            throw new ApiException(ERROR.USER_NOT_FOUND);
+//        }
+//        User currentUser = optionalUser.get();
+//
+//        Optional<PatientProfile> optionalProfile = patientRepository.findByIdAndUserId(request.getId(), currentUser.getId());
+//        if (optionalProfile.isEmpty()) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("PatientProfile"));
+//        }
+//
+//        PatientProfile profile = optionalProfile.get();
+//        profile.setFullName(request.getFullName());
+//        profile.setBirthday(request.getBirthday());
+//        profile.setPhoneNumber(request.getPhoneNumber());
+//        profile.setSex(request.getSex());
+//        profile.setJob(request.getJob());
+//        profile.setEmail(request.getEmail());
+//        profile.setIdentityNumber(request.getIdentityNumber());
+//        profile.setEthnic(request.getEthnic());
+//        profile.setAddress(request.getAddress());
+//        profile = patientRepository.save(profile);
+//        return new BaseResponse<>(PatientProfileResponse.of(profile));
+//    }
+//
+//    public BaseResponse deleteProfile(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException {
+//        Optional<User> optionalUser = userRepository.findById(userId);
+//        if (optionalUser.isEmpty()) {
+//            throw new ApiException(ERROR.USER_NOT_FOUND);
+//        }
+//        User currentUser = optionalUser.get();
+//
+//        Optional<PatientProfile> optionalProfile = patientRepository.findByIdAndUserId(request.getId(), currentUser.getId());
+//        if (optionalProfile.isEmpty()) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("PatientProfile"));
+//        }
+//
+//        PatientProfile patientProfile = optionalProfile.get();
+//        patientProfile.setIsDelete(true);
+//        patientRepository.save(patientProfile);
+//
+//        return new BaseResponse<>(ERROR.SUCCESS.getMessage());
+//    }
 }

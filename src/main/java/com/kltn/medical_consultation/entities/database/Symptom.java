@@ -7,20 +7,17 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "doctor_department")
-public class DoctorDepartment extends BaseEntity{
+@Table(name = "symptom")
+public class Symptom extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "doctor_id")
-    private DoctorProfile doctor;
+    private String name;
 
-    @Column(name = "doctor_id", insertable = false, updatable = false)
-    private Long doctorId;
+    private int percent;
+
 
     @ManyToOne
     @JsonIgnore

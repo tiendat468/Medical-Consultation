@@ -18,7 +18,7 @@ public class DoctorRank extends BaseEntity{
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "doctor_id")
-    private DoctorProfile doctor;
+    private Doctor doctor;
 
     @Column(name = "doctor_id", insertable = false, updatable = false)
     private Long doctorId;

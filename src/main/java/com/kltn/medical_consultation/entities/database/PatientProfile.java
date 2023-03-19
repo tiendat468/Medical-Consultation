@@ -9,42 +9,24 @@ import java.util.Collection;
 @Data
 @Entity
 @Table(name = "patient_profile")
-public class PatientProfile extends BaseEntity{
+public class PatientProfile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "full_name")
-    private String fullName;
+    private String symptom;
 
-    private String birthday;
+    private String diagnostic;
 
-    private String email;
-
-    private String sex;
-
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
-    private String job;
-
-    @Column(name = "identity_number")
-    private String identityNumber;
-
-    private String ethnic;
-
-    private String address;
-
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "patientProfile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<MedicalSchedule> medicalSchedules;
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
-    @Column(name = "user_id", insertable = false, updatable = false)
-    private Long userId;
-
+    @Column(name = "patient_id", insertable = false, updatable = false)
+    private Long patientId;
 }
