@@ -24,7 +24,7 @@ public class TokenStore {
         TokenDTO tokenDTO = new TokenDTO();
         tokenDTO.setToken(token);
         tokenDTO.setUserId(userId);
-        tokenDTO.setPhoneNumber(email);
+        tokenDTO.setEmail(email);
         tokenDTO.setUserId(userId);
         tokenDTO.setExpiredAt(accessTokenTimeToLive);
         return redisTokenRepository.save(tokenDTO);

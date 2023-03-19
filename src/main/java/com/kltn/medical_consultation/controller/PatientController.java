@@ -34,10 +34,10 @@ public class PatientController extends BaseController {
 //        return patientService.detailProfile(request, authenticationFacade.getUserId(), httpServletRequest);
 //    }
 //
-//    @PostMapping("/create")
-//    public BaseResponse createPatientProfile(@RequestBody CreatePatientProfileRequest request, HttpServletRequest httpServletRequest) throws ApiException {
-//        return patientService.createPatientProfile(request, authenticationFacade.getUserId(), httpServletRequest);
-//    }
+    @PostMapping("/create")
+    public BaseResponse createPatientProfile(@RequestBody CreatePatientProfileRequest request, HttpServletRequest httpServletRequest) throws ApiException {
+        return patientService.createPatientProfile(request, authenticationFacade.getUserId(), httpServletRequest);
+    }
 //
 //    @PostMapping("/edit")
 //    public BaseResponse editPatientProfile(@RequestBody EditPatientProfileRequest request, HttpServletRequest httpServletRequest)  throws ApiException{

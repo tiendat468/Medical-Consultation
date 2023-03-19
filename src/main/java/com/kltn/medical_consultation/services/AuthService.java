@@ -1,5 +1,6 @@
 package com.kltn.medical_consultation.services;
 
+import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.User;
 import com.kltn.medical_consultation.entities.redis.TokenDTO;
 import com.kltn.medical_consultation.enumeration.UserType;
@@ -7,11 +8,11 @@ import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.AuthMessageCode;
-import com.kltn.medical_consultation.models.auth.LoginRequest;
-import com.kltn.medical_consultation.models.auth.LoginResponse;
-import com.kltn.medical_consultation.models.auth.UserProfileResponse;
+import com.kltn.medical_consultation.models.auth.*;
+import com.kltn.medical_consultation.repository.database.PatientRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
 import com.kltn.medical_consultation.repository.redis.RedisTokenRepository;
+import com.kltn.medical_consultation.utils.CustomStringUtils;
 import com.kltn.medical_consultation.utils.MessageUtils;
 import com.kltn.medical_consultation.utils.RestUtils;
 import com.kltn.medical_consultation.utils.TimeUtils;
@@ -19,14 +20,19 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.OAEPParameterSpec;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 @Log4j2
 public class AuthService extends BaseService{
+    @Autowired
+    private PatientRepository patientRepository;
 
     @Value("${mode}")
     private String mode;
@@ -38,15 +44,15 @@ public class AuthService extends BaseService{
     RedisTokenRepository tokenRepository;
 
     public BaseResponse<LoginResponse> login(LoginRequest request) {
-        if (StringUtils.isBlank(request.getPhoneNumber())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Phone number"));
+        if (StringUtils.isBlank(request.getEmail())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
         }
 
         if (StringUtils.isBlank(request.getPassword())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Password"));
         }
 
-        User existedUser = userRepository.findByPhoneNumber(request.getPhoneNumber()).orElse(null);
+        User existedUser = userRepository.findByEmail(request.getEmail()).orElse(null);
         if (existedUser == null){
             throw new ApiException(AuthMessageCode.AUTH_1_0);
         }
@@ -62,7 +68,7 @@ public class AuthService extends BaseService{
         String token  = UUID.randomUUID().toString();
         TokenDTO tokenDTO = new TokenDTO();
         tokenDTO.setToken(token);
-        tokenDTO.setPhoneNumber(request.getPhoneNumber());
+        tokenDTO.setEmail(request.getEmail());
         tokenDTO.setUserId(existedUser.getId());
 
         if (userType != null) {
@@ -97,7 +103,7 @@ public class AuthService extends BaseService{
 //        if (tokenDTO == null) {
 //            return null;
 //        }
-        User user = userRepository.findByPhoneNumber(tokenDTO.getPhoneNumber()).orElse(null);
+        User user = userRepository.findByEmail(tokenDTO.getEmail()).orElse(null);
 
         UserProfileResponse userProfileResponse = new UserProfileResponse();
         userProfileResponse.setName(user.getName());
@@ -105,5 +111,69 @@ public class AuthService extends BaseService{
         userProfileResponse.setPhone(user.getPhoneNumber());
         userProfileResponse.setType(UserType.from(user.getType()).getCode());
         return new BaseResponse<>(userProfileResponse);
+    }
+
+    public BaseResponse register(RegisterRequest request) {
+        if (StringUtils.isBlank(request.getEmail())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
+        }
+
+        if (StringUtils.isBlank(request.getName())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Name"));
+        }
+
+        if (StringUtils.isBlank(request.getPhone())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Phone"));
+        }
+
+        if (StringUtils.isBlank(request.getPassword())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Password"));
+        }
+
+        if (!CustomStringUtils.emailValidate(request.getEmail())) {
+            throw new ApiException(ERROR.INVALID_EMAIL);
+        }
+
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+        if (optionalUser.isPresent()) {
+            throw new ApiException(AuthMessageCode.AUTH_5_0_EXIST);
+        }
+
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setName(request.getName());
+        user.setPhoneNumber(request.getPhone());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setType(UserType.PATIENT.getType());
+
+        user = userRepository.save(user);
+
+        Patient patient = new Patient();
+        patient.setUser(user);
+        patient.setUserId(user.getId());
+        patient = patientRepository.save(patient);
+
+        //Send OTP to Email
+        return new BaseResponse(AuthMessageCode.AUTH_3_1);
+    }
+
+    public BaseResponse checkOTP(CheckOtpRequest request) {
+        if (StringUtils.isBlank(request.getEmail())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
+        }
+
+        if (StringUtils.isBlank(request.getOtp())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("OTP"));
+        }
+
+        if (!CustomStringUtils.emailValidate(request.getEmail())) {
+            throw new ApiException(ERROR.INVALID_EMAIL);
+        }
+
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+        if (optionalUser.isPresent()) {
+            throw new ApiException(AuthMessageCode.AUTH_5_0_EXIST);
+        }
+        return new BaseResponse(AuthMessageCode.AUTH_3_1);
     }
 }

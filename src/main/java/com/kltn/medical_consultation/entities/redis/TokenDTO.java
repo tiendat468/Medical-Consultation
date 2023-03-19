@@ -16,7 +16,7 @@ public class TokenDTO {
 
     private Long userId;
 
-    private String phoneNumber;
+    private String email;
 
     private int type;
 
