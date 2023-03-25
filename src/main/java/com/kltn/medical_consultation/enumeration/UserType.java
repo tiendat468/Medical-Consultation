@@ -11,8 +11,8 @@ public enum UserType {
     private final int type;
     private final String code;
 
-    UserType(int status, String code) {
-        this.type = status;
+    UserType(int type, String code) {
+        this.type = type;
         this.code = code;
     }
 

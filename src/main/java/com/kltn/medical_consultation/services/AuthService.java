@@ -62,7 +62,13 @@ public class AuthService extends BaseService{
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Password"));
         }
 
-        User existedUser = userRepository.findByEmail(request.getEmail()).orElse(null);
+        User existedUser;
+        if (request.getLoginWithDoctor()) {
+            existedUser = userRepository.findByEmailAndType(request.getEmail(), UserType.DOCTOR.getType()).orElse(null);
+        } else {
+            existedUser = userRepository.findByEmail(request.getEmail()).orElse(null);
+        }
+
         if (existedUser == null){
             throw new ApiException(AuthMessageCode.AUTH_1_0);
         }
@@ -139,7 +145,7 @@ public class AuthService extends BaseService{
             throw new ApiException(ERROR.INVALID_EMAIL);
         }
 
-        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+        Optional<User> optionalUser = userRepository.findByEmailAndType(request.getEmail(), UserType.PATIENT.getType());
         if (optionalUser.isPresent()) {
             throw new ApiException(AuthMessageCode.AUTH_5_0_EXIST);
         }
