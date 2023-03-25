@@ -1,7 +1,11 @@
 package com.kltn.medical_consultation.services;
 
+import com.kltn.medical_consultation.entities.database.Department;
+import com.kltn.medical_consultation.entities.database.Symptom;
 import com.kltn.medical_consultation.entities.database.User;
 import com.kltn.medical_consultation.enumeration.UserType;
+import com.kltn.medical_consultation.repository.database.DepartmentRepository;
+import com.kltn.medical_consultation.repository.database.SymptomRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
 import com.kltn.medical_consultation.utils.ICheckBCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +38,26 @@ public class InitDataService implements CommandLineRunner {
     @Autowired
     ICheckBCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    DepartmentRepository departmentRepository;
+    @Autowired
+    SymptomRepository symptomRepository;
+
     @Override
     public void run(String... args){
-        initAdmin();
+        initUser();
+        initDepartment();
     }
 
     @Transactional
-    public void initAdmin(){
+    public void initUser(){
         if (userRepository.count() == 0){
             User admin = new User();
             admin.setName("ADMIN");
             admin.setEmail(superEmail);
             admin.setPhoneNumber(superPhone);
             admin.setType(UserType.ADMIN.getType());
-            admin.setActive(Boolean.TRUE);
+            admin.setIsActive(Boolean.TRUE);
             admin.setPassword(passwordEncoder.encode(superPassword));
             userRepository.save(admin);
 
@@ -56,9 +66,172 @@ public class InitDataService implements CommandLineRunner {
             user.setEmail(userEmail);
             user.setPhoneNumber(userPhone);
             user.setType(UserType.PATIENT.getType());
-            user.setActive(Boolean.TRUE);
+            user.setIsActive(Boolean.TRUE);
             user.setPassword(passwordEncoder.encode(superPassword));
             userRepository.save(user);
         }
+    }
+
+    public void initDepartment(){
+        if (departmentRepository.count() == 0) {
+            Symptom symptom = new Symptom();
+            Department department = new Department();
+
+            department.setName("Tổng quát");
+            department.setSymbol("TQ");
+            department = departmentRepository.save(department);
+
+            department = new Department();
+            department.setName("Mắt");
+            department.setSymbol("MAT");
+            department = departmentRepository.save(department);
+
+            symptom.setName("Đau mắt đỏ");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Mắt mờ");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Trấn thương mắt");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            department = new Department();
+            department.setName("Tai mũi họng");
+            department.setSymbol("TMH");
+            department = departmentRepository.save(department);
+
+            symptom = new Symptom();
+            symptom.setName("Ù tai");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Chảy máu mũi, tai");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName(" Đau rát tai, mũi, họng");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Các trấn thương liên quan");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            department = new Department();
+            department.setName("Tiêu hóa");
+            department.setSymbol("TH");
+            department = departmentRepository.save(department);
+
+            symptom = new Symptom();
+            symptom.setName("Đau bụng");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Chướng bụng");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Đầy hơi");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Đại tiện bất thường");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Buồn nôn, ói");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Khó tiêu");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Giảm cân không rõ nguyên nhân");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            department = new Department();
+            department.setName("Tiết niệu");
+            department.setSymbol("TN");
+            department = departmentRepository.save(department);
+
+            symptom = new Symptom();
+            symptom.setName("Đi tiểu ra máu, mủ, màu đục");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Đi tiểu có cảm giác đau buốt");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Đau buốt khi quan hệ");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Đau lưng");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Sốt cao");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Nôn ói");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Dau vùng hạ sườn");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+
+            symptom = new Symptom();
+            symptom.setName("Mệt mỏi");
+            symptom.setDepartment(department);
+            symptom.setDepartmentId(department.getId());
+            symptomRepository.save(symptom);
+        }
+
     }
 }
