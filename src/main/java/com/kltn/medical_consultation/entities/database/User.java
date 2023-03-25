@@ -26,7 +26,7 @@ public class User extends BaseEntity{
     private String phoneNumber;
 
     @Column(name = "is_active")
-    private boolean isActive = false;
+    private Boolean isActive = false;
 
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

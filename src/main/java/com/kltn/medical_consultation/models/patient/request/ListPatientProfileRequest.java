@@ -1,4 +1,4 @@
-package com.kltn.medical_consultation.models.patient;
+package com.kltn.medical_consultation.models.patient.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kltn.medical_consultation.entities.database.PatientProfile;

@@ -1,4 +1,4 @@
-package com.kltn.medical_consultation.models.patient;
+package com.kltn.medical_consultation.models.patient.request;
 
 import lombok.Data;
 

@@ -7,7 +7,7 @@ import com.kltn.medical_consultation.enumeration.UserType;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
-import com.kltn.medical_consultation.models.AuthMessageCode;
+import com.kltn.medical_consultation.models.auth.AuthMessageCode;
 import com.kltn.medical_consultation.models.auth.*;
 import com.kltn.medical_consultation.repository.database.PatientRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
@@ -20,10 +20,8 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.spec.OAEPParameterSpec;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
@@ -57,7 +55,7 @@ public class AuthService extends BaseService{
             throw new ApiException(AuthMessageCode.AUTH_1_0);
         }
 
-        if (!existedUser.isActive()){
+        if (!existedUser.getIsActive()){
             throw new ApiException(AuthMessageCode.AUTH_5_0_INACTIVE);
         }
         if (!passwordEncoder.matches(request.getPassword(), existedUser.getPassword())){
@@ -114,19 +112,19 @@ public class AuthService extends BaseService{
     }
 
     public BaseResponse register(RegisterRequest request) {
-        if (StringUtils.isBlank(request.getEmail())) {
+        if (StringUtils.isEmpty(request.getEmail())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
         }
 
-        if (StringUtils.isBlank(request.getName())) {
+        if (StringUtils.isEmpty(request.getName())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Name"));
         }
 
-        if (StringUtils.isBlank(request.getPhone())) {
+        if (StringUtils.isEmpty(request.getPhone())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Phone"));
         }
 
-        if (StringUtils.isBlank(request.getPassword())) {
+        if (StringUtils.isEmpty(request.getPassword())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Password"));
         }
 

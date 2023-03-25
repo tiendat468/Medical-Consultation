@@ -2,22 +2,27 @@ package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.PatientProfile;
-import com.kltn.medical_consultation.entities.database.User;
 import com.kltn.medical_consultation.models.*;
 import com.kltn.medical_consultation.models.patient.*;
+import com.kltn.medical_consultation.models.patient.request.CreatePatientProfileRequest;
+import com.kltn.medical_consultation.models.patient.request.DetailProfileRequest;
+import com.kltn.medical_consultation.models.patient.request.SavePatientRequest;
+import com.kltn.medical_consultation.models.patient.response.PatientResponse;
 import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
 import com.kltn.medical_consultation.repository.database.PatientRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
+import com.kltn.medical_consultation.utils.CustomStringUtils;
 import com.kltn.medical_consultation.utils.MessageUtils;
+import com.kltn.medical_consultation.utils.TimeUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-@Component
+@Service
 @Log4j2
 public class PatientService extends BaseService{
     @Autowired
@@ -29,10 +34,19 @@ public class PatientService extends BaseService{
     @Autowired
     PatientRepository patientRepository;
 
+    @Autowired
+    UserService userService;
+
     public BaseResponse createPatientProfile(CreatePatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
-        Patient currentPatient = checkPatient(userId);
-        if (currentPatient == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("User"));
+        userService.validateUser(userId);
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+        if (optionalPatient.isEmpty()) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("Patient"));
+        }
+
+        Patient patient = optionalPatient.get();
+        if (patient.getIsDelete()) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notExist("Patient"));
         }
 
         if (StringUtils.isBlank(request.getSymptom())) {
@@ -40,27 +54,65 @@ public class PatientService extends BaseService{
         }
 
         PatientProfile patientProfile = new PatientProfile();
-        patientProfile.setPatient(currentPatient);
-        patientProfile.setPatientId(currentPatient.getId());
+        patientProfile.setPatient(patient);
+        patientProfile.setPatientId(patient.getId());
         patientProfile.setSymptom(request.getSymptom());
         patientProfile = patientProfileRepository.save(patientProfile);
         return new BaseResponse<>(ERROR.SUCCESS.getMessage());
     }
 
-    public Patient checkPatient(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            return null;
+    public BaseResponse<PatientResponse> savePatient(SavePatientRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
+        userService.validateUser(userId);
+        if (StringUtils.isEmpty(request.getFullName())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("FullName"));
         }
 
-        Optional<Patient> optionalPatient = patientRepository.findByUser_Id(userId);
-        if (optionalPatient.isEmpty()) {
-            return null;
+        TimeUtils.validateBirthday(request.getBirthday());
+
+        if (StringUtils.isEmpty(request.getSex())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Sex"));
         }
 
-        return optionalPatient.get();
+        if (StringUtils.isEmpty(request.getAddress())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Address"));
+        }
+
+        if (!CustomStringUtils.isNotEmptyWithCondition(request.getAddress(), 255)) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Address"));
+        }
+
+        if (StringUtils.isEmpty(request.getJob())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Job"));
+        }
+
+        if (!CustomStringUtils.isNotEmptyWithCondition(request.getJob(), 255)) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Job"));
+        }
+
+        if (StringUtils.isEmpty(request.getIdentityNumber())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("IdentityNumber"));
+        }
+
+        PatientResponse patientResponse = new PatientResponse();
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+        if (optionalPatient.isPresent()) {
+            Patient patient = optionalPatient.get();
+            patientResponse = PatientResponse.of(patient);
+            return new BaseResponse<>(PatientMessageCode.PATIENT_EXIST, patientResponse);
+        }
+
+        Patient patient = new Patient();
+        patient.setFullName(request.getFullName());
+        patient.setBirthday(request.getBirthday());
+        patient.setSex(request.getSex());
+        patient.setJob(request.getJob());
+        patient.setAddress(request.getAddress());
+        patient.setIdentityNumber(request.getIdentityNumber());
+        patientRepository.save(patient);
+        patientResponse = PatientResponse.of(patient);
+        return new BaseResponse<>(patientResponse);
     }
-//
+
 //    public BasePaginationResponse<PatientProfileResponse> listProfile(Long userId, Pageable pageable, HttpServletRequest httpServletRequest) throws ApiException{
 //        Optional<User> optionalUser = userRepository.findById(userId);
 //        if (optionalUser.isEmpty()) {
@@ -75,22 +127,23 @@ public class PatientService extends BaseService{
 //                pageable).map(profile -> PatientProfileResponse.of(profile));
 //        return new BasePaginationResponse<>(pageResult.getContent(), pageable.getPageNumber(), pageable.getPageSize(), pageResult.getTotalElements());
 //    }
-//
-//    public BaseResponse<PatientProfileResponse> detailProfile(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException {
-//        Optional<User> optionalUser = userRepository.findById(userId);
-//        if (optionalUser.isEmpty()) {
-//            throw new ApiException(ERROR.USER_NOT_FOUND);
-//        }
-//        User currentUser = optionalUser.get();
-//
-//        Optional<PatientProfile> optionalProfile = patientRepository.findByIdAndUserId(request.getId(), currentUser.getId());
-//        if (optionalProfile.isEmpty()) {
-//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("PatientProfile"));
-//        }
-//
-//        return new BaseResponse<>(PatientProfileResponse.of(optionalProfile.get()));
-//    }
-//
+
+    public BaseResponse<PatientResponse> detailPatient(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException {
+        userService.validateUser(userId);
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+        if (optionalPatient.isEmpty()) {
+            return new BaseResponse<>(PatientMessageCode.PATIENT_NOT_FOUND);
+        }
+
+        Patient patient = optionalPatient.get();
+        if (patient.getIsDelete()) {
+            log.debug("TEST______TEST_______TEST");
+            return new BaseResponse<>(PatientMessageCode.PATIENT_NOT_EXIST);
+        }
+
+        return new BaseResponse<>(PatientResponse.of(patient));
+    }
+
 //    public BaseResponse<PatientProfileResponse> editPatientProfile(EditPatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
 //        if (StringUtils.isBlank(request.getFullName())) {
 //            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("fullName"));

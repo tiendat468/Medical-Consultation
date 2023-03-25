@@ -44,7 +44,7 @@ public class TimeUtils {
 
     public static void validateBirthday(String birthday) {
         if (StringUtils.isBlank(birthday)) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("birthday"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Birthday"));
         }
 
         try {
