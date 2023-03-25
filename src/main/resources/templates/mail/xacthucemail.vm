@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<div
+        style="
+        width: 578px;
+        padding: 64px;
+        background-color: #f6f7f9;
+        margin: 0 auto;
+        font-family: 'Arial';
+        font-size: 14px;
+        line-height: 24px;
+        color: #333333 !important;
+      "
+>
+    <div style="padding: 32px; margin-bottom: 24px; background: #ffffff">
+        <div
+                style="
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 24px;
+            line-height: 28px;
+            font-weight: 700;
+          "
+        >
+            Thư thông báo xác thực <br />tài khoản
+        </div>
+        <div style="margin-bottom: 24px">Chào, $email.</div>
+        <div style="margin-bottom: 24px">
+            Tài khoản của bạn đã sẵn sàng để truy cập vào hệ thống. Vui lòng chọn “XÁC THỰC EMAIL” bên dưới để hoàn tất việc kích hoạt tài khoản.
+        </div>
+        <div
+                style="
+            text-align: center;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #cccccc;
+          "
+        >
+            <a
+                    href="$link"
+                    type="button"
+                    style="
+              display: inline-block;
+              text-decoration: none;
+              width: 240px;
+              font-size: 14px;
+              font-weight: 600;
+              line-height: 18px;
+              color: #fff;
+              padding: 11px;
+              border-radius: 5px;
+              text-align: center;
+              background-color: #2484c7;
+            "
+            >Xác thực email</a
+            >
+        </div>
+    </div>
+</div>
+</body>
+</html>

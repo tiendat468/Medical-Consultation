@@ -1,6 +1,6 @@
 package com.kltn.medical_consultation.domains;
 
-import com.kltn.medical_consultation.entities.redis.MailOtpDTO;
+import com.kltn.medical_consultation.entities.redis.EmailOtpDTO;
 import com.kltn.medical_consultation.models.ShareConstant;
 import com.kltn.medical_consultation.services.MailService;
 import com.kltn.medical_consultation.services.VelocityService;
@@ -49,21 +49,40 @@ public class MailDomain {
 //        }
 //    }
 
-    public void sendOtpEmail(MailOtpDTO mailOtpDTO) {
+    public void sendOtpEmail(EmailOtpDTO emailOtpDTO) {
         String functionName = "sendOtpEmail";
         Map<String, Object> model = new HashMap<>();
-        model.put("email", mailOtpDTO.getEmail());
-        model.put("otp", mailOtpDTO.getOtp());
+        model.put("email", emailOtpDTO.getEmail());
+        model.put("otp", emailOtpDTO.getOtp());
 
         String body = velocityService.mergeTemplate(ShareConstant.MAIL_TEMPLATE.OTP_VM, model);
 
-        LOGGER.info("[{}] Send OTP email (email={}, otp={})", functionName, mailOtpDTO.getEmail(), mailOtpDTO.getOtp());
+        LOGGER.info("[{}] Send OTP email (email={}, otp={})", functionName, emailOtpDTO.getEmail(), emailOtpDTO.getOtp());
 
         if (!body.equals(ShareConstant.MAIL_TEMPLATE.OTP_VM)) {
             try {
-                mailService.sendSimpleMessage(mailOtpDTO.getEmail(), String.format("Your OTP"), body, true);
+                mailService.sendSimpleMessage(emailOtpDTO.getEmail(), String.format("Your OTP"), body, true);
             } catch (MessagingException e) {
-                LOGGER.error("[{}] Cannot send OTP (email={}): {}", functionName, mailOtpDTO.getEmail(), e);
+                LOGGER.error("[{}] Cannot send OTP (email={}): {}", functionName, emailOtpDTO.getEmail(), e);
+            }
+        }
+    }
+
+    public void sendVerifyEmail(String email, String verifyLink) {
+        String functionName = "sendVerifyEmail";
+        Map<String, Object> model = new HashMap<>();
+        model.put("email", email);
+        model.put("link", verifyLink);
+
+        String body = velocityService.mergeTemplate(ShareConstant.MAIL_TEMPLATE.VERIFY_EMAIL_VM, model);
+
+        LOGGER.info("[{}] Send verify email (email={})", functionName, email);
+
+        if (!body.equals(ShareConstant.MAIL_TEMPLATE.OTP_VM)) {
+            try {
+                mailService.sendSimpleMessage(email, String.format("Verify Email"), body, true);
+            } catch (MessagingException e) {
+                LOGGER.error("[{}] Cannot send OTP (email={}): {}", functionName, email, e);
             }
         }
     }

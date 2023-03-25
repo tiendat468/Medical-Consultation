@@ -1,8 +1,10 @@
 package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.domains.MailDomain;
+import com.kltn.medical_consultation.entities.database.Patient;
+import com.kltn.medical_consultation.entities.database.RegisterActivity;
 import com.kltn.medical_consultation.entities.database.User;
-import com.kltn.medical_consultation.entities.redis.MailOtpDTO;
+import com.kltn.medical_consultation.entities.redis.EmailOtpDTO;
 import com.kltn.medical_consultation.entities.redis.TokenDTO;
 import com.kltn.medical_consultation.enumeration.UserType;
 import com.kltn.medical_consultation.models.ApiException;
@@ -15,9 +17,9 @@ import com.kltn.medical_consultation.models.auth.request.VerifyOtpRequest;
 import com.kltn.medical_consultation.models.auth.request.LoginRequest;
 import com.kltn.medical_consultation.models.auth.request.RegisterRequest;
 import com.kltn.medical_consultation.models.auth.response.LoginResponse;
-import com.kltn.medical_consultation.models.auth.response.RegisterResponse;
 import com.kltn.medical_consultation.models.auth.response.UserProfileResponse;
 import com.kltn.medical_consultation.repository.database.PatientRepository;
+import com.kltn.medical_consultation.repository.database.RegisterActivityRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
 import com.kltn.medical_consultation.repository.redis.MailOtpRepository;
 import com.kltn.medical_consultation.repository.redis.RedisTokenRepository;
@@ -26,9 +28,15 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,10 +44,15 @@ import java.util.UUID;
 @Log4j2
 public class AuthService extends BaseService{
     @Autowired
+    private RegisterActivityRepository registerActivityRepository;
+    @Autowired
     private PatientRepository patientRepository;
 
-    @Value("${mode}")
+    @Value("${mode:}")
     private String mode;
+
+    @Value("${server.domain:}")
+    private String domain;
 
     @Autowired
     UserRepository userRepository;
@@ -51,7 +64,7 @@ public class AuthService extends BaseService{
     MailOtpRepository mailOtpRepository;
 
     @Autowired
-    MailDomain mailDomain;
+    MailDomain emailDomain;
 
     public BaseResponse<LoginResponse> login(LoginRequest request) {
         if (StringUtils.isBlank(request.getEmail())) {
@@ -129,12 +142,20 @@ public class AuthService extends BaseService{
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
         }
 
-        if (StringUtils.isEmpty(request.getName())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Name"));
+        if (StringUtils.isEmpty(request.getFullName())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("FullName"));
         }
 
         if (StringUtils.isEmpty(request.getPhone())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Phone"));
+        }
+
+        if (StringUtils.isEmpty(request.getBirthday())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Birthday"));
+        }
+
+        if (StringUtils.isEmpty(request.getSex())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Sex"));
         }
 
         if (StringUtils.isEmpty(request.getPassword())) {
@@ -152,23 +173,25 @@ public class AuthService extends BaseService{
 
         User user = new User();
         user.setEmail(request.getEmail());
-        user.setName(request.getName());
+        user.setName(request.getFullName());
         user.setPhoneNumber(request.getPhone());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setType(UserType.PATIENT.getType());
         user = userRepository.save(user);
 
-        //Send OTP to Email
-        MailOtpDTO mailOtpDTO = generateOTP(user.getEmail());
-        mailDomain.sendOtpEmail(mailOtpDTO);
+        if (user != null) {
+            Patient patient = new Patient();
+            patient.setUser(user);
+            patient.setUserId(user.getId());
+            patient.setFullName(request.getFullName());
+            patient.setSex(request.getSex());
+            patient.setBirthday(request.getBirthday());
+            patientRepository.save(patient);
+        }
 
-
-        Long currentTime = System.currentTimeMillis();
-        RegisterResponse response = new RegisterResponse();
-        response.setVerifyCode(mailOtpDTO.getToken());
-        response.setExpiredAt(TimeUtils.dateToStringSimpleDateFormat(currentTime + mailOtpDTO.getExpiredAt() * 60 * 1000));
-
-        return new BaseResponse(AuthMessageCode.AUTH_3_1_SEND_OTP, response);
+        //Send verify Email
+        sendVerifyEmail(user.getId(), user.getEmail());
+        return new BaseResponse(AuthMessageCode.AUTH_3_1);
     }
 
     public BaseResponse verifyOTP(VerifyOtpRequest request) {
@@ -180,47 +203,74 @@ public class AuthService extends BaseService{
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("OTP"));
         }
 
-        Optional<MailOtpDTO> optionalMailOtpDTO = mailOtpRepository.findById(request.getVerifyCode());
+        Optional<EmailOtpDTO> optionalMailOtpDTO = mailOtpRepository.findById(request.getVerifyCode());
         if (optionalMailOtpDTO.isEmpty()) {
             throw new ApiException(AuthMessageCode.AUTH_3_0_OTP_EXPIRED);
         }
 
-        MailOtpDTO mailOtpDTO = optionalMailOtpDTO.get();
-        if (!request.getOtp().equals(mailOtpDTO.getOtp())) {
+        EmailOtpDTO emailOtpDTO = optionalMailOtpDTO.get();
+        if (!request.getOtp().equals(emailOtpDTO.getOtp())) {
             throw new ApiException(AuthMessageCode.AUTH_3_0_OTP);
         }
 
-        Optional<User> optionalUser = userRepository.findByEmail(mailOtpDTO.getEmail());
+        Optional<User> optionalUser = userRepository.findByEmail(emailOtpDTO.getEmail());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setIsActive(true);
             userRepository.save(user);
         }
 
-        mailOtpRepository.delete(mailOtpDTO);
+        mailOtpRepository.delete(emailOtpDTO);
         return new BaseResponse(AuthMessageCode.AUTH_3_1_OTP);
     }
 
     public BaseResponse resendOTP(RegisterResendOTPRequest request) {
         //Send OTP to Email
-        MailOtpDTO mailOtpDTO = generateOTP(request.getEmail());
-        mailDomain.sendOtpEmail(mailOtpDTO);
+        EmailOtpDTO emailOtpDTO = generateOTP(request.getEmail());
+        emailDomain.sendOtpEmail(emailOtpDTO);
         return new BaseResponse(ERROR.SUCCESS);
     }
 
-    public MailOtpDTO generateOTP(String email) {
+    public EmailOtpDTO generateOTP(String email) {
         String token  = UUID.randomUUID().toString();
         String otp = StringGenerator.randomDigits(ShareConstant.OTP.LENGTH);
 //        if (mode.equalsIgnoreCase("DEVELOP")){
 //            otp = "9999";
 //        }
 
-        MailOtpDTO mailOtpDTO = new MailOtpDTO();
-        mailOtpDTO.setToken(token);
-        mailOtpDTO.setEmail(email);
-        mailOtpDTO.setOtp(otp);
-        mailOtpDTO.setExpiredAt(15L);
-        mailOtpRepository.save(mailOtpDTO);
-        return mailOtpDTO;
+        EmailOtpDTO emailOtpDTO = new EmailOtpDTO();
+        emailOtpDTO.setToken(token);
+        emailOtpDTO.setEmail(email);
+        emailOtpDTO.setOtp(otp);
+        emailOtpDTO.setExpiredAt(15L);
+        mailOtpRepository.save(emailOtpDTO);
+        return emailOtpDTO;
+    }
+
+    public void sendVerifyEmail(Long userId, String email) {
+        String code = UUID.randomUUID().toString();
+        RegisterActivity registerActivity = new RegisterActivity();
+        registerActivity.setUserId(userId);
+        registerActivity.setEmail(email);
+        registerActivity.setCode(code);
+        registerActivityRepository.save(registerActivity);
+
+        String verifyLink = domain + "/auth/verify-email?code=" + code + "&email=" + email;
+        emailDomain.sendVerifyEmail(email, verifyLink);
+    }
+
+    public Boolean verifyCode(String token) {
+        Optional<RegisterActivity> registerActivity = registerActivityRepository.findAllByCode(token);
+        if (registerActivity.isPresent()) {
+            Optional<User> optionalUser = userRepository.findByEmailAndType(registerActivity.get().getEmail(), UserType.PATIENT.getType());
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                user.setIsActive(true);
+                userRepository.save(user);
+                registerActivityRepository.delete(registerActivity.get());
+                return true;
+            }
+        }
+        return false;
     }
 }

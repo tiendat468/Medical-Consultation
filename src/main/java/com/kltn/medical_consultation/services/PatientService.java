@@ -58,7 +58,7 @@ public class PatientService extends BaseService{
         patientProfile.setPatientId(patient.getId());
         patientProfile.setSymptom(request.getSymptom());
         patientProfile = patientProfileRepository.save(patientProfile);
-        return new BaseResponse<>(ERROR.SUCCESS.getMessage());
+        return new BaseResponse<>(ERROR.SUCCESS);
     }
 
     public BaseResponse<PatientResponse> savePatient(SavePatientRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{

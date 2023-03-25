@@ -30,6 +30,11 @@ public class BaseResponse<T> {
         this.messageCode = messageCode;
     }
 
+    public BaseResponse(ERROR error){
+        this.code = error.getCode();
+        this.message = error.getMessage();
+    }
+
     public BaseResponse(IMessageCode iMessageCode, T data){
         this.data = data;
         this.messageCode = iMessageCode.getCode();

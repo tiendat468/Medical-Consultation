@@ -2,6 +2,7 @@ package com.kltn.medical_consultation.controller;
 
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
+import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.auth.request.RegisterResendOTPRequest;
 import com.kltn.medical_consultation.models.auth.request.VerifyOtpRequest;
 import com.kltn.medical_consultation.models.auth.request.LoginRequest;
@@ -49,5 +50,14 @@ public class AuthController {
     @PostMapping("/verify-otp")
     public BaseResponse verifyOTP(@RequestBody VerifyOtpRequest request) {
         return authService.verifyOTP(request);
+    }
+
+    @GetMapping("/verify-email")
+    public BaseResponse verify(@RequestParam("code") String token) {
+        Boolean isVerify = authService.verifyCode(token);
+        if (isVerify) {
+            return new BaseResponse(ERROR.SUCCESS);
+        }
+        return new BaseResponse("Xác thực tài khoản không thành công");
     }
 }

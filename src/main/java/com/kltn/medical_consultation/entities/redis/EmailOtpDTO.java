@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 @Data
 @RedisHash(ShareConstant.REDIS_HASH.SEND_OTP)
-public class MailOtpDTO {
+public class EmailOtpDTO {
     @Id
     private String token;
     private String otp;
