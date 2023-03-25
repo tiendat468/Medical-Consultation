@@ -1,32 +1,38 @@
 package com.kltn.medical_consultation.services;
 
-import com.kltn.medical_consultation.entities.database.Patient;
+import com.kltn.medical_consultation.domains.MailDomain;
 import com.kltn.medical_consultation.entities.database.User;
+import com.kltn.medical_consultation.entities.redis.MailOtpDTO;
 import com.kltn.medical_consultation.entities.redis.TokenDTO;
 import com.kltn.medical_consultation.enumeration.UserType;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
+import com.kltn.medical_consultation.models.ShareConstant;
 import com.kltn.medical_consultation.models.auth.AuthMessageCode;
-import com.kltn.medical_consultation.models.auth.*;
+import com.kltn.medical_consultation.models.auth.request.RegisterResendOTPRequest;
+import com.kltn.medical_consultation.models.auth.request.VerifyOtpRequest;
+import com.kltn.medical_consultation.models.auth.request.LoginRequest;
+import com.kltn.medical_consultation.models.auth.request.RegisterRequest;
+import com.kltn.medical_consultation.models.auth.response.LoginResponse;
+import com.kltn.medical_consultation.models.auth.response.RegisterResponse;
+import com.kltn.medical_consultation.models.auth.response.UserProfileResponse;
 import com.kltn.medical_consultation.repository.database.PatientRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
+import com.kltn.medical_consultation.repository.redis.MailOtpRepository;
 import com.kltn.medical_consultation.repository.redis.RedisTokenRepository;
-import com.kltn.medical_consultation.utils.CustomStringUtils;
-import com.kltn.medical_consultation.utils.MessageUtils;
-import com.kltn.medical_consultation.utils.RestUtils;
-import com.kltn.medical_consultation.utils.TimeUtils;
+import com.kltn.medical_consultation.utils.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
+@Service
 @Log4j2
 public class AuthService extends BaseService{
     @Autowired
@@ -40,6 +46,12 @@ public class AuthService extends BaseService{
 
     @Autowired
     RedisTokenRepository tokenRepository;
+
+    @Autowired
+    MailOtpRepository mailOtpRepository;
+
+    @Autowired
+    MailDomain mailDomain;
 
     public BaseResponse<LoginResponse> login(LoginRequest request) {
         if (StringUtils.isBlank(request.getEmail())) {
@@ -75,15 +87,10 @@ public class AuthService extends BaseService{
         }
 
         long currentTime = System.currentTimeMillis();
-
-
         tokenDTO.setExpiredAt(1440L); // fix 1 request co expired 1 ngay
-
-
         tokenRepository.save(tokenDTO);
 
         LoginResponse response = new LoginResponse();
-
         response.setToken(token);
         response.setExpiredAt(TimeUtils.dateToStringSimpleDateFormat(currentTime + tokenDTO.getExpiredAt() * 60 * 1000));
 
@@ -143,35 +150,71 @@ public class AuthService extends BaseService{
         user.setPhoneNumber(request.getPhone());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setType(UserType.PATIENT.getType());
-
         user = userRepository.save(user);
 
-        Patient patient = new Patient();
-        patient.setUser(user);
-        patient.setUserId(user.getId());
-        patient = patientRepository.save(patient);
-
         //Send OTP to Email
-        return new BaseResponse(AuthMessageCode.AUTH_3_1);
+        MailOtpDTO mailOtpDTO = generateOTP(user.getEmail());
+        mailDomain.sendOtpEmail(mailOtpDTO);
+
+
+        Long currentTime = System.currentTimeMillis();
+        RegisterResponse response = new RegisterResponse();
+        response.setVerifyCode(mailOtpDTO.getToken());
+        response.setExpiredAt(TimeUtils.dateToStringSimpleDateFormat(currentTime + mailOtpDTO.getExpiredAt() * 60 * 1000));
+
+        return new BaseResponse(AuthMessageCode.AUTH_3_1_SEND_OTP, response);
     }
 
-    public BaseResponse checkOTP(CheckOtpRequest request) {
-        if (StringUtils.isBlank(request.getEmail())) {
+    public BaseResponse verifyOTP(VerifyOtpRequest request) {
+        if (StringUtils.isEmpty(request.getVerifyCode())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
         }
 
-        if (StringUtils.isBlank(request.getOtp())) {
+        if (StringUtils.isEmpty(request.getOtp())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("OTP"));
         }
 
-        if (!CustomStringUtils.emailValidate(request.getEmail())) {
-            throw new ApiException(ERROR.INVALID_EMAIL);
+        Optional<MailOtpDTO> optionalMailOtpDTO = mailOtpRepository.findById(request.getVerifyCode());
+        if (optionalMailOtpDTO.isEmpty()) {
+            throw new ApiException(AuthMessageCode.AUTH_3_0_OTP_EXPIRED);
         }
 
-        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
-        if (optionalUser.isPresent()) {
-            throw new ApiException(AuthMessageCode.AUTH_5_0_EXIST);
+        MailOtpDTO mailOtpDTO = optionalMailOtpDTO.get();
+        if (!request.getOtp().equals(mailOtpDTO.getOtp())) {
+            throw new ApiException(AuthMessageCode.AUTH_3_0_OTP);
         }
-        return new BaseResponse(AuthMessageCode.AUTH_3_1);
+
+        Optional<User> optionalUser = userRepository.findByEmail(mailOtpDTO.getEmail());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setIsActive(true);
+            userRepository.save(user);
+        }
+
+        mailOtpRepository.delete(mailOtpDTO);
+        return new BaseResponse(AuthMessageCode.AUTH_3_1_OTP);
+    }
+
+    public BaseResponse resendOTP(RegisterResendOTPRequest request) {
+        //Send OTP to Email
+        MailOtpDTO mailOtpDTO = generateOTP(request.getEmail());
+        mailDomain.sendOtpEmail(mailOtpDTO);
+        return new BaseResponse(ERROR.SUCCESS);
+    }
+
+    public MailOtpDTO generateOTP(String email) {
+        String token  = UUID.randomUUID().toString();
+        String otp = StringGenerator.randomDigits(ShareConstant.OTP.LENGTH);
+//        if (mode.equalsIgnoreCase("DEVELOP")){
+//            otp = "9999";
+//        }
+
+        MailOtpDTO mailOtpDTO = new MailOtpDTO();
+        mailOtpDTO.setToken(token);
+        mailOtpDTO.setEmail(email);
+        mailOtpDTO.setOtp(otp);
+        mailOtpDTO.setExpiredAt(15L);
+        mailOtpRepository.save(mailOtpDTO);
+        return mailOtpDTO;
     }
 }

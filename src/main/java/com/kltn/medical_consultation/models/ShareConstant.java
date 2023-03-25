@@ -8,12 +8,23 @@ public interface ShareConstant {
     }
 
     class REDIS_HASH {
-        public static final String TOKEN = "quotation_token";
-        public static final String BLOCK_IP = "quotation_block_ip";
-        public static final String QUOTATION_GENERATE = "quotation_quotation_generate";
-        public static final String RESET_PASSWORD = "quotation_reset_password";
-        public static final String QUOTATION_DATA = "quotation_quotation_data";
-        public static final String USER_LOGIN = "quotation_user_login";
+        public static final String TOKEN = "mc_token";
+        public static final String BLOCK_IP = "mc_block_ip";
+        public static final String RESET_PASSWORD = "mc_reset_password";
+        public static final String SEND_OTP = "mc_send_otp";
+        public static final String USER_LOGIN = "mc_user_login";
+    }
+
+    class MAIL_TEMPLATE{
+        public static final String ERROR = "template/mail/error.vm";
+        public static final String OTP_VM = "templates/mail/otp.vm";
+        public static final String FORGOT_PASSWORD_VM = "templates/mail/forgot-password.vm";
+    }
+
+    class OTP{
+        public static final int LENGTH = 4;
+        public static final String SEND_OTP_VERIFY_EMAIL = "vm";
+        public static final String SEND_OTP_RESET_PASSWORD = "rs";
     }
 
     class REST_HEADER {

@@ -2,7 +2,12 @@ package com.kltn.medical_consultation.controller;
 
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
-import com.kltn.medical_consultation.models.auth.*;
+import com.kltn.medical_consultation.models.auth.request.RegisterResendOTPRequest;
+import com.kltn.medical_consultation.models.auth.request.VerifyOtpRequest;
+import com.kltn.medical_consultation.models.auth.request.LoginRequest;
+import com.kltn.medical_consultation.models.auth.request.RegisterRequest;
+import com.kltn.medical_consultation.models.auth.response.LoginResponse;
+import com.kltn.medical_consultation.models.auth.response.UserProfileResponse;
 import com.kltn.medical_consultation.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +41,13 @@ public class AuthController {
         return authService.register(registerRequest);
     }
 
-    @PostMapping("/check-otp")
-    public BaseResponse checkOTP(@RequestBody CheckOtpRequest request) {
-        return authService.checkOTP(request);
+    @PostMapping("/register/resend-otp")
+    public BaseResponse register(@RequestBody RegisterResendOTPRequest request) {
+        return authService.resendOTP(request);
+    }
+
+    @PostMapping("/verify-otp")
+    public BaseResponse verifyOTP(@RequestBody VerifyOtpRequest request) {
+        return authService.verifyOTP(request);
     }
 }
