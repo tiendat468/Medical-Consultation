@@ -128,7 +128,7 @@ public class PatientService extends BaseService{
 //        return new BasePaginationResponse<>(pageResult.getContent(), pageable.getPageNumber(), pageable.getPageSize(), pageResult.getTotalElements());
 //    }
 
-    public BaseResponse<PatientResponse> detailPatient(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException {
+    public BaseResponse<PatientResponse> detailPatient(Long userId, HttpServletRequest httpServletRequest) throws ApiException {
         userService.validateUser(userId);
         Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
         if (optionalPatient.isEmpty()) {
@@ -137,7 +137,6 @@ public class PatientService extends BaseService{
 
         Patient patient = optionalPatient.get();
         if (patient.getIsDelete()) {
-            log.debug("TEST______TEST_______TEST");
             return new BaseResponse<>(PatientMessageCode.PATIENT_NOT_EXIST);
         }
 

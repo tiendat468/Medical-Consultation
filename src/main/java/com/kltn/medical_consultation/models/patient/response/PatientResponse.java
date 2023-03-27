@@ -9,6 +9,7 @@ public class PatientResponse {
     private Long userId;
     private String fullName;
     private String birthday;
+    private String phone;
     private String sex;
     private String address;
     private String job;
@@ -24,6 +25,7 @@ public class PatientResponse {
         response.setJob(patient.getJob());
         response.setIdentityNumber(patient.getIdentityNumber());
         response.setAddress(patient.getAddress());
+        response.setPhone(patient.getUser().getPhoneNumber());
         return response;
     }
 }

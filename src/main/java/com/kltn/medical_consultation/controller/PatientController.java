@@ -31,9 +31,9 @@ public class PatientController extends BaseController {
         return patientService.savePatient(request, authenticationFacade.getUserId(), httpServletRequest);
     }
 
-    @PostMapping("/detail")
-    public BaseResponse detailPatient(@RequestBody DetailProfileRequest request, HttpServletRequest httpServletRequest) throws ApiException{
-        return patientService.detailPatient(request, authenticationFacade.getUserId(), httpServletRequest);
+    @GetMapping("/detail")
+    public BaseResponse detailPatient(HttpServletRequest httpServletRequest) throws ApiException{
+        return patientService.detailPatient(authenticationFacade.getUserId(), httpServletRequest);
     }
 
     @PostMapping("/profile/save")
