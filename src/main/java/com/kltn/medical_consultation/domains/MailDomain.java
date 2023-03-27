@@ -72,7 +72,7 @@ public class MailDomain {
         String functionName = "sendVerifyEmail";
         Map<String, Object> model = new HashMap<>();
         model.put("email", email);
-        model.put("link", verifyLink);
+        model.put("verifyLink", verifyLink);
 
         String body = velocityService.mergeTemplate(ShareConstant.MAIL_TEMPLATE.VERIFY_EMAIL_VM, model);
 

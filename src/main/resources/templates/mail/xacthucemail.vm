@@ -41,7 +41,7 @@
           "
         >
             <a
-                    href="$link"
+                    href="$verifyLink"
                     type="button"
                     style="
               display: inline-block;
