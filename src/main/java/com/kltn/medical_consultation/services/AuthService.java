@@ -79,7 +79,7 @@ public class AuthService extends BaseService{
         if (request.getLoginWithDoctor()) {
             existedUser = userRepository.findByEmailAndType(request.getEmail(), UserType.DOCTOR.getType()).orElse(null);
         } else {
-            existedUser = userRepository.findByEmail(request.getEmail()).orElse(null);
+            existedUser = userRepository.findByEmailAndType(request.getEmail(), UserType.PATIENT.getType()).orElse(null);
         }
 
         if (existedUser == null){

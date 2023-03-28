@@ -23,7 +23,7 @@ public class InitDataService implements CommandLineRunner {
     @Value("${mc.dc_email:mc_doctor@gmail.com}")
     String doctorEmail;
 
-    @Value("${mc.u_email:nc_user@gmail.com}")
+    @Value("${mc.u_email:mc_user@gmail.com}")
     String userEmail;
 
     @Value("${mc.super_password:mc@123456}")
