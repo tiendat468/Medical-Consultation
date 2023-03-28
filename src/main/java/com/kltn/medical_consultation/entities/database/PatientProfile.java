@@ -19,6 +19,9 @@ public class PatientProfile extends BaseEntity {
 
     private String diagnostic;
 
+    @Column(name = "is_complete")
+    private Boolean isComplete = false;
+
     @OneToMany(mappedBy = "patientProfile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<MedicalSchedule> medicalSchedules;
 

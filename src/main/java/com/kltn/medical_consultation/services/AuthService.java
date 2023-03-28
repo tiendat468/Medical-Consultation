@@ -28,15 +28,9 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -94,7 +88,7 @@ public class AuthService extends BaseService{
         }
 
         UserType userType =  UserType.from(existedUser.getType());
-        String token  = UUID.randomUUID().toString();
+        String token = UUID.randomUUID().toString();
         TokenDTO tokenDTO = new TokenDTO();
         tokenDTO.setToken(token);
         tokenDTO.setEmail(request.getEmail());
@@ -259,8 +253,8 @@ public class AuthService extends BaseService{
         emailDomain.sendVerifyEmail(email, verifyLink);
     }
 
-    public Boolean verifyCode(String token) {
-        Optional<RegisterActivity> registerActivity = registerActivityRepository.findAllByCode(token);
+    public Boolean verifyEmail(String code) {
+        Optional<RegisterActivity> registerActivity = registerActivityRepository.findAllByCode(code);
         if (registerActivity.isPresent()) {
             Optional<User> optionalUser = userRepository.findByEmailAndType(registerActivity.get().getEmail(), UserType.PATIENT.getType());
             if (optionalUser.isPresent()) {

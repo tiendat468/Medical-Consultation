@@ -10,7 +10,7 @@ public class BaseResponse<T> {
     private int code = ERROR.SUCCESS.getCode();
 
     @Schema(defaultValue = "Message" , description = "message của server trả về")
-    private String message;
+    private String message = ERROR.SUCCESS.getMessage();
 
     private String messageCode;
 

@@ -41,6 +41,11 @@ public class PatientController extends BaseController {
         return patientService.createPatientProfile(request, authenticationFacade.getUserId(), httpServletRequest);
     }
 
+    @PostMapping("/profile/detail")
+    public BaseResponse detailPatientProfile(@RequestBody DetailProfileRequest request, HttpServletRequest httpServletRequest) throws ApiException{
+        return patientService.detailPatientProfile(request, authenticationFacade.getUserId(), httpServletRequest);
+    }
+
 //    @PostMapping("/edit")
 //    public BaseResponse editPatientProfile(@RequestBody EditPatientProfileRequest request, HttpServletRequest httpServletRequest)  throws ApiException{
 //        return patientService.editPatientProfile(request, authenticationFacade.getUserId(), httpServletRequest);

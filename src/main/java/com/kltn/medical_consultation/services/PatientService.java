@@ -7,6 +7,7 @@ import com.kltn.medical_consultation.models.patient.*;
 import com.kltn.medical_consultation.models.patient.request.CreatePatientProfileRequest;
 import com.kltn.medical_consultation.models.patient.request.DetailProfileRequest;
 import com.kltn.medical_consultation.models.patient.request.SavePatientRequest;
+import com.kltn.medical_consultation.models.patient.response.PatientProfileResponse;
 import com.kltn.medical_consultation.models.patient.response.PatientResponse;
 import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
 import com.kltn.medical_consultation.repository.database.PatientRepository;
@@ -36,30 +37,6 @@ public class PatientService extends BaseService{
 
     @Autowired
     UserService userService;
-
-    public BaseResponse createPatientProfile(CreatePatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
-        userService.validateUser(userId);
-        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
-        if (optionalPatient.isEmpty()) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("Patient"));
-        }
-
-        Patient patient = optionalPatient.get();
-        if (patient.getIsDelete()) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notExist("Patient"));
-        }
-
-        if (StringUtils.isBlank(request.getSymptom())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Symptom"));
-        }
-
-        PatientProfile patientProfile = new PatientProfile();
-        patientProfile.setPatient(patient);
-        patientProfile.setPatientId(patient.getId());
-        patientProfile.setSymptom(request.getSymptom());
-        patientProfile = patientProfileRepository.save(patientProfile);
-        return new BaseResponse<>(ERROR.SUCCESS);
-    }
 
     public BaseResponse<PatientResponse> savePatient(SavePatientRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
         userService.validateUser(userId);
@@ -141,6 +118,62 @@ public class PatientService extends BaseService{
         }
 
         return new BaseResponse<>(PatientResponse.of(patient));
+    }
+
+    public BaseResponse<PatientProfileResponse> createPatientProfile(CreatePatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
+        userService.validateUser(userId);
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+        if (optionalPatient.isEmpty()) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notFound("Patient"));
+        }
+
+        Patient patient = optionalPatient.get();
+        if (patient.getIsDelete()) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.notExist("Patient"));
+        }
+
+        if (StringUtils.isBlank(request.getSymptom())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Symptom"));
+        }
+
+        PatientProfile patientProfile = new PatientProfile();
+        patientProfile.setPatient(patient);
+        patientProfile.setPatientId(patient.getId());
+        patientProfile.setSymptom(request.getSymptom());
+        patientProfile = patientProfileRepository.save(patientProfile);
+        return new BaseResponse<>(PatientProfileResponse.of(patientProfile));
+    }
+
+    public BaseResponse detailPatientProfile(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) {
+        if (request.getId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Id"));
+        }
+
+        Optional<PatientProfile> optionalPatientProfile = patientProfileRepository.findById(request.getId());
+        if (optionalPatientProfile.isEmpty()) {
+            throw new ApiException(PatientMessageCode.PATIENT_PROFILE_NOT_FOUND);
+        }
+        PatientProfile patientProfile = optionalPatientProfile.get();
+        if (!validatePatientProfile(userId, patientProfile)) {
+            throw new ApiException(PatientMessageCode.PROFILE_NOT_BELONG_PATIENT);
+        }
+
+        return null;
+    }
+
+    public boolean validatePatientProfile(Long userId, PatientProfile patientProfile) {
+        try {
+            userService.validateUser(userId);
+        }catch (Exception e) {
+            return false;
+        }
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+        if (optionalPatient.isPresent()) {
+            if (patientProfile.getPatientId() == optionalPatient.get().getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 //    public BaseResponse<PatientProfileResponse> editPatientProfile(EditPatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{

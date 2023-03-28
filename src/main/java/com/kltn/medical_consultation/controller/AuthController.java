@@ -53,8 +53,8 @@ public class AuthController {
     }
 
     @GetMapping("/verify-email")
-    public BaseResponse verify(@RequestParam("code") String token) {
-        Boolean isVerify = authService.verifyCode(token);
+    public BaseResponse verify(@RequestParam("code") String code) {
+        Boolean isVerify = authService.verifyEmail(code);
         if (isVerify) {
             return new BaseResponse(ERROR.SUCCESS);
         }

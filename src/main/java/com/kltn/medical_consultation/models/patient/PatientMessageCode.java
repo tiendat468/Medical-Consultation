@@ -3,9 +3,11 @@ package com.kltn.medical_consultation.models.patient;
 import com.kltn.medical_consultation.models.IMessageCode;
 
 public enum PatientMessageCode implements IMessageCode {
-    PATIENT_NOT_FOUND("patient.not.found","Not found patient",""),
-    PATIENT_NOT_EXIST("patient.not.exist","Patient does not exist",""),
-    PATIENT_EXIST("patient.exist","Patient has been exist",""),
+    PATIENT_NOT_FOUND("patient.not.found","Không tìm thấy bệnh nhân","Không tìm thấy thông tin bệnh nhân"),
+    PATIENT_NOT_EXIST("patient.not.exist","Bệnh nhân không tồn tại","Bệnh nhân không tồn tại"),
+    PATIENT_EXIST("patient.exist","Bệnh nhân đã tồn tại","Bệnh nhân đã tồn tại"),
+    PATIENT_PROFILE_NOT_FOUND("patient.profile.not.found","Không tìm thấy thông tin bệnh nhân","Không tìm thấy thông tin bệnh nhân"),
+    PROFILE_NOT_BELONG_PATIENT("profile.not.belong.patient","Hồ sơ bệnh nhân không thuộc về bệnh nhân","Hồ sơ bệnh nhân không thuộc về bệnh nhân"),
     ;
     private String code;
     private String message;
