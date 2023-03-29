@@ -10,7 +10,7 @@ public class ListFreeSchedule {
     private List<DetailSchedule> detailSchedules;
 
     @Data
-    public class DetailSchedule {
+    public static class DetailSchedule {
         private Long doctorId;
         private String scheduleTime;
     }

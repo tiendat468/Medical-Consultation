@@ -15,9 +15,9 @@ public class MedicalSchedule extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private OffsetDateTime medical_date;
+    private OffsetDateTime medicalDate;
 
-    private Double total_price;
+    private Double totalPrice;
 
     private boolean status;
 

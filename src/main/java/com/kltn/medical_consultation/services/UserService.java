@@ -29,7 +29,7 @@ public class UserService extends BaseService{
         if (user.getIsDelete()) {
             throw new ApiException(AuthMessageCode.AUTH_5_0_NOT_EXIST);
         }
-        if (user.getIsActive()) {
+        if (!user.getIsActive()) {
             throw new ApiException(AuthMessageCode.AUTH_5_0_INACTIVE);
         }
     }
