@@ -144,7 +144,7 @@ public class PatientService extends BaseService{
         return new BaseResponse<>(PatientProfileResponse.of(patientProfile));
     }
 
-    public BaseResponse detailPatientProfile(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) {
+    public BaseResponse<PatientProfileResponse> detailPatientProfile(DetailProfileRequest request, Long userId, HttpServletRequest httpServletRequest) {
         if (request.getId() == null) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Id"));
         }
@@ -158,7 +158,7 @@ public class PatientService extends BaseService{
             throw new ApiException(PatientMessageCode.PROFILE_NOT_BELONG_PATIENT);
         }
 
-        return null;
+        return new BaseResponse<>(PatientProfileResponse.of(patientProfile));
     }
 
     public boolean validatePatientProfile(Long userId, PatientProfile patientProfile) {
