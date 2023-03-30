@@ -1,10 +1,12 @@
 package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.entities.database.Department;
+import com.kltn.medical_consultation.entities.database.Doctor;
 import com.kltn.medical_consultation.entities.database.Symptom;
 import com.kltn.medical_consultation.entities.database.User;
 import com.kltn.medical_consultation.enumeration.UserType;
 import com.kltn.medical_consultation.repository.database.DepartmentRepository;
+import com.kltn.medical_consultation.repository.database.DoctorRepository;
 import com.kltn.medical_consultation.repository.database.SymptomRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
 import com.kltn.medical_consultation.utils.ICheckBCryptPasswordEncoder;
@@ -48,6 +50,8 @@ public class InitDataService implements CommandLineRunner {
     DepartmentRepository departmentRepository;
     @Autowired
     SymptomRepository symptomRepository;
+    @Autowired
+    DoctorRepository doctorRepository;
 
     @Override
     public void run(String... args){
@@ -87,6 +91,7 @@ public class InitDataService implements CommandLineRunner {
         }
     }
 
+    @Transactional
     public void initDepartment(){
         if (departmentRepository.count() == 0) {
             Symptom symptom = new Symptom();
@@ -96,6 +101,8 @@ public class InitDataService implements CommandLineRunner {
             department.setName("Nha Khoa");
             department.setSymbol("NK");
             department = departmentRepository.save(department);
+
+            initDoctor(department);
 
             symptom = new Symptom();
             symptom.setName("Răng vàng");
@@ -143,6 +150,8 @@ public class InitDataService implements CommandLineRunner {
             department.setName("Da liễu");
             department.setSymbol("DL");
             department = departmentRepository.save(department);
+
+            initDoctor(department);
 
             symptom = new Symptom();
             symptom.setName("Da khô bong tróc");
@@ -215,6 +224,8 @@ public class InitDataService implements CommandLineRunner {
             department.setSymbol("MAT");
             department = departmentRepository.save(department);
 
+            initDoctor(department);
+
             symptom = new Symptom();
             symptom.setName("Đau mắt đỏ");
             symptom.setDepartment(department);
@@ -267,6 +278,8 @@ public class InitDataService implements CommandLineRunner {
             department.setName("Tai mũi họng");
             department.setSymbol("TMH");
             department = departmentRepository.save(department);
+
+            initDoctor(department);
 
             symptom = new Symptom();
             symptom.setName("Ù tai");
@@ -357,6 +370,8 @@ public class InitDataService implements CommandLineRunner {
             department.setSymbol("TH");
             department = departmentRepository.save(department);
 
+            initDoctor(department);
+
             symptom = new Symptom();
             symptom.setName("Đau bụng");
             symptom.setDepartment(department);
@@ -403,6 +418,8 @@ public class InitDataService implements CommandLineRunner {
             department.setName("Chấn thương chỉnh hình");
             department.setSymbol("CTCN");
             department = departmentRepository.save(department);
+
+            initDoctor(department);
 
             symptom = new Symptom();
             symptom.setName("Đau nhức xương khớp");
@@ -458,6 +475,44 @@ public class InitDataService implements CommandLineRunner {
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
         }
+    }
 
+    @Transactional
+    public void initDoctor(Department department){
+        User doctor1 = new User();
+        doctor1.setName("DOCTOR 1" + department.getSymbol());
+        String e1 = "doctor1_" + department.getSymbol() + " @gmail.com";
+        doctor1.setEmail(e1);
+        doctor1.setType(UserType.DOCTOR.getType());
+        doctor1.setIsActive(Boolean.TRUE);
+        doctor1.setPassword(passwordEncoder.encode(superPassword));
+        doctor1 = userRepository.save(doctor1);
+
+        Doctor d1 = new Doctor();
+        d1.setFullName(doctor1.getName());
+        d1.setDepartment(department);
+        d1.setDepartmentId(department.getId());
+        d1.setSex("F");
+        d1.setUser(doctor1);
+        d1.setUserId(doctor1.getId());
+        doctorRepository.save(d1);
+
+        User doctor2 = new User();
+        doctor2.setName("DOCTOR 2" + department.getSymbol());
+        String e2 = "doctor2_" + department.getSymbol() + " @gmail.com";
+        doctor2.setEmail(e2);
+        doctor2.setType(UserType.DOCTOR.getType());
+        doctor2.setIsActive(Boolean.TRUE);
+        doctor2.setPassword(passwordEncoder.encode(superPassword));
+        doctor2 = userRepository.save(doctor2);
+
+        Doctor d2 = new Doctor();
+        d2.setFullName(doctor2.getName());
+        d2.setSex("M");
+        d2.setDepartment(department);
+        d2.setDepartmentId(department.getId());
+        d2.setUser(doctor2);
+        d2.setUserId(doctor2.getId());
+        doctorRepository.save(d2);
     }
 }
