@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
 
 @Data
 @Entity
@@ -15,8 +14,12 @@ public class MedicalSchedule extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private OffsetDateTime medicalDate;
+    @Column(name = "medical_date")
+    private String medicalDate;
 
+    private String hours;
+
+    @Column(name = "total_price")
     private Double totalPrice;
 
     private boolean status;

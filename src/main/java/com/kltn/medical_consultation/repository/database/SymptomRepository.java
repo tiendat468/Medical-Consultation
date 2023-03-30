@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface SymptomRepository extends JpaRepository<Symptom, Long> {
-    List<Symptom> findByDepartment_Id(Long id);
+    List<Symptom> findByDepartmentId(Long id);
 }

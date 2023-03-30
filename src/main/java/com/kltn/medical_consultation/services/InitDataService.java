@@ -97,36 +97,43 @@ public class InitDataService implements CommandLineRunner {
             department.setSymbol("NK");
             department = departmentRepository.save(department);
 
+            symptom = new Symptom();
             symptom.setName("Răng vàng");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Hôi miệng");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Đau răng");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Nhức răng");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Xưng nướu");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Răng lung lay");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Mọc răng khôn");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
@@ -137,56 +144,67 @@ public class InitDataService implements CommandLineRunner {
             department.setSymbol("DL");
             department = departmentRepository.save(department);
 
+            symptom = new Symptom();
             symptom.setName("Da khô bong tróc");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Da dầu");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Da nổi nốt ruồi");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Đỏ mặt");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Mụn");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Vảy nến");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Nổi mề đay");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Da bị châm chích");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Ngứa");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Lở miệng");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
             symptomRepository.save(symptom);
 
+            symptom = new Symptom();
             symptom.setName("Nhiệt miệng");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
@@ -197,6 +215,7 @@ public class InitDataService implements CommandLineRunner {
             department.setSymbol("MAT");
             department = departmentRepository.save(department);
 
+            symptom = new Symptom();
             symptom.setName("Đau mắt đỏ");
             symptom.setDepartment(department);
             symptom.setDepartmentId(department.getId());
