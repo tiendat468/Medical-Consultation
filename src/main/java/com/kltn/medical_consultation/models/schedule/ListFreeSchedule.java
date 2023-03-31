@@ -2,6 +2,7 @@ package com.kltn.medical_consultation.models.schedule;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,5 +56,6 @@ public class ListFreeSchedule {
     public static class DetailSchedule {
         private Long doctorId;
         private String scheduleTime;
+        private Double price = 0.0;
     }
 }

@@ -5,11 +5,10 @@ import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.entities.database.Symptom;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
-import com.kltn.medical_consultation.models.Value;
-import com.kltn.medical_consultation.models.department.FreeDepartment;
+import com.kltn.medical_consultation.models.department.response.DepartmentPercent;
 import com.kltn.medical_consultation.models.patient.PatientMessageCode;
 import com.kltn.medical_consultation.models.schedule.ListFreeSchedule;
-import com.kltn.medical_consultation.models.schedule.request.FetchDepartmentRequest;
+import com.kltn.medical_consultation.models.department.request.FetchDepartmentRequest;
 import com.kltn.medical_consultation.repository.database.DepartmentRepository;
 import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
 import com.kltn.medical_consultation.repository.database.SymptomRepository;
@@ -44,7 +43,7 @@ public class DepartmentService extends BaseService{
         HashMap<String, Double> hashMapDepartment = new HashMap<>();
         String[] patientSymptoms = patientProfile.getSymptom().trim().split(",");
         int totalPatientSymptom = patientSymptoms.length;
-        List<Value> departmentPercents = new ArrayList<>();
+        List<DepartmentPercent> departmentPercents = new ArrayList<>();
         List<Department> departments = getAllDepartments();
         for (Department department : departments) {
             Double countSymptom = 0.0;
@@ -59,7 +58,7 @@ public class DepartmentService extends BaseService{
                 }
             }
             percent = (countSymptom / totalPatientSymptom) * 100;
-            Value departmentPercent = new Value(department.getSymbol(), roundDouble(percent));
+            DepartmentPercent departmentPercent = new DepartmentPercent(department.getSymbol(), roundDouble(percent));
             departmentPercents.add(departmentPercent);
         }
 
@@ -84,11 +83,11 @@ public class DepartmentService extends BaseService{
         return bd.doubleValue();
     }
 
-    public void sortByPercent(List<Value> departmentPercents) {
-        Collections.sort(departmentPercents, new Comparator<Value>() {
+    public void sortByPercent(List<DepartmentPercent> departmentPercents) {
+        Collections.sort(departmentPercents, new Comparator<DepartmentPercent>() {
             @Override
-            public int compare(Value o1, Value o2) {
-                return o2.getValue().compareTo(o1.getValue());
+            public int compare(DepartmentPercent o1, DepartmentPercent o2) {
+                return o2.getPercent().compareTo(o1.getPercent());
             }
         });
     }

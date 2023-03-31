@@ -19,7 +19,7 @@ public class Department extends BaseEntity{
 
     private String symbol;
 
-    private Double price;
+    private Double price = 0.0;
 
     @JsonIgnore
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -19,10 +19,13 @@ public class MedicalSchedule extends BaseEntity{
 
     private String hours;
 
-    @Column(name = "total_price")
-    private Double totalPrice;
+    private Double price = 0.0;
 
-    private boolean status;
+    private Boolean status = false;
+    @Column(name = "is_done")
+    private Boolean isDone = false;
+    @Column(name = "is_pay")
+    private Boolean isPay = false;
 
     @ManyToOne
     @JsonIgnore

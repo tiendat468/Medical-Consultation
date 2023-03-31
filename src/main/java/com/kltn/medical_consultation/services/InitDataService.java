@@ -100,6 +100,7 @@ public class InitDataService implements CommandLineRunner {
             department = new Department();
             department.setName("Nha Khoa");
             department.setSymbol("NK");
+            department.setPrice(200.0);
             department = departmentRepository.save(department);
 
             initDoctor(department);
@@ -149,6 +150,7 @@ public class InitDataService implements CommandLineRunner {
             department = new Department();
             department.setName("Da liễu");
             department.setSymbol("DL");
+            department.setPrice(200.0);
             department = departmentRepository.save(department);
 
             initDoctor(department);
@@ -222,6 +224,7 @@ public class InitDataService implements CommandLineRunner {
             department = new Department();
             department.setName("Mắt");
             department.setSymbol("MAT");
+            department.setPrice(200.0);
             department = departmentRepository.save(department);
 
             initDoctor(department);
@@ -277,6 +280,7 @@ public class InitDataService implements CommandLineRunner {
             department = new Department();
             department.setName("Tai mũi họng");
             department.setSymbol("TMH");
+            department.setPrice(200.0);
             department = departmentRepository.save(department);
 
             initDoctor(department);
@@ -368,6 +372,7 @@ public class InitDataService implements CommandLineRunner {
             department = new Department();
             department.setName("Tiêu hóa");
             department.setSymbol("TH");
+            department.setPrice(200.0);
             department = departmentRepository.save(department);
 
             initDoctor(department);
@@ -417,6 +422,7 @@ public class InitDataService implements CommandLineRunner {
             department = new Department();
             department.setName("Chấn thương chỉnh hình");
             department.setSymbol("CTCN");
+            department.setPrice(200.0);
             department = departmentRepository.save(department);
 
             initDoctor(department);

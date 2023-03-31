@@ -1,6 +1,5 @@
 package com.kltn.medical_consultation.models.patient.response;
 
-import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.PatientProfile;
 import lombok.Data;
 
