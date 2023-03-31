@@ -63,16 +63,11 @@ public class DepartmentService extends BaseService{
             departmentPercents.add(departmentPercent);
         }
 
-        Collections.sort(departmentPercents, new Comparator<Value>() {
-            @Override
-            public int compare(Value o1, Value o2) {
-                return o2.getValue().compareTo(o1.getValue());
-            }
-        });
-        ListFreeSchedule listFreeSchedule = new ListFreeSchedule();
-        listFreeSchedule = scheduleService.fetchSchedule(departmentPercents, request.getScheduleDate());
+        sortByPercent(departmentPercents);
+        ListFreeSchedule listFreeSchedule = scheduleService.fetchSchedule(departmentPercents, request.getScheduleDate());
         listFreeSchedule.setPatientProfileId(request.getPatientProfileId());
-        return new BaseResponse<ListFreeSchedule>(listFreeSchedule);
+        listFreeSchedule.setMedicalDate(request.getScheduleDate());
+        return new BaseResponse<>(listFreeSchedule);
     }
 
     public List<Department> getAllDepartments() {
@@ -89,26 +84,13 @@ public class DepartmentService extends BaseService{
         return bd.doubleValue();
     }
 
-    public HashMap<String, Double> sortByValue(HashMap<String, Double> hashMap)
-    {
-        // Create a list from elements of HashMap
-        List<Map.Entry<String, Double> > list =
-                new LinkedList<Map.Entry<String, Double> >(hashMap.entrySet());
-
-        // Sort the list
-        Collections.sort(list, new Comparator<Map.Entry<String, Double> >() {
-            public int compare(Map.Entry<String, Double> o1,
-                               Map.Entry<String, Double> o2)
-            {
-                return (o2.getValue()).compareTo(o1.getValue());
+    public void sortByPercent(List<Value> departmentPercents) {
+        Collections.sort(departmentPercents, new Comparator<Value>() {
+            @Override
+            public int compare(Value o1, Value o2) {
+                return o2.getValue().compareTo(o1.getValue());
             }
         });
-
-        // put data from sorted list to hashmap
-        HashMap<String, Double> temp = new LinkedHashMap<String, Double>();
-        for (Map.Entry<String, Double> entry : list) {
-            temp.put(entry.getKey(), entry.getValue());
-        }
-        return temp;
     }
+
 }

@@ -31,35 +31,43 @@ public class MedicalScheduleService extends BaseService{
     public ListFreeSchedule fetchSchedule(List<Value> departmentPercents, String scheduleData) {
         ListFreeSchedule listFreeSchedule = new ListFreeSchedule();
         Department department = findDepartmentBySymbol(departmentPercents.get(0).getKey());
-
-        List<ListFreeSchedule.DetailSchedule> detailScheduleList = new ArrayList<>();
-        ListFreeSchedule.DetailSchedule detailSchedule = new ListFreeSchedule.DetailSchedule();
-        detailSchedule.setScheduleTime("7");
-        detailScheduleList.add(detailSchedule);
-        detailSchedule = new ListFreeSchedule.DetailSchedule();
-        detailSchedule.setScheduleTime("8");
-        detailScheduleList.add(detailSchedule);
-        detailSchedule = new ListFreeSchedule.DetailSchedule();
-        detailSchedule.setScheduleTime("9");
-        detailScheduleList.add(detailSchedule);
-        detailSchedule = new ListFreeSchedule.DetailSchedule();
-        detailSchedule.setScheduleTime("10");
-        detailScheduleList.add(detailSchedule);
+        List<ListFreeSchedule.DetailSchedule> detailScheduleList = listFreeSchedule.getDetailSchedules();
 
         int count = 0;
         List<Doctor> doctorList = doctorRepository.findByDepartmentId(department.getId());
         for (Doctor doctor: doctorList) {
             List<MedicalSchedule> scheduleList = scheduleRepository.findByDoctorIdAndMedicalDate(doctor.getId(), scheduleData);
+//            for (ListFreeSchedule.DetailSchedule schedule : detailScheduleList) {
+//                if(schedule.getDoctorId() == null) {
+//                    if (scheduleList.size() > 0) {
+//                        for (MedicalSchedule medicalSchedule : scheduleList) {
+//                            if (medicalSchedule.getHours().equalsIgnoreCase(schedule.getScheduleTime())) {
+//                                break;
+//                            }
+//                            schedule.setDoctorId(doctor.getId());
+//                            count++;
+//                        }
+//                    } else {
+//                        schedule.setDoctorId(doctor.getId());
+//                        count++;
+//                    }
+//                }
+//            }
             for (int j = 0; j < detailScheduleList.size(); j++) {
                 if(detailScheduleList.get(j).getDoctorId() == null) {
-                    for (int i = 0; i < scheduleList.size(); i++) {
-                        if (scheduleList.get(i).getHours().equalsIgnoreCase(detailScheduleList.get(j).getScheduleTime())) {
-                            break;
+                    if (scheduleList.size() > 0) {
+                        for (int i = 0; i < scheduleList.size(); i++) {
+                            if (scheduleList.get(i).getHours().equalsIgnoreCase(detailScheduleList.get(j).getScheduleTime())) {
+                                break;
+                            }
+                            if (i == scheduleList.size() - 1) {
+                                detailScheduleList.get(j).setDoctorId(doctor.getId());
+                                count++;
+                            }
                         }
-                        if (i == scheduleList.size() - 1) {
-                            detailScheduleList.get(j).setDoctorId(doctor.getId());
-                            count++;
-                        }
+                    } else {
+                        detailScheduleList.get(j).setDoctorId(doctor.getId());
+                        count++;
                     }
                 }
             }
