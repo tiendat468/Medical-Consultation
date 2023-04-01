@@ -47,8 +47,11 @@ public class MedicalScheduleService extends BaseService{
         if (request.getDoctorId() == null) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("doctorId"));
         }
-        if (request.getPatientProfileId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("patientProfileId"));
+        if (request.getPatientId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("patientId"));
+        }
+        if (StringUtils.isEmpty(request.getSymptom())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("symptom"));
         }
         if (StringUtils.isEmpty(request.getMedicalDate())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("medicalDate"));
@@ -77,25 +80,31 @@ public class MedicalScheduleService extends BaseService{
             throw new ApiException(DepartmentMessageCode.DOCTOR_BUSY);
         }
 
-        Optional<PatientProfile> optionalPatientProfile = patientProfileRepository.findById(request.getPatientProfileId());
-        if (optionalPatientProfile.isEmpty()) {
-            throw new ApiException(PatientMessageCode.PATIENT_PROFILE_NOT_FOUND);
+        Optional<Patient> optionalPatient = patientRepository.findById(request.getPatientId());
+        if (optionalPatient.isEmpty()) {
+            throw new ApiException(PatientMessageCode.PATIENT_NOT_FOUND);
         }
+        Patient patient = optionalPatient.get();
 
-        PatientProfile patientProfile = optionalPatientProfile.get();
-        if (!checkPatientProfile(patientProfile.getId())) {
-            throw new ApiException(PatientMessageCode.PROFILE_USED);
-        }
+        // create patient profile
+        PatientProfile patientProfile = new PatientProfile();
+        patientProfile.setPatient(patient);
+        patientProfile.setPatientId(patient.getId());
+        patientProfile.setSymptom(request.getSymptom());
+        patientProfile = patientProfileRepository.save(patientProfile);
 
+        // create patient profile
         MedicalSchedule medicalSchedule = new MedicalSchedule();
-        medicalSchedule.setMedicalDate(request.getMedicalDate());
-        medicalSchedule.setHours(request.getHours());
-        medicalSchedule.setDoctor(doctor);
-        medicalSchedule.setDoctorId(doctor.getId());
-        medicalSchedule.setPatientProfile(patientProfile);
-        medicalSchedule.setPatientProfileId(patientProfile.getId());
-        medicalSchedule.setPrice(department.getPrice());
-        medicalSchedule = scheduleRepository.save(medicalSchedule);
+        if (patientProfile != null) {
+            medicalSchedule.setMedicalDate(request.getMedicalDate());
+            medicalSchedule.setHours(request.getHours());
+            medicalSchedule.setDoctor(doctor);
+            medicalSchedule.setDoctorId(doctor.getId());
+            medicalSchedule.setPatientProfile(patientProfile);
+            medicalSchedule.setPatientProfileId(patientProfile.getId());
+            medicalSchedule.setPrice(department.getPrice());
+            medicalSchedule = scheduleRepository.save(medicalSchedule);
+        }
 
         DetailScheduleResponse detailScheduleResponse = DetailScheduleResponse.of(medicalSchedule, department);
         return new BaseResponse<>(detailScheduleResponse);
@@ -151,10 +160,12 @@ public class MedicalScheduleService extends BaseService{
                                 break;
                             }
                             schedule.setDoctorId(doctor.getId());
+                            schedule.setPrice(department.getPrice());
                             count++;
                         }
                     } else {
                         schedule.setDoctorId(doctor.getId());
+                        schedule.setPrice(department.getPrice());
                         count++;
                     }
                 }
