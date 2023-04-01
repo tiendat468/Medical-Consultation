@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class FetchDepartmentRequest {
-    private Long patientProfileId;
+    private String symptom;
     private String scheduleDate;
 }

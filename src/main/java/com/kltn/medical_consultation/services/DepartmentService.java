@@ -33,15 +33,7 @@ public class DepartmentService extends BaseService{
     MedicalScheduleService scheduleService;
 
     public BaseResponse<ListFreeSchedule> fetchDepartment(FetchDepartmentRequest request, HttpServletRequest httpServletRequest) {
-
-        Optional<PatientProfile> optionalPatientProfile = patientProfileRepository.findById(request.getPatientProfileId());
-        if (optionalPatientProfile.isEmpty()) {
-            throw new ApiException(PatientMessageCode.PATIENT_PROFILE_NOT_FOUND);
-        }
-
-        PatientProfile patientProfile = optionalPatientProfile.get();
-        HashMap<String, Double> hashMapDepartment = new HashMap<>();
-        String[] patientSymptoms = patientProfile.getSymptom().trim().split(",");
+        String[] patientSymptoms = request.getSymptom().split(",");
         int totalPatientSymptom = patientSymptoms.length;
         List<DepartmentPercent> departmentPercents = new ArrayList<>();
         List<Department> departments = getAllDepartments();
@@ -64,7 +56,6 @@ public class DepartmentService extends BaseService{
 
         sortByPercent(departmentPercents);
         ListFreeSchedule listFreeSchedule = scheduleService.fetchSchedule(departmentPercents, request.getScheduleDate());
-        listFreeSchedule.setPatientProfileId(request.getPatientProfileId());
         listFreeSchedule.setMedicalDate(request.getScheduleDate());
         return new BaseResponse<>(listFreeSchedule);
     }
