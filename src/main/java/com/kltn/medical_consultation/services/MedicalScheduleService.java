@@ -1,9 +1,6 @@
 package com.kltn.medical_consultation.services;
 
-import com.kltn.medical_consultation.entities.database.Department;
-import com.kltn.medical_consultation.entities.database.Doctor;
-import com.kltn.medical_consultation.entities.database.MedicalSchedule;
-import com.kltn.medical_consultation.entities.database.PatientProfile;
+import com.kltn.medical_consultation.entities.database.*;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
@@ -11,12 +8,11 @@ import com.kltn.medical_consultation.models.department.DepartmentMessageCode;
 import com.kltn.medical_consultation.models.department.response.DepartmentPercent;
 import com.kltn.medical_consultation.models.patient.PatientMessageCode;
 import com.kltn.medical_consultation.models.schedule.ListFreeSchedule;
+import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
+import com.kltn.medical_consultation.models.schedule.request.DetailScheduleRequest;
 import com.kltn.medical_consultation.models.schedule.request.SaveScheduleRequest;
 import com.kltn.medical_consultation.models.schedule.response.DetailScheduleResponse;
-import com.kltn.medical_consultation.repository.database.DepartmentRepository;
-import com.kltn.medical_consultation.repository.database.DoctorRepository;
-import com.kltn.medical_consultation.repository.database.MedicalScheduleRepository;
-import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
+import com.kltn.medical_consultation.repository.database.*;
 import com.kltn.medical_consultation.utils.MessageUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -30,83 +26,18 @@ import java.util.*;
 @Service
 @Log4j2
 public class MedicalScheduleService extends BaseService{
-    private final PatientProfileRepository patientProfileRepository;
+    @Autowired
+    private PatientRepository patientRepository;
     @Autowired
     DoctorRepository doctorRepository;
+    @Autowired
+    PatientProfileRepository patientProfileRepository;
     @Autowired
     MedicalScheduleRepository scheduleRepository;
     @Autowired
     DepartmentRepository departmentRepository;
-
-    public MedicalScheduleService(DoctorRepository doctorRepository,
-                                  PatientProfileRepository patientProfileRepository) {
-        this.doctorRepository = doctorRepository;
-        this.patientProfileRepository = patientProfileRepository;
-    }
-
-    public ListFreeSchedule fetchSchedule(List<DepartmentPercent> departmentPercents, String scheduleDate) {
-        ListFreeSchedule listFreeSchedule = new ListFreeSchedule();
-        Department department = findDepartmentBySymbol(departmentPercents.get(0).getSymbol());
-        List<ListFreeSchedule.DetailSchedule> detailScheduleList = listFreeSchedule.getDetailSchedules();
-
-        int count = 0;
-        List<Doctor> doctorList = doctorRepository.findByDepartmentId(department.getId());
-        for (Doctor doctor: doctorList) {
-            List<MedicalSchedule> scheduleList = findScheduleByDoctorAndMedicalDate(doctor.getId(), scheduleDate);
-//            for (ListFreeSchedule.DetailSchedule schedule : detailScheduleList) {
-//                if(schedule.getDoctorId() == null) {
-//                    if (scheduleList.size() > 0) {
-//                        for (MedicalSchedule medicalSchedule : scheduleList) {
-//                            if (medicalSchedule.getHours().equalsIgnoreCase(schedule.getScheduleTime())) {
-//                                break;
-//                            }
-//                            schedule.setDoctorId(doctor.getId());
-//                            count++;
-//                        }
-//                    } else {
-//                        schedule.setDoctorId(doctor.getId());
-//                        count++;
-//                    }
-//                }
-//            }
-            for (int j = 0; j < detailScheduleList.size(); j++) {
-                if(detailScheduleList.get(j).getDoctorId() == null) {
-                    if (scheduleList.size() > 0) {
-                        for (int i = 0; i < scheduleList.size(); i++) {
-                            if (scheduleList.get(i).getHours().equalsIgnoreCase(detailScheduleList.get(j).getScheduleTime())) {
-                                break;
-                            }
-                            if (i == scheduleList.size() - 1) {
-                                detailScheduleList.get(j).setDoctorId(doctor.getId());
-                                detailScheduleList.get(j).setPrice(department.getPrice());
-                                count++;
-                            }
-                        }
-                    } else {
-                        detailScheduleList.get(j).setDoctorId(doctor.getId());
-                        detailScheduleList.get(j).setPrice(department.getPrice());
-                        count++;
-                    }
-                }
-            }
-            if(count == 4){
-                break;
-            }
-        }
-
-        listFreeSchedule.setDepartmentId(department.getId());
-        listFreeSchedule.setDepartmentName(department.getName());
-        listFreeSchedule.setDetailSchedules(detailScheduleList);
-        return listFreeSchedule;
-    }
-
-    public Department findDepartmentBySymbol(String symbol) {
-        Optional<Department> optionalDepartment = departmentRepository.findBySymbol(symbol);
-        if (optionalDepartment.isPresent()) {
-            return optionalDepartment.get();
-        }
-        return null;
-    }
+    @Autowired
+    UserService userService;
 
     @Transactional
     public BaseResponse<DetailScheduleResponse> save(SaveScheduleRequest request, HttpServletRequest httpServletRequest) {
@@ -164,6 +95,83 @@ public class MedicalScheduleService extends BaseService{
 
         DetailScheduleResponse detailScheduleResponse = DetailScheduleResponse.of(medicalSchedule, department);
         return new BaseResponse<>(detailScheduleResponse);
+    }
+
+    public BaseResponse<DetailScheduleResponse> detail(DetailScheduleRequest request, Long userId, HttpServletRequest httpServletRequest) {
+        if (request.getPatientProfileId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("patientProfileId"));
+        }
+
+        if (request.getScheduleId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("scheduleId"));
+        }
+
+        Optional<PatientProfile> optionalPatientProfile = patientProfileRepository.findById(request.getPatientProfileId());
+        if (optionalPatientProfile.isEmpty()) {
+            throw new ApiException(PatientMessageCode.PATIENT_PROFILE_NOT_FOUND);
+        }
+
+        PatientProfile patientProfile = optionalPatientProfile.get();
+        if (patientProfile.getPatient().getUserId() != userId) {
+            throw new ApiException(PatientMessageCode.PATIENT_PROFILE_INVALID);
+        }
+
+        Optional<MedicalSchedule> optionalSchedule = scheduleRepository.findById(request.getScheduleId());
+        if (optionalSchedule.isEmpty()) {
+            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
+        }
+
+        MedicalSchedule schedule = optionalSchedule.get();
+        if (schedule.getPatientProfileId() != patientProfile.getId()) {
+            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
+        }
+
+        DetailScheduleResponse detailScheduleResponse = DetailScheduleResponse.of(schedule);
+        return new BaseResponse<>(detailScheduleResponse);
+    }
+
+    public ListFreeSchedule fetchSchedule(List<DepartmentPercent> departmentPercents, String scheduleDate) {
+        ListFreeSchedule listFreeSchedule = new ListFreeSchedule();
+        Department department = findDepartmentBySymbol(departmentPercents.get(0).getSymbol());
+        List<ListFreeSchedule.DetailSchedule> detailScheduleList = listFreeSchedule.getDetailSchedules();
+
+        int count = 0;
+        List<Doctor> doctorList = doctorRepository.findByDepartmentId(department.getId());
+        for (Doctor doctor: doctorList) {
+            List<MedicalSchedule> scheduleList = findScheduleByDoctorAndMedicalDate(doctor.getId(), scheduleDate);
+            for (ListFreeSchedule.DetailSchedule schedule : detailScheduleList) {
+                if(schedule.getDoctorId() == null) {
+                    if (scheduleList.size() > 0) {
+                        for (MedicalSchedule medicalSchedule : scheduleList) {
+                            if (medicalSchedule.getHours().equalsIgnoreCase(schedule.getScheduleTime())) {
+                                break;
+                            }
+                            schedule.setDoctorId(doctor.getId());
+                            count++;
+                        }
+                    } else {
+                        schedule.setDoctorId(doctor.getId());
+                        count++;
+                    }
+                }
+            }
+            if(count == 4){
+                break;
+            }
+        }
+
+        listFreeSchedule.setDepartmentId(department.getId());
+        listFreeSchedule.setDepartmentName(department.getName());
+        listFreeSchedule.setDetailSchedules(detailScheduleList);
+        return listFreeSchedule;
+    }
+
+    public Department findDepartmentBySymbol(String symbol) {
+        Optional<Department> optionalDepartment = departmentRepository.findBySymbol(symbol);
+        if (optionalDepartment.isPresent()) {
+            return optionalDepartment.get();
+        }
+        return null;
     }
 
     public boolean checkScheduleDoctor(Long doctorId, String medicalDate, String hours) {

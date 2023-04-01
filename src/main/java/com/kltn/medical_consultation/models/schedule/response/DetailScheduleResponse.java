@@ -33,4 +33,20 @@ public class DetailScheduleResponse {
         response.setIsPay(medicalSchedule.getIsPay());
         return response;
     }
+
+    public static DetailScheduleResponse of(MedicalSchedule medicalSchedule) {
+        DetailScheduleResponse response = new DetailScheduleResponse();
+        response.setDepartmentId(medicalSchedule.getDoctor().getDepartment().getId());
+        response.setDepartmentName(medicalSchedule.getDoctor().getDepartment().getName());
+        response.setDoctorId(medicalSchedule.getDoctorId());
+        response.setDoctorName(medicalSchedule.getDoctor().getFullName());
+        response.setPatientProfileId(medicalSchedule.getPatientProfileId());
+        response.setSymptom(medicalSchedule.getPatientProfile().getSymptom());
+        response.setMedicalDate(medicalSchedule.getMedicalDate());
+        response.setHours(medicalSchedule.getHours());
+        response.setPrice(medicalSchedule.getPrice());
+        response.setIsDone(medicalSchedule.getIsDone());
+        response.setIsPay(medicalSchedule.getIsPay());
+        return response;
+    }
 }

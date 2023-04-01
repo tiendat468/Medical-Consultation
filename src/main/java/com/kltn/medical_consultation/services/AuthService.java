@@ -77,12 +77,17 @@ public class AuthService extends BaseService{
         }
 
         if (existedUser == null){
-            throw new ApiException(AuthMessageCode.AUTH_1_0);
+            throw new ApiException(AuthMessageCode.AUTH_5_0_NOT_FOUND);
         }
 
-        if (!existedUser.getIsActive()){
+        if (existedUser.getIsDelete()) {
+            throw new ApiException(AuthMessageCode.AUTH_5_0_NOT_EXIST);
+        }
+
+        if (!existedUser.getIsActive()) {
             throw new ApiException(AuthMessageCode.AUTH_5_0_INACTIVE);
         }
+
         if (!passwordEncoder.matches(request.getPassword(), existedUser.getPassword())){
             throw new ApiException(AuthMessageCode.AUTH_1_0);
         }

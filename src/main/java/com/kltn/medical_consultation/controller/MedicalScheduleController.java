@@ -1,6 +1,7 @@
 package com.kltn.medical_consultation.controller;
 
 import com.kltn.medical_consultation.models.BaseResponse;
+import com.kltn.medical_consultation.models.schedule.request.DetailScheduleRequest;
 import com.kltn.medical_consultation.models.schedule.request.SaveScheduleRequest;
 import com.kltn.medical_consultation.models.schedule.response.DetailScheduleResponse;
 import com.kltn.medical_consultation.services.MedicalScheduleService;
@@ -20,5 +21,10 @@ public class MedicalScheduleController extends BaseController{
     @PostMapping("/save")
     public BaseResponse<DetailScheduleResponse> save(@RequestBody SaveScheduleRequest request, HttpServletRequest httpServletRequest) {
         return scheduleService.save(request, httpServletRequest);
+    }
+
+    @PostMapping("/detail")
+    public BaseResponse<DetailScheduleResponse> detail(@RequestBody DetailScheduleRequest request, HttpServletRequest httpServletRequest) {
+        return scheduleService.detail(request, authenticationFacade.getUserId(), httpServletRequest);
     }
 }
