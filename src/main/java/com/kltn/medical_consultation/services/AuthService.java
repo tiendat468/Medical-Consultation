@@ -1,6 +1,7 @@
 package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.domains.MailDomain;
+import com.kltn.medical_consultation.entities.database.Doctor;
 import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.RegisterActivity;
 import com.kltn.medical_consultation.entities.database.User;
@@ -59,6 +60,9 @@ public class AuthService extends BaseService{
 
     @Autowired
     MailDomain emailDomain;
+
+    @Autowired
+    UserService userService;
 
     public BaseResponse<LoginResponse> login(LoginRequest request) {
         if (StringUtils.isBlank(request.getEmail())) {
@@ -128,11 +132,27 @@ public class AuthService extends BaseService{
 //        }
         User user = userRepository.findByEmail(tokenDTO.getEmail()).orElse(null);
 
+        if (user == null) {
+            throw new ApiException(AuthMessageCode.AUTH_5_0_NOT_FOUND);
+        }
+
         UserProfileResponse userProfileResponse = new UserProfileResponse();
         userProfileResponse.setName(user.getName());
         userProfileResponse.setEmail(user.getEmail());
-        userProfileResponse.setPhone(user.getPhoneNumber());
         userProfileResponse.setType(UserType.from(user.getType()).getCode());
+
+        switch (user.getType()) {
+            case 2:
+                Doctor doctor = userService.fetchDoctor(user.getId());
+                userProfileResponse.setPhone(doctor.getPhoneNumber());
+                break;
+            case 3:
+                Patient patient = userService.fetchPatient(user.getId());
+                userProfileResponse.setPhone(patient.getPhoneNumber());
+                break;
+            default:
+                break;
+        }
         return new BaseResponse<>(userProfileResponse);
     }
 
@@ -173,7 +193,6 @@ public class AuthService extends BaseService{
         User user = new User();
         user.setEmail(request.getEmail());
         user.setName(request.getFullName());
-        user.setPhoneNumber(request.getPhone());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setType(UserType.PATIENT.getType());
         user = userRepository.save(user);
@@ -185,6 +204,7 @@ public class AuthService extends BaseService{
             patient.setFullName(request.getFullName());
             patient.setSex(request.getSex());
             patient.setBirthday(request.getBirthday());
+            patient.setPhoneNumber(request.getPhone());
             patientRepository.save(patient);
         }
 

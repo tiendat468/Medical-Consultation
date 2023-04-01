@@ -25,7 +25,7 @@ public class PatientResponse {
         response.setJob(patient.getJob());
         response.setIdentityNumber(patient.getIdentityNumber());
         response.setAddress(patient.getAddress());
-        response.setPhone(patient.getUser().getPhoneNumber());
+        response.setPhone(patient.getPhoneNumber());
         return response;
     }
 }

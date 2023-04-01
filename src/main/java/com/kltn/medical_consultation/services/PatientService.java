@@ -87,6 +87,7 @@ public class PatientService extends BaseService{
         patient.setJob(request.getJob());
         patient.setAddress(request.getAddress());
         patient.setIdentityNumber(request.getIdentityNumber());
+        patient.setPhoneNumber(request.getPhoneNumber());
         patientRepository.save(patient);
         PatientResponse patientResponse = PatientResponse.of(patient);
         return new BaseResponse<>(patientResponse);

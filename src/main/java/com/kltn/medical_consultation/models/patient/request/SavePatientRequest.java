@@ -11,4 +11,5 @@ public class SavePatientRequest {
     private String address;
     private String job;
     private String identityNumber;
+    private String phoneNumber;
 }

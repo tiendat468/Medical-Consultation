@@ -22,9 +22,6 @@ public class User extends BaseEntity{
 
     private int type;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
     @Column(name = "is_active")
     private Boolean isActive = false;
 

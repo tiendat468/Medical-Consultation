@@ -23,6 +23,9 @@ public class Doctor extends BaseEntity{
     @Column(name = "identity_number")
     private String identityNumber;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @OneToOne
     @JsonIgnore
     @JoinColumn(name = "user_id")

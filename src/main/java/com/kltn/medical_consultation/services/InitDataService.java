@@ -1,14 +1,9 @@
 package com.kltn.medical_consultation.services;
 
-import com.kltn.medical_consultation.entities.database.Department;
-import com.kltn.medical_consultation.entities.database.Doctor;
-import com.kltn.medical_consultation.entities.database.Symptom;
-import com.kltn.medical_consultation.entities.database.User;
+import com.kltn.medical_consultation.entities.database.*;
 import com.kltn.medical_consultation.enumeration.UserType;
-import com.kltn.medical_consultation.repository.database.DepartmentRepository;
-import com.kltn.medical_consultation.repository.database.DoctorRepository;
-import com.kltn.medical_consultation.repository.database.SymptomRepository;
-import com.kltn.medical_consultation.repository.database.UserRepository;
+import com.kltn.medical_consultation.models.ShareConstant;
+import com.kltn.medical_consultation.repository.database.*;
 import com.kltn.medical_consultation.utils.ICheckBCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +47,8 @@ public class InitDataService implements CommandLineRunner {
     SymptomRepository symptomRepository;
     @Autowired
     DoctorRepository doctorRepository;
+    @Autowired
+    PatientRepository patientRepository;
 
     @Override
     public void run(String... args){
@@ -65,29 +62,27 @@ public class InitDataService implements CommandLineRunner {
             User admin = new User();
             admin.setName("ADMIN");
             admin.setEmail(superEmail);
-            admin.setPhoneNumber(superPhone);
             admin.setType(UserType.ADMIN.getType());
             admin.setIsActive(Boolean.TRUE);
             admin.setPassword(passwordEncoder.encode(superPassword));
             userRepository.save(admin);
 
-            User doctor = new User();
-            doctor.setName("DOCTOR");
-            doctor.setEmail(doctorEmail);
-            doctor.setPhoneNumber(superPhone);
-            doctor.setType(UserType.DOCTOR.getType());
-            doctor.setIsActive(Boolean.TRUE);
-            doctor.setPassword(passwordEncoder.encode(superPassword));
-            userRepository.save(doctor);
-
             User user = new User();
             user.setName("USER");
             user.setEmail(userEmail);
-            user.setPhoneNumber(superPhone);
             user.setType(UserType.PATIENT.getType());
             user.setIsActive(Boolean.TRUE);
             user.setPassword(passwordEncoder.encode(superPassword));
-            userRepository.save(user);
+            user = userRepository.save(user);
+
+            Patient patient = new Patient();
+            patient.setUser(user);
+            patient.setUserId(user.getId());
+            patient.setPhoneNumber(superPhone);
+            patient.setFullName("USER");
+            patient.setSex(ShareConstant.SEX.MALE);
+            patient.setBirthday("2000-01-01");
+            patientRepository.save(patient);
         }
     }
 

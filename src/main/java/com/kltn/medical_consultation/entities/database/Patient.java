@@ -27,6 +27,8 @@ public class Patient extends BaseEntity{
     private String job;
     @Column(name = "identity_number")
     private String identityNumber;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<PatientProfile> patientProfiles;
