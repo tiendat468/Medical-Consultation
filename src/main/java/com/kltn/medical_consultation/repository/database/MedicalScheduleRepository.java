@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface MedicalScheduleRepository extends JpaRepository<MedicalSchedule, Long> {
     List<MedicalSchedule> findByDoctorIdAndMedicalDate(Long doctorId, String medicalDate);
+
+    List<MedicalSchedule> findByPatientProfileId(Long patientProfileId);
 }

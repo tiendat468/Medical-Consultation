@@ -81,7 +81,11 @@ public class MedicalScheduleService extends BaseService{
         if (optionalPatientProfile.isEmpty()) {
             throw new ApiException(PatientMessageCode.PATIENT_PROFILE_NOT_FOUND);
         }
+
         PatientProfile patientProfile = optionalPatientProfile.get();
+        if (!checkPatientProfile(patientProfile.getId())) {
+            throw new ApiException(PatientMessageCode.PROFILE_USED);
+        }
 
         MedicalSchedule medicalSchedule = new MedicalSchedule();
         medicalSchedule.setMedicalDate(request.getMedicalDate());
@@ -195,5 +199,13 @@ public class MedicalScheduleService extends BaseService{
             return new ArrayList<>();
         }
         return scheduleList;
+    }
+
+    public boolean checkPatientProfile(Long patientProfileId) {
+        List<MedicalSchedule> scheduleList = scheduleRepository.findByPatientProfileId(patientProfileId);
+        if (scheduleList.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 }

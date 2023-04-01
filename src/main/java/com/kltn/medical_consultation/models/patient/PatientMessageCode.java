@@ -10,6 +10,7 @@ public enum PatientMessageCode implements IMessageCode {
     PATIENT_PROFILE_INVALID("PATIENT_PROFILE_INVALID","Hồ sơ bệnh nhân không hợp lệ","Hồ sơ bệnh nhân không hợp lệ"),
     PATIENT_PROFILE_NOT_FOUND("PATIENT_PROFILE_NOT_FOUND","Không tìm thấy thông tin bệnh nhân","Không tìm thấy thông tin bệnh nhân"),
     PROFILE_NOT_BELONG_PATIENT("PROFILE_NOT_BELONG_PATIENT","Hồ sơ bệnh nhân không thuộc về bệnh nhân","Hồ sơ bệnh nhân không thuộc về bệnh nhân"),
+    PROFILE_USED("PROFILE_USED","Hồ sơ bệnh nhân đã đăng ký lịch khám","Hồ sơ bệnh nhân đã đăng ký lịch khám"),
     ;
     private String code;
     private String message;
