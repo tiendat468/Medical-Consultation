@@ -70,6 +70,10 @@ public class PatientService extends BaseService{
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("IdentityNumber"));
         }
 
+        if (StringUtils.isEmpty(request.getPhoneNumber())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("PhoneNumber"));
+        }
+
         Patient patient;
         if (request.getId() != null) {
             Optional<Patient> optionalPatient = patientRepository.findById(request.getId());

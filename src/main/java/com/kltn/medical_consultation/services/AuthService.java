@@ -144,11 +144,11 @@ public class AuthService extends BaseService{
         switch (user.getType()) {
             case 2:
                 Doctor doctor = userService.fetchDoctor(user.getId());
-                userProfileResponse.setPhone(doctor.getPhoneNumber());
+                userProfileResponse.setPhoneNumber(doctor.getPhoneNumber());
                 break;
             case 3:
                 Patient patient = userService.fetchPatient(user.getId());
-                userProfileResponse.setPhone(patient.getPhoneNumber());
+                userProfileResponse.setPhoneNumber(patient.getPhoneNumber());
                 break;
             default:
                 break;
@@ -165,8 +165,8 @@ public class AuthService extends BaseService{
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("FullName"));
         }
 
-        if (StringUtils.isEmpty(request.getPhone())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Phone"));
+        if (StringUtils.isEmpty(request.getPhoneNumber())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("PhoneNumber"));
         }
 
         if (StringUtils.isEmpty(request.getBirthday())) {
@@ -204,7 +204,7 @@ public class AuthService extends BaseService{
             patient.setFullName(request.getFullName());
             patient.setSex(request.getSex());
             patient.setBirthday(request.getBirthday());
-            patient.setPhoneNumber(request.getPhone());
+            patient.setPhoneNumber(request.getPhoneNumber());
             patientRepository.save(patient);
         }
 
