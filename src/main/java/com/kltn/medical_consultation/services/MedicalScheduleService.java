@@ -40,15 +40,13 @@ public class MedicalScheduleService extends BaseService{
     UserService userService;
 
     @Transactional
-    public BaseResponse<DetailScheduleResponse> save(SaveScheduleRequest request, HttpServletRequest httpServletRequest) {
+    public BaseResponse<DetailScheduleResponse> save(SaveScheduleRequest request, Long userId, HttpServletRequest httpServletRequest) {
+        userService.validateUser(userId);
         if (request.getDepartmentId() == null) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("departmentId"));
         }
         if (request.getDoctorId() == null) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("doctorId"));
-        }
-        if (request.getPatientId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("patientId"));
         }
         if (StringUtils.isEmpty(request.getSymptom())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("symptom"));
@@ -80,11 +78,10 @@ public class MedicalScheduleService extends BaseService{
             throw new ApiException(DepartmentMessageCode.DOCTOR_BUSY);
         }
 
-        Optional<Patient> optionalPatient = patientRepository.findById(request.getPatientId());
-        if (optionalPatient.isEmpty()) {
+        Patient patient = userService.fetchPatient(userId);
+        if (patient == null) {
             throw new ApiException(PatientMessageCode.PATIENT_NOT_FOUND);
         }
-        Patient patient = optionalPatient.get();
 
         // create patient profile
         PatientProfile patientProfile = new PatientProfile();

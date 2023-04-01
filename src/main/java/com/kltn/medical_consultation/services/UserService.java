@@ -42,13 +42,7 @@ public class UserService extends BaseService{
     }
 
     public Patient fetchPatient(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            return null;
-        }
-        User user = optionalUser.get();
-
-        Optional<Patient> optionalPatient = patientRepository.findByUserId(user.getId());
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
         if (optionalPatient.isEmpty()) {
             return null;
         }
@@ -56,13 +50,7 @@ public class UserService extends BaseService{
     }
 
     public Doctor fetchDoctor(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            return null;
-        }
-        User user = optionalUser.get();
-
-        Optional<Doctor> optionalDoctor = doctorRepository.findByUserId(user.getId());
+        Optional<Doctor> optionalDoctor = doctorRepository.findByUserId(userId);
         if (optionalDoctor.isEmpty()) {
             return null;
         }

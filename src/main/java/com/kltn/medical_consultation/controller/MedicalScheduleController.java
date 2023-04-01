@@ -20,7 +20,7 @@ public class MedicalScheduleController extends BaseController{
 
     @PostMapping("/save")
     public BaseResponse<DetailScheduleResponse> save(@RequestBody SaveScheduleRequest request, HttpServletRequest httpServletRequest) {
-        return scheduleService.save(request, httpServletRequest);
+        return scheduleService.save(request, authenticationFacade.getUserId(), httpServletRequest);
     }
 
     @PostMapping("/detail")
