@@ -70,15 +70,17 @@ public class PatientService extends BaseService{
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("IdentityNumber"));
         }
 
-        PatientResponse patientResponse = new PatientResponse();
-        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
-        if (optionalPatient.isPresent()) {
-            Patient patient = optionalPatient.get();
-            patientResponse = PatientResponse.of(patient);
-            return new BaseResponse<>(PatientMessageCode.PATIENT_EXIST, patientResponse);
+        Patient patient;
+        if (request.getId() != null) {
+            Optional<Patient> optionalPatient = patientRepository.findById(request.getId());
+            if (optionalPatient.isEmpty()) {
+                throw new ApiException(PatientMessageCode.PATIENT_NOT_FOUND);
+            }
+            patient = optionalPatient.get();
+        } else {
+            patient = new Patient();
         }
 
-        Patient patient = new Patient();
         patient.setFullName(request.getFullName());
         patient.setBirthday(request.getBirthday());
         patient.setSex(request.getSex());
@@ -86,7 +88,7 @@ public class PatientService extends BaseService{
         patient.setAddress(request.getAddress());
         patient.setIdentityNumber(request.getIdentityNumber());
         patientRepository.save(patient);
-        patientResponse = PatientResponse.of(patient);
+        PatientResponse patientResponse = PatientResponse.of(patient);
         return new BaseResponse<>(patientResponse);
     }
 

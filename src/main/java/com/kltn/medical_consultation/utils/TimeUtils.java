@@ -48,9 +48,9 @@ public class TimeUtils {
         }
 
         try {
-            LocalDate.parse(birthday, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            LocalDate.parse(birthday, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } catch (DateTimeParseException e) {
-            throw new ApiException(ERROR.INVALID_PARAM, "birthday wrong format - Date format: dd-MM-yyyy");
+            throw new ApiException(ERROR.INVALID_PARAM, "birthday wrong format - Date format: yyyy-MM-dd");
         }
     }
 
