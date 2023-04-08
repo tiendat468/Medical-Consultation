@@ -5,6 +5,7 @@ import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.patient.request.CreatePatientProfileRequest;
 import com.kltn.medical_consultation.models.patient.request.DetailProfileRequest;
 import com.kltn.medical_consultation.models.patient.request.SavePatientRequest;
+import com.kltn.medical_consultation.models.patient.request.UpdateProfileRequest;
 import com.kltn.medical_consultation.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,12 @@ public class PatientController extends BaseController {
 
     @PostMapping("/profile/detail")
     public BaseResponse detailPatientProfile(@RequestBody DetailProfileRequest request, HttpServletRequest httpServletRequest) throws ApiException{
-        return patientService.detailPatientProfile(request, authenticationFacade.getUserId(), httpServletRequest);
+        return patientService.detailPatientProfile(request, httpServletRequest);
+    }
+
+    @PostMapping("/profile/update")
+    public BaseResponse updatePatientProfile(@RequestBody UpdateProfileRequest request, HttpServletRequest httpServletRequest) throws ApiException{
+        return patientService.updatePatientProfile(request, httpServletRequest);
     }
 
 //    @PostMapping("/edit")

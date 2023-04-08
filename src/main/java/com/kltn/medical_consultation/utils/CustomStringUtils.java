@@ -36,6 +36,14 @@ public class CustomStringUtils {
         return true;
     }
 
+    public static boolean isLessLength(String s, Integer length){
+
+        if (s.length() > length) {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean isNotEmptyWithCondition(String s, Integer length){
 
         if (s.length() > length) {
