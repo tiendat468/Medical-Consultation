@@ -322,8 +322,8 @@ public class AuthService extends BaseService{
                 emailDomain.sendVerifyEmail(email, verifyLink);
                 break;
             case FORGOT_PASSWORD:
-                String forgotPasswordLink = domain + "/auth/forgot-password?code=" + code + "&email=" + email;
-                emailDomain.sendForgotPasswordEmail(email, forgotPasswordLink);
+                String resetPasswordLink = domain + "/auth/reset-password?code=" + code + "&email=" + email;
+                emailDomain.sendForgotPasswordEmail(email, resetPasswordLink);
                 break;
         }
     }

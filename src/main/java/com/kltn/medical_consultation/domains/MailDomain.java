@@ -90,11 +90,11 @@ public class MailDomain {
         }
     }
 
-    public void sendForgotPasswordEmail(String email, String forgotPasswordLink) {
+    public void sendForgotPasswordEmail(String email, String resetPasswordLink) {
         String functionName = "sendForgotPasswordEmail";
         Map<String, Object> model = new HashMap<>();
         model.put("email", email);
-        model.put("$resetPasswordLink", forgotPasswordLink);
+        model.put("resetPasswordLink", resetPasswordLink);
 
         String body = velocityService.mergeTemplate(ShareConstant.MAIL_TEMPLATE.FORGOT_PASSWORD_VM, model);
 
