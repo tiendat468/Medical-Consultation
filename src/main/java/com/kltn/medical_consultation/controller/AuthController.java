@@ -3,10 +3,7 @@ package com.kltn.medical_consultation.controller;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
-import com.kltn.medical_consultation.models.auth.request.RegisterResendOTPRequest;
-import com.kltn.medical_consultation.models.auth.request.VerifyOtpRequest;
-import com.kltn.medical_consultation.models.auth.request.LoginRequest;
-import com.kltn.medical_consultation.models.auth.request.RegisterRequest;
+import com.kltn.medical_consultation.models.auth.request.*;
 import com.kltn.medical_consultation.models.auth.response.LoginResponse;
 import com.kltn.medical_consultation.models.auth.response.UserProfileResponse;
 import com.kltn.medical_consultation.services.AuthService;
@@ -40,6 +37,16 @@ public class AuthController {
     @PostMapping("/register")
     public BaseResponse register(@RequestBody RegisterRequest registerRequest) {
         return authService.register(registerRequest);
+    }
+
+    @PostMapping("/forgot-password")
+    public BaseResponse forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        return authService.forgotPassword(forgotPasswordRequest);
+    }
+
+    @PostMapping("/reset-password")
+    public BaseResponse resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        return authService.resetPassword(resetPasswordRequest);
     }
 
     @PostMapping("/register/resend-otp")

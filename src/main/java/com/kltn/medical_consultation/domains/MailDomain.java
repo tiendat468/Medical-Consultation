@@ -23,6 +23,9 @@ public class MailDomain {
     @Value("${mode}")
     private String mode;
 
+    @Value("${server.domain:}")
+    private String domain;
+
     @Autowired
     MailService mailService;
 
@@ -80,7 +83,26 @@ public class MailDomain {
 
         if (!body.equals(ShareConstant.MAIL_TEMPLATE.OTP_VM)) {
             try {
-                mailService.sendSimpleMessage(email, String.format("Verify Email"), body, true);
+                mailService.sendSimpleMessage(email, String.format("Xác thực tài khoản"), body, true);
+            } catch (MessagingException e) {
+                LOGGER.error("[{}] Cannot send OTP (email={}): {}", functionName, email, e);
+            }
+        }
+    }
+
+    public void sendForgotPasswordEmail(String email, String forgotPasswordLink) {
+        String functionName = "sendForgotPasswordEmail";
+        Map<String, Object> model = new HashMap<>();
+        model.put("email", email);
+        model.put("$resetPasswordLink", forgotPasswordLink);
+
+        String body = velocityService.mergeTemplate(ShareConstant.MAIL_TEMPLATE.FORGOT_PASSWORD_VM, model);
+
+        LOGGER.info("[{}] Send forgot password email (email={})", functionName, email);
+
+        if (!body.equals(ShareConstant.MAIL_TEMPLATE.OTP_VM)) {
+            try {
+                mailService.sendSimpleMessage(email, String.format("Khôi phục mật khẩu"), body, true);
             } catch (MessagingException e) {
                 LOGGER.error("[{}] Cannot send OTP (email={}): {}", functionName, email, e);
             }

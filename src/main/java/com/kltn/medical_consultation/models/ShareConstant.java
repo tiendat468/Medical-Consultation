@@ -18,8 +18,8 @@ public interface ShareConstant {
     class MAIL_TEMPLATE{
         public static final String ERROR = "template/mail/error.vm";
         public static final String OTP_VM = "templates/mail/otp.vm";
-        public static final String VERIFY_EMAIL_VM = "templates/mail/xacthucemail.vm";
-        public static final String FORGOT_PASSWORD_VM = "templates/mail/forgot-password.vm";
+        public static final String VERIFY_EMAIL_VM = "templates/mail/xac-thuc-email.vm";
+        public static final String FORGOT_PASSWORD_VM = "templates/mail/quen-mat-khau.vm";
     }
 
     class OTP{

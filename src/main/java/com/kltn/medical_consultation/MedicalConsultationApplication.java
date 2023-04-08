@@ -20,5 +20,7 @@ public class MedicalConsultationApplication {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void serverReady(){}
+    public void serverReady(){
+
+    }
 }

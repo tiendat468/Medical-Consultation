@@ -7,16 +7,14 @@ import com.kltn.medical_consultation.entities.database.RegisterActivity;
 import com.kltn.medical_consultation.entities.database.User;
 import com.kltn.medical_consultation.entities.redis.EmailOtpDTO;
 import com.kltn.medical_consultation.entities.redis.TokenDTO;
+import com.kltn.medical_consultation.enumeration.ActivityType;
 import com.kltn.medical_consultation.enumeration.UserType;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.ShareConstant;
 import com.kltn.medical_consultation.models.auth.AuthMessageCode;
-import com.kltn.medical_consultation.models.auth.request.RegisterResendOTPRequest;
-import com.kltn.medical_consultation.models.auth.request.VerifyOtpRequest;
-import com.kltn.medical_consultation.models.auth.request.LoginRequest;
-import com.kltn.medical_consultation.models.auth.request.RegisterRequest;
+import com.kltn.medical_consultation.models.auth.request.*;
 import com.kltn.medical_consultation.models.auth.response.LoginResponse;
 import com.kltn.medical_consultation.models.auth.response.UserProfileResponse;
 import com.kltn.medical_consultation.repository.database.PatientRepository;
@@ -209,8 +207,51 @@ public class AuthService extends BaseService{
         }
 
         //Send verify Email
-        sendVerifyEmail(user.getId(), user.getEmail());
+//        sendVerifyEmail(user.getId(), user.getEmail());
+        sendEmail(user.getId(), user.getEmail(), ActivityType.VERIFY_MAIL);
         return new BaseResponse(AuthMessageCode.AUTH_3_1);
+    }
+
+    public BaseResponse forgotPassword(ForgotPasswordRequest request) {
+        if (StringUtils.isEmpty(request.getEmail())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
+        }
+        if (!CustomStringUtils.emailValidate(request.getEmail())) {
+            throw new ApiException(ERROR.INVALID_EMAIL);
+        }
+        Optional<User> optionalUser = userRepository.findByEmailAndType(request.getEmail(), UserType.PATIENT.getType());
+        if (optionalUser.isEmpty()) {
+            throw new ApiException(AuthMessageCode.AUTH_5_0_NOT_FOUND);
+        }
+        User user = optionalUser.get();
+
+        //Send forgot password Email
+//        sendForgotPasswordEmail(user.getId(), user.getEmail());
+        sendEmail(user.getId(), user.getEmail(), ActivityType.FORGOT_PASSWORD);
+        return new BaseResponse(ERROR.SUCCESS);
+    }
+
+    public BaseResponse resetPassword(ResetPasswordRequest request) {
+        if (StringUtils.isEmpty(request.getCode())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Code"));
+        }
+        if (StringUtils.isEmpty(request.getPassword())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Password"));
+        }
+
+        Optional<RegisterActivity> registerActivityOptional = registerActivityRepository.findAllByCode(request.getCode());
+        if (!registerActivityOptional.isPresent()) {
+            throw new ApiException(AuthMessageCode.VERIFY_CODE_IS_INVALID);
+        }
+        Optional<User> optionalUser = userRepository.findByEmailAndType(registerActivityOptional.get().getEmail(), UserType.PATIENT.getType());
+        if (optionalUser.isEmpty()) {
+            throw new ApiException(AuthMessageCode.MAIL_INCORRECT);
+        }
+        User user = optionalUser.get();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+        registerActivityRepository.delete(registerActivityOptional.get());
+        return new BaseResponse(ERROR.SUCCESS);
     }
 
     public BaseResponse verifyOTP(VerifyOtpRequest request) {
@@ -266,16 +307,25 @@ public class AuthService extends BaseService{
         return emailOtpDTO;
     }
 
-    public void sendVerifyEmail(Long userId, String email) {
+    public void sendEmail(Long userId, String email, ActivityType activityType) {
         String code = UUID.randomUUID().toString();
         RegisterActivity registerActivity = new RegisterActivity();
         registerActivity.setUserId(userId);
         registerActivity.setEmail(email);
         registerActivity.setCode(code);
+        registerActivity.setType(activityType.getCode());
         registerActivityRepository.save(registerActivity);
 
-        String verifyLink = domain + "/auth/verify-email?code=" + code + "&email=" + email;
-        emailDomain.sendVerifyEmail(email, verifyLink);
+        switch (activityType) {
+            case VERIFY_MAIL:
+                String verifyLink = domain + "/auth/verify-email?code=" + code + "&email=" + email;
+                emailDomain.sendVerifyEmail(email, verifyLink);
+                break;
+            case FORGOT_PASSWORD:
+                String forgotPasswordLink = domain + "/auth/forgot-password?code=" + code + "&email=" + email;
+                emailDomain.sendForgotPasswordEmail(email, forgotPasswordLink);
+                break;
+        }
     }
 
     public Boolean verifyEmail(String code) {

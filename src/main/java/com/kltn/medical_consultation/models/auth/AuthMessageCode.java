@@ -9,6 +9,8 @@ public enum AuthMessageCode implements IMessageCode {
     AUTH_3_1("AUTH_3_1","Đăng Ký thành công","Đăng Ký thành công"),
     AUTH_1_0("AUTH_1_0","Email hoặc mật khẩu không chính xác","Đăng nhập thất bại"),
     AUTH_3_0_OTP("AUTH_3_0_OTP","YOTP không chính xác. Vui lòng thử lại!","OTP không chính xác"),
+    VERIFY_CODE_IS_INVALID("VERIFY_CODE_IS_INVALID","Mã code không hợp lệ","Mã code không hợp lệ"),
+    MAIL_INCORRECT("MAIL_INCORRECT","Email không tồn tại trong hệ thống","Không tìm thấy người dùng"),
     AUTH_3_0_OTP_EXPIRED("AUTH_3_0_OTP_EXPIRED","OTP đã hết hạn. Vui lòng thử lại!","OTP hết hạn"),
     AUTH_3_1_OTP("AUTH_3_1_OTP","OTP chính xác","OTP chính xác"),
     AUTH_3_1_SEND_OTP("AUTH_3_1_SEND_OTP","Gửi OTP thành công","Gửi OTP thành công"),

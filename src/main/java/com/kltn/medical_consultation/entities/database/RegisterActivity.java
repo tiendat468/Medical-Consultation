@@ -17,6 +17,8 @@ public class RegisterActivity extends BaseEntity{
     public String email;
     @Column(name = "code")
     public String code;
+    @Column(name = "type")
+    public String type;
 
 }
 
