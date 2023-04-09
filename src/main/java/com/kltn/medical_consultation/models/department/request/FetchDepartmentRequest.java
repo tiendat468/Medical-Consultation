@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class FetchDepartmentRequest {
     private String symptom;
-    private String scheduleDate;
+    private String medicalDate;
 }

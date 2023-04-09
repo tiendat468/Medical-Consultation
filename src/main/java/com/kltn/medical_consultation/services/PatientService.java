@@ -42,37 +42,37 @@ public class PatientService extends BaseService{
     public BaseResponse<PatientResponse> savePatient(SavePatientRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
         userService.validateUser(userId);
         if (StringUtils.isEmpty(request.getFullName())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("FullName"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("FullName"));
         }
 
         TimeUtils.validateBirthday(request.getBirthday());
 
         if (StringUtils.isEmpty(request.getSex())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Sex"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Sex"));
         }
 
         if (StringUtils.isEmpty(request.getAddress())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Address"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Address"));
         }
 
         if (!CustomStringUtils.isNotEmptyWithCondition(request.getAddress(), 255)) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Address"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Address"));
         }
 
         if (StringUtils.isEmpty(request.getJob())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Job"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Job"));
         }
 
         if (!CustomStringUtils.isNotEmptyWithCondition(request.getJob(), 255)) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Job"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Job"));
         }
 
         if (StringUtils.isEmpty(request.getIdentityNumber())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("IdentityNumber"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("IdentityNumber"));
         }
 
         if (StringUtils.isEmpty(request.getPhoneNumber())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("PhoneNumber"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PhoneNumber"));
         }
 
         Patient patient;
@@ -141,7 +141,7 @@ public class PatientService extends BaseService{
         }
 
         if (StringUtils.isBlank(request.getSymptom())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Symptom"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Symptom"));
         }
 
         PatientProfile patientProfile = new PatientProfile();
@@ -154,7 +154,7 @@ public class PatientService extends BaseService{
 
     public BaseResponse<PatientProfileResponse> detailPatientProfile(DetailProfileRequest request, HttpServletRequest httpServletRequest) {
         if (request.getProfileId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("ProfileId"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ProfileId"));
         }
 
         Optional<PatientProfile> optionalPatientProfile = patientProfileRepository.findById(request.getProfileId());
@@ -166,7 +166,7 @@ public class PatientService extends BaseService{
 
     public BaseResponse<PatientProfileResponse> updatePatientProfile(UpdateProfileRequest request, HttpServletRequest httpServletRequest) {
         if (request.getProfileId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("ProfileId"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ProfileId"));
         }
         if (request.getDiagnostic() != null && CustomStringUtils.isLessLength(request.getDiagnostic(), 255)) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.outOfRange("Diagnostic", 255));

@@ -1,0 +1,30 @@
+package com.kltn.medical_consultation.controller;
+
+import com.kltn.medical_consultation.models.BasePaginationResponse;
+import com.kltn.medical_consultation.models.doctor.request.DetailScheduleRequest;
+import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
+import com.kltn.medical_consultation.models.doctor.response.DoctorScheduleResponse;
+import com.kltn.medical_consultation.services.DoctorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+@RestController
+@CrossOrigin(allowedHeaders = "*", origins = "*")
+@RequestMapping("/doctor")
+public class DoctorController extends BaseController{
+    @Autowired
+    DoctorService doctorService;
+
+    @PostMapping("/schedule/list")
+    public BasePaginationResponse<DoctorScheduleResponse> listSchedule(@RequestBody ListDoctorScheduleRequest listDoctorScheduleRequest, Pageable pageable, HttpServletRequest httpServletRequest) {
+        return doctorService.listSchedule(listDoctorScheduleRequest, pageable, httpServletRequest);
+    }
+
+    @PostMapping("/schedule/detail")
+    public void detailSchedule(@RequestBody DetailScheduleRequest detailScheduleRequest, HttpServletRequest httpServletRequest) {
+
+    }
+}

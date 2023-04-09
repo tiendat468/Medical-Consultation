@@ -44,13 +44,21 @@ public class TimeUtils {
 
     public static void validateBirthday(String birthday) {
         if (StringUtils.isBlank(birthday)) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Birthday"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Birthday"));
         }
 
         try {
             LocalDate.parse(birthday, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } catch (DateTimeParseException e) {
-            throw new ApiException(ERROR.INVALID_PARAM, "birthday wrong format - Date format: yyyy-MM-dd");
+            throw new ApiException(ERROR.INVALID_PARAM, "birthday format is wrong  - Date format: yyyy-MM-dd");
+        }
+    }
+
+    public static void validateDateFormat(String date) {
+        try {
+            LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            throw new ApiException(ERROR.INVALID_PARAM, "Date format is wrong - Date format: yyyy-MM-dd");
         }
     }
 

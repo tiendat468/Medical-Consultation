@@ -64,11 +64,11 @@ public class AuthService extends BaseService{
 
     public BaseResponse<LoginResponse> login(LoginRequest request) {
         if (StringUtils.isBlank(request.getEmail())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Email"));
         }
 
         if (StringUtils.isBlank(request.getPassword())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Password"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Password"));
         }
 
         User existedUser;
@@ -156,27 +156,27 @@ public class AuthService extends BaseService{
 
     public BaseResponse register(RegisterRequest request) {
         if (StringUtils.isEmpty(request.getEmail())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Email"));
         }
 
         if (StringUtils.isEmpty(request.getFullName())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("FullName"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("FullName"));
         }
 
         if (StringUtils.isEmpty(request.getPhoneNumber())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("PhoneNumber"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PhoneNumber"));
         }
 
         if (StringUtils.isEmpty(request.getBirthday())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Birthday"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Birthday"));
         }
 
         if (StringUtils.isEmpty(request.getSex())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Sex"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Sex"));
         }
 
         if (StringUtils.isEmpty(request.getPassword())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Password"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Password"));
         }
 
         if (!CustomStringUtils.emailValidate(request.getEmail())) {
@@ -214,7 +214,7 @@ public class AuthService extends BaseService{
 
     public BaseResponse forgotPassword(ForgotPasswordRequest request) {
         if (StringUtils.isEmpty(request.getEmail())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Email"));
         }
         if (!CustomStringUtils.emailValidate(request.getEmail())) {
             throw new ApiException(ERROR.INVALID_EMAIL);
@@ -233,10 +233,10 @@ public class AuthService extends BaseService{
 
     public BaseResponse resetPassword(ResetPasswordRequest request) {
         if (StringUtils.isEmpty(request.getCode())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Code"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Code"));
         }
         if (StringUtils.isEmpty(request.getPassword())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Password"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Password"));
         }
 
         Optional<RegisterActivity> registerActivityOptional = registerActivityRepository.findAllByCode(request.getCode());
@@ -256,11 +256,11 @@ public class AuthService extends BaseService{
 
     public BaseResponse verifyOTP(VerifyOtpRequest request) {
         if (StringUtils.isEmpty(request.getVerifyCode())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("Email"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Email"));
         }
 
         if (StringUtils.isEmpty(request.getOtp())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("OTP"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("OTP"));
         }
 
         Optional<EmailOtpDTO> optionalMailOtpDTO = mailOtpRepository.findById(request.getVerifyCode());

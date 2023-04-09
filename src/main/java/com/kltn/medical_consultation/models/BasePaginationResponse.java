@@ -21,8 +21,6 @@ public class BasePaginationResponse<T>{
     @Schema(defaultValue = "MESSAGE_CODE" , description = "Message code")
     private String messageCode;
 
-    private List<T> data;
-
     @Schema(description = "Number of total items")
     public long currentPage;
 
@@ -32,10 +30,23 @@ public class BasePaginationResponse<T>{
     @Schema(description = "Page size (number of items per page)")
     public int pageSize;
 
+    public long totalPages;
+
+    public long totalItems;
+
+    private List<T> data;
+
     public BasePaginationResponse(List<T> data, int pageIndex, int pageSize, long currentPage){
         this.data = data;
         this.currentPage = currentPage;
         this.pageSize = pageSize;
-        this.pageIndex = pageIndex;
+    }
+
+    public BasePaginationResponse(Page page){
+        this.data = page.getContent();
+        this.totalItems = page.getTotalElements();
+        this.currentPage = page.getPageable().getPageNumber();
+        this.pageSize = page.getPageable().getPageSize();
+        this.totalPages = page.getTotalPages();
     }
 }

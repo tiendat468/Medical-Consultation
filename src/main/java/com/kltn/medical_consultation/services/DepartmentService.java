@@ -1,12 +1,9 @@
 package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.entities.database.Department;
-import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.entities.database.Symptom;
-import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.department.response.DepartmentPercent;
-import com.kltn.medical_consultation.models.patient.PatientMessageCode;
 import com.kltn.medical_consultation.models.schedule.ListFreeSchedule;
 import com.kltn.medical_consultation.models.department.request.FetchDepartmentRequest;
 import com.kltn.medical_consultation.repository.database.DepartmentRepository;
@@ -55,8 +52,8 @@ public class DepartmentService extends BaseService{
         }
 
         sortByPercent(departmentPercents);
-        ListFreeSchedule listFreeSchedule = scheduleService.fetchSchedule(departmentPercents, request.getScheduleDate());
-        listFreeSchedule.setMedicalDate(request.getScheduleDate());
+        ListFreeSchedule listFreeSchedule = scheduleService.fetchSchedule(departmentPercents, request.getMedicalDate());
+        listFreeSchedule.setMedicalDate(request.getMedicalDate());
         return new BaseResponse<>(listFreeSchedule);
     }
 

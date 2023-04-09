@@ -43,19 +43,19 @@ public class MedicalScheduleService extends BaseService{
     public BaseResponse<DetailScheduleResponse> save(SaveScheduleRequest request, Long userId, HttpServletRequest httpServletRequest) {
         userService.validateUser(userId);
         if (request.getDepartmentId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("departmentId"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("departmentId"));
         }
         if (request.getDoctorId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("doctorId"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("doctorId"));
         }
         if (StringUtils.isEmpty(request.getSymptom())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("symptom"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("symptom"));
         }
         if (StringUtils.isEmpty(request.getMedicalDate())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("medicalDate"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("medicalDate"));
         }
         if (StringUtils.isEmpty(request.getHours())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("hours"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("hours"));
         }
 
         Optional<Department> optionalDepartment = departmentRepository.findById(request.getDepartmentId());
@@ -109,11 +109,11 @@ public class MedicalScheduleService extends BaseService{
 
     public BaseResponse<DetailScheduleResponse> detail(DetailScheduleRequest request, Long userId, HttpServletRequest httpServletRequest) {
         if (request.getPatientProfileId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("patientProfileId"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("patientProfileId"));
         }
 
         if (request.getScheduleId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramInvalid("scheduleId"));
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("scheduleId"));
         }
 
         Optional<PatientProfile> optionalPatientProfile = patientProfileRepository.findById(request.getPatientProfileId());

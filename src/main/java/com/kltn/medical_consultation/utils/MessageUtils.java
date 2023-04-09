@@ -2,8 +2,8 @@ package com.kltn.medical_consultation.utils;
 
 public class MessageUtils {
 
-    public static String paramInvalid(String param){
-        return "Request param [" + param + "] is invalid";
+    public static String paramRequired(String param){
+        return "[" + param + "] is required";
     }
 
     public static String notFound(String param){
@@ -17,6 +17,7 @@ public class MessageUtils {
     public static String notActivate(String param){
         return "[" + param + "] not activated";
     }
+
     public static String outOfRange(String param, Integer length){
         return "limit length of [" + param + "] is " + length;
     }
