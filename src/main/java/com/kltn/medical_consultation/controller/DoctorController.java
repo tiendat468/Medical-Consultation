@@ -29,4 +29,9 @@ public class DoctorController extends BaseController{
     public BaseResponse<DetailDoctorScheduleResponse> detailSchedule(@RequestBody DetailDoctorScheduleRequest detailDoctorScheduleRequest, HttpServletRequest httpServletRequest) {
         return doctorService.detailSchedule(detailDoctorScheduleRequest, httpServletRequest);
     }
+
+    @PostMapping("/schedule/done/{scheduleId}")
+    public BaseResponse checkDone(@PathVariable Long scheduleId, HttpServletRequest httpServletRequest) {
+        return doctorService.checkDone(scheduleId, authenticationFacade.getUserId(), httpServletRequest);
+    }
 }

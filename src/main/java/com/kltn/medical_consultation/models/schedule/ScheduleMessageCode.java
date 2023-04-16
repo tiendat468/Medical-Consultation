@@ -4,6 +4,7 @@ import com.kltn.medical_consultation.models.IMessageCode;
 
 public enum ScheduleMessageCode implements IMessageCode {
     SCHEDULE_NOT_FOUND("SCHEDULE_NOT_FOUND","Không tìm thấy lịch khám"),
+    SCHEDULE_NOT_BELONG("SCHEDULE_NOT_BELONG","Lịch khám không thuộc bác sĩ"),
     ;
     private String code;
     private String message;

@@ -83,4 +83,24 @@ public class DoctorService extends BaseService{
         DetailDoctorScheduleResponse response = DetailDoctorScheduleResponse.of(medicalSchedule, patientProfileDTO);
         return new BaseResponse<DetailDoctorScheduleResponse>(response);
     }
+
+    public BaseResponse checkDone(Long scheduleId, Long userId, HttpServletRequest httpServletRequest) {
+        if (scheduleId == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ScheduleId"));
+        }
+
+        Optional<MedicalSchedule> optionalMedicalSchedule = scheduleRepository.findById(scheduleId);
+        if (optionalMedicalSchedule.isEmpty()) {
+            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
+        }
+
+        MedicalSchedule medicalSchedule = optionalMedicalSchedule.get();
+        if (medicalSchedule.getDoctorId() != userId) {
+            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_BELONG);
+        }
+
+        medicalSchedule.setIsDone(true);
+        scheduleRepository.save(medicalSchedule);
+        return new BaseResponse<>(ERROR.SUCCESS);
+    }
 }
