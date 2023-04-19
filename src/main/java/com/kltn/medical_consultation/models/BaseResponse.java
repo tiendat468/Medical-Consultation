@@ -1,10 +1,15 @@
 package com.kltn.medical_consultation.models;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BaseResponse<T> {
     @Schema(defaultValue = "1" , description = "Mã code thành công hoặc mã lỗi của api")
     private int code = ERROR.SUCCESS.getCode();
