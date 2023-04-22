@@ -152,13 +152,17 @@ public class MedicalScheduleService extends BaseService{
             for (ListFreeSchedule.DetailSchedule schedule : detailScheduleList) {
                 if(schedule.getDoctorId() == null) {
                     if (scheduleList.size() > 0) {
+                        int num = 0;
                         for (MedicalSchedule medicalSchedule : scheduleList) {
                             if (medicalSchedule.getHours().equalsIgnoreCase(schedule.getScheduleTime())) {
                                 break;
                             }
-                            schedule.setDoctorId(doctor.getId());
-                            schedule.setPrice(department.getPrice());
-                            count++;
+                            num++;
+                            if (num == scheduleList.size()) {
+                                schedule.setDoctorId(doctor.getId());
+                                schedule.setPrice(department.getPrice());
+                                count++;
+                            }
                         }
                     } else {
                         schedule.setDoctorId(doctor.getId());
@@ -167,7 +171,7 @@ public class MedicalScheduleService extends BaseService{
                     }
                 }
             }
-            if(count == 4){
+            if(count == 8){
                 break;
             }
         }

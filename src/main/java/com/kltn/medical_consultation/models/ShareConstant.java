@@ -62,7 +62,7 @@ public interface ShareConstant {
         public static final String VNP_EXPIRE_DATE = "vnp_ExpireDate";
         public static final String VNP_TRANSACTION_NO = "vnp_TransactionNo";
         public static final String VNP_TRANS_DATE = "vnp_TransDate";
-        public static final String RETURN_URL = "http://localhost:8088/api/vnpay/update-payment";
+        public static final String RETURN_URL = "http://localhost:8081/api/vnpay/update-payment";
         public static final String COMMAND = "pay";
         public static final String REFUND = "refund";
         public static final String REFUND_TYPE = "02";
