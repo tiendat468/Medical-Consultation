@@ -1,5 +1,6 @@
 package com.kltn.medical_consultation.entities.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,8 +36,12 @@ public class VnpayPayment extends BaseEntity{
     private String vnp_FeeAmount;
     private String vnp_SecureHash;
     private Boolean is_done = false;
-    private Long payment_id;
+
     @ManyToOne
-    @JoinColumn(name = "payment_id", updatable = false, insertable = false)
+    @JsonIgnore
+    @JoinColumn(name = "payment_id")
     private Payment payment;
+
+    @Column(name = "payment_id", insertable = false, updatable = false)
+    private Long paymentId;
 }

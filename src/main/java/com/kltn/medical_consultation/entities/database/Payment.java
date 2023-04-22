@@ -1,5 +1,6 @@
 package com.kltn.medical_consultation.entities.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kltn.medical_consultation.models.vnpay.PaymentDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -31,6 +33,10 @@ public class Payment extends BaseEntity{
     private String vnpSecureHash;
     private Long userId;
     private Boolean hookStatus = false;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Collection<VnpayPayment> vnpayPayments;
 
 
     public Payment payment(PaymentDTO paymentDTO){

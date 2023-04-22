@@ -16,7 +16,7 @@ public class VnpayPaymentDTO {
     private String vnp_Message;
     private String vnp_TmnCode;
     private String vnp_TxnRef;
-    private BigDecimal vnp_Amount;
+    private BigDecimal vnp_Amount = BigDecimal.valueOf(0);
     private String vnp_OrderInfo;
     private String vnp_BankCode;
     private String vnp_PayDate;

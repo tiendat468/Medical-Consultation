@@ -1,6 +1,5 @@
 package com.kltn.medical_consultation.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kltn.medical_consultation.configs.VNPayConfig;
 import com.kltn.medical_consultation.entities.database.Payment;
 import com.kltn.medical_consultation.entities.database.VnpayPayment;
@@ -176,16 +175,16 @@ public class VNPayService extends BaseService {
     public VnpayPayment createVnpayPayment(VnpayPaymentDTO vnpayPaymentDTO, Payment payment) {
         try {
             VnpayPayment vnpayPayment = JsonHelper.getObject(JsonHelper.toString(vnpayPaymentDTO), VnpayPayment.class);
-            Long vnpayAmount = Long.valueOf(vnpayPaymentDTO.getVnp_Amount()+"")/100;
+            Long vnpayAmount = Long.valueOf(vnpayPaymentDTO.getVnp_Amount() + "")/100;
             BigDecimal amount = new BigDecimal(vnpayAmount);
             vnpayPayment.setVnp_Amount(amount);
-            if(vnpayPaymentDTO.getVnp_TransactionStatus().equals("00")){
+            if(vnpayPaymentDTO.getVnp_TransactionStatus() != null && vnpayPaymentDTO.getVnp_TransactionStatus().equals("00")){
                 vnpayPayment.setIs_done(true);
             }
 
             payment = updateTransactionStatus(payment, vnpayPaymentDTO);
             vnpayPayment.setPayment(payment);
-            vnpayPayment.setPayment_id(payment.getId());
+            vnpayPayment.setPaymentId(payment.getId());
             return vnpayPaymentRepository.save(vnpayPayment);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -233,7 +232,7 @@ public class VNPayService extends BaseService {
         VnpayPayment vnpayPayment = createVnpayPayment(vnpayPaymentDTO, payment);
 
         BaseResponse baseResponse = new BaseResponse();
-        if (vnpayPaymentDTO.getVnp_TransactionStatus().equals("00")) {
+        if(vnpayPaymentDTO.getVnp_TransactionStatus() != null && vnpayPaymentDTO.getVnp_TransactionStatus().equals("00")){
             baseResponse.setData(vnpayPayment);
             return baseResponse;
         }
