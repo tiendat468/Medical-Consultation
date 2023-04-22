@@ -31,6 +31,21 @@ public class PaymentDTO {
     private Long user_id;
     private Boolean hook_status;
 
+    public PaymentDTO(String vnp_BankCode, String vnpBankTranNo, String vnp_CardType, String vnp_PayDate, String vnp_ResponseCode, String vnp_SecureHash, String vnp_TmnCode, String vnp_TransactionNo, String vnp_TransactionStatus, String vnp_TxnRef, String vnp_Amount, String vnp_OrderInfo) {
+        this.vnp_BankCode = vnp_BankCode;
+        this.vnp_Amount = new BigDecimal(vnp_Amount);
+        this.vnp_BankTranNo = vnp_BankTranNo;
+        this.vnp_CardType = vnp_CardType;
+        this.vnp_OrderInfo = vnp_OrderInfo;
+        this.vnp_PayDate = vnp_PayDate;
+        this.vnp_ResponseCode = vnp_ResponseCode;
+        this.vnp_TmnCode = vnp_TmnCode;
+        this.vnp_TransactionNo = vnp_TransactionNo;
+        this.vnp_TransactionStatus = vnp_TransactionStatus;
+        this.vnp_TxnRef = vnp_TxnRef;
+        this.vnp_SecureHash = vnp_SecureHash;
+    }
+
     public PaymentDTO paymentDTO(String vnp_BankCode, String vnpBankTranNo, String vnp_CardType, String vnp_PayDate, String vnp_ResponseCode, String vnp_SecureHash, String vnp_TmnCode, String vnp_TransactionNo, String vnp_TransactionStatus, String vnp_TxnRef, String vnp_Amount, String vnp_OrderInfo) {
         this.vnp_BankCode = vnp_BankCode;
         this.vnp_BankTranNo = vnpBankTranNo;
@@ -46,6 +61,7 @@ public class PaymentDTO {
         this.vnp_OrderInfo = vnp_OrderInfo;
         return this;
     }
+
     public PaymentDTO paymentDTO(Payment payment) {
         this.id = payment.getId();
         this.vnp_BankCode = payment.getVnpBankCode();

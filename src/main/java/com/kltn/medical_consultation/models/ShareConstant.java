@@ -62,7 +62,7 @@ public interface ShareConstant {
         public static final String VNP_EXPIRE_DATE = "vnp_ExpireDate";
         public static final String VNP_TRANSACTION_NO = "vnp_TransactionNo";
         public static final String VNP_TRANS_DATE = "vnp_TransDate";
-        public static final String RETURN_URL = "http://localhost:8088/api/v1/noauth/api/v1";
+        public static final String RETURN_URL = "http://localhost:8088/api/vnpay/update-payment";
         public static final String COMMAND = "pay";
         public static final String REFUND = "refund";
         public static final String REFUND_TYPE = "02";
@@ -72,7 +72,7 @@ public interface ShareConstant {
         public static final String ORDER_TYPE ="1000";
         public static final String QUERYDR = "querydr";
         public static final String VNP_IPN = "vnp_Ipn";
-        public static final String VNP_IPN_URL = "http://localhost:8000/api/v1/vnpay-webhook/vnpay_ipn";
+        public static final String VNP_IPN_URL = "http://localhost:8088/api/vnpay/vnpay-webhook/vnpay_ipn";
         public static final String VNP_PAY_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         public static final String VNP_API_URL = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 

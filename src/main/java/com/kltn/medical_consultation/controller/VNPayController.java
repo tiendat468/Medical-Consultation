@@ -21,4 +21,27 @@ public class VNPayController extends BaseController{
     public BaseResponse createPayment(@RequestBody PaymentDTO paymentDTO, HttpServletRequest request) throws UnsupportedEncodingException {
         return vnPayService.createPayment(paymentDTO, request);
     }
+
+    @GetMapping("/get-payment")
+    public BaseResponse getPayment(@RequestParam String vnpTxnRef, HttpServletRequest request) {
+        return vnPayService.getPayment(vnpTxnRef, request);
+    }
+
+    @GetMapping("/result-payment")
+    public BaseResponse updatePayment(@RequestParam("vnp_BankCode") String vnpBankCode,
+                                      @RequestParam(name = "vnp_BankTranNo", required = false) String vnpBankTranNo,
+                                      @RequestParam("vnp_CardType") String vnpCardType,
+                                      @RequestParam("vnp_PayDate") String vnpPayDate,
+                                      @RequestParam("vnp_ResponseCode") String vnpResponseCode,
+                                      @RequestParam("vnp_SecureHash") String vnpSecureHash,
+                                      @RequestParam("vnp_TmnCode") String vnpTmnCode,
+                                      @RequestParam("vnp_TransactionNo") String vnpTransactionNo,
+                                      @RequestParam("vnp_TransactionStatus")String vnpTransactionStatus,
+                                      @RequestParam("vnp_TxnRef") String vnpTxnRef,
+                                      @RequestParam("vnp_Amount") String vnpAmount,
+                                      @RequestParam("vnp_OrderInfo") String vnpOrderInfo) {
+        PaymentDTO paymentDTO = new PaymentDTO(vnpBankCode, vnpBankTranNo, vnpCardType, vnpPayDate, vnpResponseCode, vnpSecureHash, vnpTmnCode, vnpTransactionNo, vnpTransactionStatus, vnpTxnRef, vnpAmount, vnpOrderInfo);
+        return new BaseResponse(paymentDTO);
+    }
+
 }

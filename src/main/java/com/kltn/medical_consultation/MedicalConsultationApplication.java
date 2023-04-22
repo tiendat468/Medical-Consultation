@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class MedicalConsultationApplication {
@@ -18,6 +19,12 @@ public class MedicalConsultationApplication {
     public ICheckBCryptPasswordEncoder passwordEncoder(){
         return new ICheckBCryptPasswordEncoder();
     }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
 
     @EventListener(ApplicationReadyEvent.class)
     public void serverReady(){
