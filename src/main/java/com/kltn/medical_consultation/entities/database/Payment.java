@@ -50,4 +50,19 @@ public class Payment extends BaseEntity{
         return this;
     }
 
+    public Payment(PaymentDTO paymentDTO) {
+        this.userId = paymentDTO.getUser_id();
+        this.vnpAmount = paymentDTO.getVnp_Amount();
+        this.vnpBankCode = paymentDTO.getVnp_BankCode();
+        this.vnpOrderInfo = paymentDTO.getVnp_OrderInfo();
+        this.vnpBankTranNo = paymentDTO.getVnp_BankTranNo();
+        this.vnpCardType = paymentDTO.getVnp_CardType();
+        this.vnpPayDate = paymentDTO.getVnp_PayDate();
+        this.vnpResponseCode = paymentDTO.getVnp_ResponseCode();
+        this.vnpSecureHash = paymentDTO.getVnp_SecureHash();
+        this.vnpTmnCode = paymentDTO.getVnp_TmnCode();
+        this.vnpTransactionNo = paymentDTO.getVnp_TransactionNo();
+        this.vnpTransactionStatus = paymentDTO.getVnp_TransactionStatus();
+        this.vnpTxnRef = paymentDTO.getVnp_TxnRef();
+    }
 }

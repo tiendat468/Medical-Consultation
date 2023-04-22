@@ -44,16 +44,15 @@ public class VNPayService extends BaseService {
     Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
     SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 
-    public BaseResponse createPayment(PaymentDTO paymentDTO, HttpServletRequest request) throws UnsupportedEncodingException {
+    public BaseResponse createPayment(PaymentDTO paymentDTO, Long userId, HttpServletRequest request) throws UnsupportedEncodingException {
         validatePayment(paymentDTO);
+        paymentDTO.setUser_id(userId);
         String vnpCreateDate = formatter.format(cld.getTime());
-        Payment payment = new Payment();
-        payment.payment(paymentDTO);
+        Payment payment = new Payment(paymentDTO);
         String txnRef = UUID.randomUUID().toString().replaceAll("-", "");
         payment.setVnpTxnRef(txnRef);
         payment.setVnpPayDate(vnpCreateDate);
-        PaymentDTO paymentDto = new PaymentDTO();
-        paymentDto.paymentDTO(paymentRepository.save(payment));
+        PaymentDTO paymentDto = new PaymentDTO(paymentRepository.save(payment));
         if(paymentDto == null){
             throw new ApiException(VNPayMessageCode.ERROR_CREATE_PAYMENT);
         }
@@ -137,9 +136,6 @@ public class VNPayService extends BaseService {
         if(paymentDTO.getVnp_Amount() == null){
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("vnp_Amount"));
         }
-        if(paymentDTO.getUser_id() == null){
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("user_id"));
-        }
     }
 
     public BaseResponse getPayment(String vnpTxnRef, HttpServletRequest request) {
@@ -155,51 +151,47 @@ public class VNPayService extends BaseService {
     }
 
     public BaseResponse getTransaction(Payment payment, HttpServletRequest request) {
-        try {
-            BaseResponse baseResponse = new BaseResponse();
-            List<Values> key = initRequestTransaction(payment, request);
-            List<VnpayPayment> list = vnpayPaymentRepository.findByPaymentId(payment.getId());
-            VnpayPayment vnpayPayment = list.size() == 0 ? null : list.get(list.size()-1);
-            if(vnpayPayment != null && vnpayPayment.getIs_done()){
-                baseResponse.setData(vnpayPayment);
-//                baseResponse.setTransactionStatus(vnpayPayment.getVnp_TransactionStatus());
-//                baseResponse.setResponseCode(vnpayPayment.getVnp_ResponseCode());
-                return baseResponse;
-            }
-
-            if (!payment.getHookStatus()) {
-                return processQuerydr(key, payment);
-            } else {
-                QueryDrDTO queryDrDTO = createQueryDrDTO(key);
-                queryDrDTO.setVnp_TransactionNo(payment.getVnpTransactionNo());
-                VnpayPaymentDTO vnpayPaymentDTO = redirectApiVnpay(queryDrDTO);
-                vnpayPayment = createVnpayPayment(vnpayPaymentDTO, payment);
-            }
-
+        BaseResponse baseResponse = new BaseResponse();
+        List<Values> key = initRequestTransaction(payment, request);
+        List<VnpayPayment> list = vnpayPaymentRepository.findByPaymentId(payment.getId());
+        VnpayPayment vnpayPayment = list.size() == 0 ? null : list.get(list.size()-1);
+        if(vnpayPayment != null && vnpayPayment.getIs_done()){
             baseResponse.setData(vnpayPayment);
             return baseResponse;
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+
+        if (!payment.getHookStatus()) {
+            return processQuerydr(key, payment);
+        } else {
+            QueryDrDTO queryDrDTO = createQueryDrDTO(key);
+            queryDrDTO.setVnp_TransactionNo(payment.getVnpTransactionNo());
+            VnpayPaymentDTO vnpayPaymentDTO = redirectApiVnpay(queryDrDTO);
+            vnpayPayment = createVnpayPayment(vnpayPaymentDTO, payment);
+        }
+
+        baseResponse.setData(vnpayPayment);
+        return baseResponse;
     }
 
-    public VnpayPayment createVnpayPayment(VnpayPaymentDTO vnpayPaymentDTO, Payment payment) throws IOException {
-        VnpayPayment vnpayPayment = JsonHelper.getObject(JsonHelper.toString(vnpayPaymentDTO), VnpayPayment.class);
-        Long vnpayAmount = Long.valueOf(vnpayPaymentDTO.getVnp_Amount()+"")/100;
-        BigDecimal amount = new BigDecimal(vnpayAmount);
-        vnpayPayment.setVnp_Amount(amount);
-        if(vnpayPaymentDTO.getVnp_TransactionStatus().equals("00")){
-            vnpayPayment.setIs_done(true);
-        }
+    public VnpayPayment createVnpayPayment(VnpayPaymentDTO vnpayPaymentDTO, Payment payment) {
+        try {
+            VnpayPayment vnpayPayment = JsonHelper.getObject(JsonHelper.toString(vnpayPaymentDTO), VnpayPayment.class);
+            Long vnpayAmount = Long.valueOf(vnpayPaymentDTO.getVnp_Amount()+"")/100;
+            BigDecimal amount = new BigDecimal(vnpayAmount);
+            vnpayPayment.setVnp_Amount(amount);
+            if(vnpayPaymentDTO.getVnp_TransactionStatus().equals("00")){
+                vnpayPayment.setIs_done(true);
+            }
 
-        payment = updateTransactionStatus(payment, vnpayPaymentDTO);
-        vnpayPayment.setPayment(payment);
-        vnpayPayment.setPayment_id(payment.getId());
-        return vnpayPaymentRepository.save(vnpayPayment);
+            payment = updateTransactionStatus(payment, vnpayPaymentDTO);
+            vnpayPayment.setPayment(payment);
+            vnpayPayment.setPayment_id(payment.getId());
+            return vnpayPaymentRepository.save(vnpayPayment);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public VnpayPaymentDTO redirectApiVnpay(QueryDrDTO queryDrDTO) {
@@ -234,12 +226,11 @@ public class VNPayService extends BaseService {
         return queryDrDTO;
     }
 
-    public BaseResponse processQuerydr(List<Values> values, Payment payment) throws IOException {
-        VnpayPayment vnpayPayment = new VnpayPayment();
+    public BaseResponse processQuerydr(List<Values> values, Payment payment) {
         QueryDrDTO queryDrDTO = createQueryDrDTO(values);
         queryDrDTO.setVnp_TransactionNo(payment.getVnpTransactionNo());
         VnpayPaymentDTO vnpayPaymentDTO = redirectApiVnpay(queryDrDTO);
-        vnpayPayment = createVnpayPayment(vnpayPaymentDTO, payment);
+        VnpayPayment vnpayPayment = createVnpayPayment(vnpayPaymentDTO, payment);
 
         BaseResponse baseResponse = new BaseResponse();
         if (vnpayPaymentDTO.getVnp_TransactionStatus().equals("00")) {
@@ -277,5 +268,17 @@ public class VNPayService extends BaseService {
         payment.setHookStatus(true);
         payment = paymentRepository.save(payment);
         return payment;
+    }
+
+    public BaseResponse updatePayment(PaymentDTO paymentDTO) {
+        Payment paymentUpdate = paymentRepository.findByVnpTxnRef(paymentDTO.getVnp_TxnRef());
+        if (!paymentUpdate.getHookStatus()) {
+            Long userId = paymentUpdate.getUserId();
+            paymentUpdate.payment(paymentDTO);
+            paymentUpdate.setUserId(userId);
+            paymentUpdate.setHookStatus(true);
+            paymentUpdate = paymentRepository.save(paymentUpdate);
+        }
+        return new BaseResponse(paymentUpdate);
     }
 }

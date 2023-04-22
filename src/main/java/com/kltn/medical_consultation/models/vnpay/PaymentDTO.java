@@ -46,6 +46,24 @@ public class PaymentDTO {
         this.vnp_SecureHash = vnp_SecureHash;
     }
 
+    public PaymentDTO(Payment payment) {
+        this.id = payment.getId();
+        this.vnp_BankCode = payment.getVnpBankCode();
+        this.vnp_Amount = payment.getVnpAmount();
+        this.vnp_BankTranNo = payment.getVnpBankTranNo();
+        this.vnp_CardType = payment.getVnpCardType();
+        this.vnp_OrderInfo = payment.getVnpOrderInfo();
+        this.vnp_PayDate = payment.getVnpPayDate();
+        this.vnp_ResponseCode = payment.getVnpResponseCode();
+        this.vnp_TmnCode = payment.getVnpTmnCode();
+        this.vnp_TransactionNo = payment.getVnpTransactionNo();
+        this.vnp_TransactionStatus = payment.getVnpTransactionStatus();
+        this.vnp_TxnRef = payment.getVnpTxnRef();
+        this.vnp_SecureHash = payment.getVnpSecureHash();
+        this.user_id = payment.getUserId();
+        this.hook_status = payment.getHookStatus();
+    }
+
     public PaymentDTO paymentDTO(String vnp_BankCode, String vnpBankTranNo, String vnp_CardType, String vnp_PayDate, String vnp_ResponseCode, String vnp_SecureHash, String vnp_TmnCode, String vnp_TransactionNo, String vnp_TransactionStatus, String vnp_TxnRef, String vnp_Amount, String vnp_OrderInfo) {
         this.vnp_BankCode = vnp_BankCode;
         this.vnp_BankTranNo = vnpBankTranNo;
