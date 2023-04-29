@@ -26,6 +26,8 @@ public class MedicalSchedule extends BaseEntity{
     private Boolean isDone = false;
     @Column(name = "is_pay")
     private Boolean isPay = false;
+    @Column(name = "pay_code")
+    private String payCode;
 
     @ManyToOne
     @JsonIgnore

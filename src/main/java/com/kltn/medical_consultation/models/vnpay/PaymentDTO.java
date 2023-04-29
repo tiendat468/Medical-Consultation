@@ -30,6 +30,7 @@ public class PaymentDTO {
     private String vnp_SecureHash;
     private Long user_id;
     private Boolean hook_status;
+    private Long scheduleId;
 
     public PaymentDTO(String vnp_BankCode, String vnpBankTranNo, String vnp_CardType, String vnp_PayDate, String vnp_ResponseCode, String vnp_SecureHash, String vnp_TmnCode, String vnp_TransactionNo, String vnp_TransactionStatus, String vnp_TxnRef, String vnp_Amount, String vnp_OrderInfo) {
         this.vnp_BankCode = vnp_BankCode;

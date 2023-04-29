@@ -1,15 +1,16 @@
 package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.configs.VNPayConfig;
-import com.kltn.medical_consultation.entities.database.Payment;
-import com.kltn.medical_consultation.entities.database.VnpayPayment;
+import com.kltn.medical_consultation.entities.database.*;
+import com.kltn.medical_consultation.models.auth.AuthMessageCode;
+import com.kltn.medical_consultation.models.patient.PatientMessageCode;
+import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.models.vnpay.*;
-import com.kltn.medical_consultation.repository.database.VnpayPaymentRepository;
+import com.kltn.medical_consultation.repository.database.*;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.ShareConstant;
-import com.kltn.medical_consultation.repository.database.PaymentRepository;
 import com.kltn.medical_consultation.utils.JsonHelper;
 import com.kltn.medical_consultation.utils.MessageUtils;
 import lombok.extern.log4j.Log4j2;
@@ -32,6 +33,12 @@ import java.util.*;
 @Log4j2
 public class VNPayService extends BaseService {
     @Autowired
+    private MedicalScheduleRepository scheduleRepository;
+    @Autowired
+    private PatientRepository patientRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
     RestTemplate restTemplate;
 
     @Autowired
@@ -44,14 +51,16 @@ public class VNPayService extends BaseService {
     SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 
     public BaseResponse createPayment(PaymentDTO paymentDTO, Long userId, HttpServletRequest request) throws UnsupportedEncodingException {
-        validatePayment(paymentDTO);
         paymentDTO.setUser_id(userId);
+        validatePayment(paymentDTO);
         String vnpCreateDate = formatter.format(cld.getTime());
         Payment payment = new Payment(paymentDTO);
         String txnRef = UUID.randomUUID().toString().replaceAll("-", "");
         payment.setVnpTxnRef(txnRef);
         payment.setVnpPayDate(vnpCreateDate);
-        PaymentDTO paymentDto = new PaymentDTO(paymentRepository.save(payment));
+        payment = paymentRepository.save(payment);
+        updateSchedule(payment, paymentDTO.getScheduleId());
+        PaymentDTO paymentDto = new PaymentDTO(payment);
         if(paymentDto == null){
             throw new ApiException(VNPayMessageCode.ERROR_CREATE_PAYMENT);
         }
@@ -135,6 +144,36 @@ public class VNPayService extends BaseService {
         if(paymentDTO.getVnp_Amount() == null){
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("vnp_Amount"));
         }
+
+        Optional<User> optionalUser = userRepository.findById(paymentDTO.getUser_id());
+        if (optionalUser.isEmpty()) {
+            throw new ApiException(AuthMessageCode.AUTH_5_0_NOT_FOUND);
+        }
+
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(paymentDTO.getUser_id());
+        if (optionalPatient.isEmpty()) {
+            throw new ApiException(PatientMessageCode.PATIENT_NOT_FOUND);
+        }
+
+        Optional<MedicalSchedule> optionalSchedule = scheduleRepository.findById(paymentDTO.getScheduleId());
+        if (optionalSchedule.isEmpty()) {
+            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
+        }
+
+        if (optionalSchedule.get().getPatientProfile().getPatientId() != optionalPatient.get().getId()) {
+            throw new ApiException(ScheduleMessageCode.SCHEDULE_INVALID);
+        }
+    }
+
+    public void updateSchedule(Payment payment, Long scheduleId) {
+        Optional<MedicalSchedule> optionalSchedule = scheduleRepository.findById(scheduleId);
+        if (optionalSchedule.isEmpty()) {
+            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
+        }
+
+        MedicalSchedule medicalSchedule = optionalSchedule.get();
+        medicalSchedule.setPayCode(payment.getVnpTxnRef());
+        scheduleRepository.save(medicalSchedule);
     }
 
     public BaseResponse getPayment(String vnpTxnRef, HttpServletRequest request) {
