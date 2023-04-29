@@ -1,8 +1,6 @@
-package com.kltn.medical_consultation.models.doctor;
+package com.kltn.medical_consultation.models.patient;
 
-import com.kltn.medical_consultation.entities.database.MedicalSchedule;
 import com.kltn.medical_consultation.entities.database.PatientProfile;
-import com.kltn.medical_consultation.models.doctor.response.DetailDoctorScheduleResponse;
 import lombok.Data;
 
 @Data

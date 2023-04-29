@@ -3,7 +3,7 @@ package com.kltn.medical_consultation.services;
 import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.models.*;
-import com.kltn.medical_consultation.models.doctor.response.SchedulesResponse;
+import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.patient.*;
 import com.kltn.medical_consultation.models.patient.request.*;
 import com.kltn.medical_consultation.models.patient.response.PatientProfileResponse;
