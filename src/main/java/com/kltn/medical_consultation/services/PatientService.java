@@ -3,13 +3,12 @@ package com.kltn.medical_consultation.services;
 import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.models.*;
+import com.kltn.medical_consultation.models.doctor.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.patient.*;
-import com.kltn.medical_consultation.models.patient.request.CreatePatientProfileRequest;
-import com.kltn.medical_consultation.models.patient.request.DetailProfileRequest;
-import com.kltn.medical_consultation.models.patient.request.SavePatientRequest;
-import com.kltn.medical_consultation.models.patient.request.UpdateProfileRequest;
+import com.kltn.medical_consultation.models.patient.request.*;
 import com.kltn.medical_consultation.models.patient.response.PatientProfileResponse;
 import com.kltn.medical_consultation.models.patient.response.PatientResponse;
+import com.kltn.medical_consultation.repository.database.MedicalScheduleRepository;
 import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
 import com.kltn.medical_consultation.repository.database.PatientRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
@@ -19,6 +18,9 @@ import com.kltn.medical_consultation.utils.TimeUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,8 @@ import java.util.Optional;
 @Service
 @Log4j2
 public class PatientService extends BaseService{
+    @Autowired
+    private MedicalScheduleRepository scheduleRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -197,6 +201,31 @@ public class PatientService extends BaseService{
         }
         return false;
     }
+
+    public BasePaginationResponse<SchedulesResponse> getSchedules(ListPatientScheduleRequest request, Pageable pageable, HttpServletRequest httpServletRequest) {
+        if (request.getPatientId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PatientId"));
+        }
+
+        Optional<Patient> optionalPatient = patientRepository.findById(request.getPatientId());
+        if (optionalPatient.isEmpty()) {
+            throw new ApiException(PatientMessageCode.PATIENT_NOT_FOUND);
+        }
+
+        if (StringUtils.isNotEmpty(request.getMedicalDate())) {
+            TimeUtils.validateDateFormat(request.getMedicalDate());
+        }
+
+        Page<SchedulesResponse> schedulesResponses = scheduleRepository.findAll(
+                request.getSpecification(),
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), request.getSortSchedule())
+        ).map(medicalSchedule -> {
+            SchedulesResponse schedulesResponse = SchedulesResponse.of(medicalSchedule);
+            return schedulesResponse;
+        });
+        return new BasePaginationResponse<>(schedulesResponses);
+    }
+
 
 //    public BaseResponse<PatientProfileResponse> editPatientProfile(EditPatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
 //        if (StringUtils.isBlank(request.getFullName())) {

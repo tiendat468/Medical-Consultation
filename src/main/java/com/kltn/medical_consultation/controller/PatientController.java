@@ -1,13 +1,12 @@
 package com.kltn.medical_consultation.controller;
 
 import com.kltn.medical_consultation.models.ApiException;
+import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
-import com.kltn.medical_consultation.models.patient.request.CreatePatientProfileRequest;
-import com.kltn.medical_consultation.models.patient.request.DetailProfileRequest;
-import com.kltn.medical_consultation.models.patient.request.SavePatientRequest;
-import com.kltn.medical_consultation.models.patient.request.UpdateProfileRequest;
+import com.kltn.medical_consultation.models.patient.request.*;
 import com.kltn.medical_consultation.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +49,12 @@ public class PatientController extends BaseController {
     @PostMapping("/profile/update")
     public BaseResponse updatePatientProfile(@RequestBody UpdateProfileRequest request, HttpServletRequest httpServletRequest) throws ApiException{
         return patientService.updatePatientProfile(request, httpServletRequest);
+    }
+
+
+    @GetMapping("/schedules")
+    public BasePaginationResponse getSchedules(@RequestBody ListPatientScheduleRequest request, Pageable pageable, HttpServletRequest httpServletRequest) {
+        return patientService.getSchedules(request, pageable, httpServletRequest);
     }
 
 //    @PostMapping("/edit")

@@ -24,9 +24,6 @@ public class BasePaginationResponse<T>{
     @Schema(description = "Number of total items")
     public long currentPage;
 
-    @Schema(description = "Page index (begin = 0)")
-    public int pageIndex;
-
     @Schema(description = "Page size (number of items per page)")
     public int pageSize;
 

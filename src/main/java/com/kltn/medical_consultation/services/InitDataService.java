@@ -482,7 +482,7 @@ public class InitDataService implements CommandLineRunner {
     public void initDoctor(Department department){
         User doctor1 = new User();
         doctor1.setName("DOCTOR 1" + department.getSymbol());
-        String e1 = "doctor1_" + department.getSymbol() + " @gmail.com";
+        String e1 = "doctor1_" + department.getSymbol() + "@gmail.com";
         doctor1.setEmail(e1);
         doctor1.setType(UserType.DOCTOR.getType());
         doctor1.setIsActive(Boolean.TRUE);
@@ -500,7 +500,7 @@ public class InitDataService implements CommandLineRunner {
 
         User doctor2 = new User();
         doctor2.setName("DOCTOR 2" + department.getSymbol());
-        String e2 = "doctor2_" + department.getSymbol() + " @gmail.com";
+        String e2 = "doctor2_" + department.getSymbol() + "@gmail.com";
         doctor2.setEmail(e2);
         doctor2.setType(UserType.DOCTOR.getType());
         doctor2.setIsActive(Boolean.TRUE);

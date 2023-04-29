@@ -2,7 +2,6 @@ package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.entities.database.Doctor;
 import com.kltn.medical_consultation.entities.database.MedicalSchedule;
-import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
@@ -12,8 +11,7 @@ import com.kltn.medical_consultation.models.doctor.PatientProfileDTO;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.response.DetailDoctorScheduleResponse;
-import com.kltn.medical_consultation.models.doctor.response.DoctorScheduleResponse;
-import com.kltn.medical_consultation.models.patient.PatientMessageCode;
+import com.kltn.medical_consultation.models.doctor.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.repository.database.DoctorRepository;
 import com.kltn.medical_consultation.repository.database.MedicalScheduleRepository;
@@ -43,7 +41,7 @@ public class DoctorService extends BaseService{
     @Autowired
     MedicalScheduleRepository scheduleRepository;
 
-    public BasePaginationResponse<DoctorScheduleResponse> listSchedule(ListDoctorScheduleRequest request, Pageable pageable, HttpServletRequest httpServletRequest) {
+    public BasePaginationResponse<SchedulesResponse> listSchedule(ListDoctorScheduleRequest request, Pageable pageable, HttpServletRequest httpServletRequest) {
         if (request.getDoctorId() == null) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("DoctorId"));
         }
@@ -57,12 +55,12 @@ public class DoctorService extends BaseService{
             TimeUtils.validateDateFormat(request.getMedicalDate());
         }
 
-        Page<DoctorScheduleResponse> doctorScheduleResponses = scheduleRepository.findAll(
+        Page<SchedulesResponse> doctorScheduleResponses = scheduleRepository.findAll(
                 request.getSpecification(),
                 pageable
         ).map(medicalSchedule -> {
-            DoctorScheduleResponse doctorScheduleResponse = DoctorScheduleResponse.of(medicalSchedule);
-            return doctorScheduleResponse;
+            SchedulesResponse schedulesResponse = SchedulesResponse.of(medicalSchedule);
+            return schedulesResponse;
         });
         return new BasePaginationResponse<>(doctorScheduleResponses);
     }

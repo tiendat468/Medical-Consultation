@@ -4,7 +4,7 @@ import com.kltn.medical_consultation.entities.database.MedicalSchedule;
 import lombok.Data;
 
 @Data
-public class DoctorScheduleResponse {
+public class SchedulesResponse {
     private Long scheduleId;
     private Long doctorId;
     private Long patientProfileId;
@@ -13,8 +13,8 @@ public class DoctorScheduleResponse {
     private Boolean isDone;
     private Boolean isPay;
 
-    public static DoctorScheduleResponse of(MedicalSchedule medicalSchedule) {
-        DoctorScheduleResponse response = new DoctorScheduleResponse();
+    public static SchedulesResponse of(MedicalSchedule medicalSchedule) {
+        SchedulesResponse response = new SchedulesResponse();
         response.setDoctorId(medicalSchedule.getDoctorId());
         response.setPatientProfileId(medicalSchedule.getPatientProfileId());
         response.setScheduleId(medicalSchedule.getId());

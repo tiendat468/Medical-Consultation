@@ -46,6 +46,16 @@ public class SpecificationBaseRequest {
     }
 
     @JsonIgnore
+    public Sort getSortSchedule(){
+        if(StringUtils.isNotEmpty(getOrderBy())){
+            if (getOrderBy().equalsIgnoreCase(OrderBy.ASC.getValue())){
+                return Sort.by(Sort.Direction.ASC, "medicalDate");
+            }
+        }
+        return Sort.by(Sort.Direction.DESC, "medicalDate");
+    }
+
+    @JsonIgnore
     public Sort getSortUser(){
         if(StringUtils.isNotEmpty(getOrderBy())){
             LOGGER.info("getOrderBy {}, OrderBy.DESC.getValue {}", getOrderBy(), OrderBy.DESC.getValue());

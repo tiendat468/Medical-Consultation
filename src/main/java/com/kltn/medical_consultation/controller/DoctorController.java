@@ -5,7 +5,7 @@ import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.response.DetailDoctorScheduleResponse;
-import com.kltn.medical_consultation.models.doctor.response.DoctorScheduleResponse;
+import com.kltn.medical_consultation.models.doctor.response.SchedulesResponse;
 import com.kltn.medical_consultation.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,7 @@ public class DoctorController extends BaseController{
     DoctorService doctorService;
 
     @PostMapping("/schedule/list")
-    public BasePaginationResponse<DoctorScheduleResponse> listSchedule(@RequestBody ListDoctorScheduleRequest listDoctorScheduleRequest, Pageable pageable, HttpServletRequest httpServletRequest) {
+    public BasePaginationResponse<SchedulesResponse> listSchedule(@RequestBody ListDoctorScheduleRequest listDoctorScheduleRequest, Pageable pageable, HttpServletRequest httpServletRequest) {
         return doctorService.listSchedule(listDoctorScheduleRequest, pageable, httpServletRequest);
     }
 
