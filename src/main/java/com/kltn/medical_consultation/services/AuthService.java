@@ -142,10 +142,12 @@ public class AuthService extends BaseService{
         switch (user.getType()) {
             case 2:
                 Doctor doctor = userService.fetchDoctor(user.getId());
+                userProfileResponse.setId(doctor.getId());
                 userProfileResponse.setPhoneNumber(doctor.getPhoneNumber());
                 break;
             case 3:
                 Patient patient = userService.fetchPatient(user.getId());
+                userProfileResponse.setId(patient.getId());
                 userProfileResponse.setPhoneNumber(patient.getPhoneNumber());
                 break;
             default:
