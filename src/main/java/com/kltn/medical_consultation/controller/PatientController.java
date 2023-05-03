@@ -51,8 +51,7 @@ public class PatientController extends BaseController {
         return patientService.updatePatientProfile(request, httpServletRequest);
     }
 
-
-    @GetMapping("/schedules")
+    @PostMapping("/schedules")
     public BasePaginationResponse getSchedules(@RequestBody ListPatientScheduleRequest request, Pageable pageable, HttpServletRequest httpServletRequest) {
         return patientService.getSchedules(request, pageable, httpServletRequest);
     }

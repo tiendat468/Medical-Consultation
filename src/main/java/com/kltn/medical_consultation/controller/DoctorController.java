@@ -4,7 +4,6 @@ import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
-import com.kltn.medical_consultation.models.doctor.response.DetailDoctorScheduleResponse;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class DoctorController extends BaseController{
     }
 
     @PostMapping("/schedule/detail")
-    public BaseResponse<DetailDoctorScheduleResponse> detailSchedule(@RequestBody DetailDoctorScheduleRequest detailDoctorScheduleRequest, HttpServletRequest httpServletRequest) {
+    public BaseResponse<SchedulesResponse> detailSchedule(@RequestBody DetailDoctorScheduleRequest detailDoctorScheduleRequest, HttpServletRequest httpServletRequest) {
         return doctorService.detailSchedule(detailDoctorScheduleRequest, httpServletRequest);
     }
 

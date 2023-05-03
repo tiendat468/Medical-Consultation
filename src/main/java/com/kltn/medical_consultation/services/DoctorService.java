@@ -65,7 +65,7 @@ public class DoctorService extends BaseService{
         return new BasePaginationResponse<>(doctorScheduleResponses);
     }
 
-    public BaseResponse<DetailDoctorScheduleResponse> detailSchedule(DetailDoctorScheduleRequest request, HttpServletRequest httpServletRequest) {
+    public BaseResponse<SchedulesResponse> detailSchedule(DetailDoctorScheduleRequest request, HttpServletRequest httpServletRequest) {
         if (request.getScheduleId() == null) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ScheduleId"));
         }
@@ -74,12 +74,8 @@ public class DoctorService extends BaseService{
         if (optionalMedicalSchedule.isEmpty()) {
             throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
         }
-
-        MedicalSchedule medicalSchedule = optionalMedicalSchedule.get();
-        PatientProfileDTO patientProfileDTO = PatientProfileDTO.of(medicalSchedule.getPatientProfile());
-
-        DetailDoctorScheduleResponse response = DetailDoctorScheduleResponse.of(medicalSchedule, patientProfileDTO);
-        return new BaseResponse<DetailDoctorScheduleResponse>(response);
+        SchedulesResponse response = SchedulesResponse.of(optionalMedicalSchedule.get());
+        return new BaseResponse<>(response);
     }
 
     public BaseResponse checkDone(Long scheduleId, Long userId, HttpServletRequest httpServletRequest) {
