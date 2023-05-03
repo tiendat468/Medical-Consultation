@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class DetailScheduleResponse {
+    private Long scheduleId;
     private Long departmentId;
     private String departmentName;
     private Long doctorId;
@@ -20,6 +21,7 @@ public class DetailScheduleResponse {
 
     public static DetailScheduleResponse of(MedicalSchedule medicalSchedule, Department department) {
         DetailScheduleResponse response = new DetailScheduleResponse();
+        response.setScheduleId(medicalSchedule.getId());
         response.setDepartmentId(department.getId());
         response.setDepartmentName(department.getName());
         response.setDoctorId(medicalSchedule.getDoctorId());
@@ -36,6 +38,7 @@ public class DetailScheduleResponse {
 
     public static DetailScheduleResponse of(MedicalSchedule medicalSchedule) {
         DetailScheduleResponse response = new DetailScheduleResponse();
+        response.setScheduleId(medicalSchedule.getId());
         response.setDepartmentId(medicalSchedule.getDoctor().getDepartment().getId());
         response.setDepartmentName(medicalSchedule.getDoctor().getDepartment().getName());
         response.setDoctorId(medicalSchedule.getDoctorId());

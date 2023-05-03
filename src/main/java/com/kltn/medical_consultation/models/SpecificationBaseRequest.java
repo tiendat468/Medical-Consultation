@@ -29,7 +29,7 @@ public class SpecificationBaseRequest {
 
     @JsonIgnore
     public Specification getBaseSpecification(){
-        Specification specification = (entity, cq, cb) -> cb.equal(entity.get("isActive"), true);
+        Specification specification = (entity, cq, cb) -> cb.equal(entity.get("isDelete"), false);
 
         return specification;
     }

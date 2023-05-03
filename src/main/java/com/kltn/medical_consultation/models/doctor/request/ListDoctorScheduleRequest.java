@@ -17,8 +17,9 @@ public class ListDoctorScheduleRequest extends SpecificationBaseRequest {
     private Boolean isPay;
     @JsonIgnore
     public Specification<MedicalSchedule> getSpecification() {
-        Specification<MedicalSchedule> specification = (entity, cq, cb) -> cb.equal(entity.get("doctorId"), doctorId);
+        Specification<MedicalSchedule> specification = getBaseSpecification();
 
+        specification = SpecificationUtil.addSpecification(specification, (entity, cq, cb) -> cb.equal(entity.get("doctorId"), doctorId));
         if (StringUtils.isNotEmpty(medicalDate)) {
             specification = SpecificationUtil.addSpecification(specification, (entity, cq, cb) ->
                     cb.equal(entity.get("medicalDate"), medicalDate));

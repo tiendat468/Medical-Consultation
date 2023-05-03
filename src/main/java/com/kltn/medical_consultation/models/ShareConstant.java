@@ -75,6 +75,7 @@ public interface ShareConstant {
         public static final String VNP_IPN_URL = "http://localhost:8088/api/vnpay/vnpay-webhook/vnpay_ipn";
         public static final String VNP_PAY_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         public static final String VNP_API_URL = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+        public static final String PAY_CASH = "CASH";
 
     }
 }

@@ -20,7 +20,7 @@ public class DoctorController extends BaseController{
     @Autowired
     DoctorService doctorService;
 
-    @PostMapping("/schedule/list")
+    @PostMapping("/schedules")
     public BasePaginationResponse<SchedulesResponse> listSchedule(@RequestBody ListDoctorScheduleRequest listDoctorScheduleRequest, Pageable pageable, HttpServletRequest httpServletRequest) {
         return doctorService.listSchedule(listDoctorScheduleRequest, pageable, httpServletRequest);
     }
