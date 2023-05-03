@@ -4,6 +4,7 @@ import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
+import com.kltn.medical_consultation.models.doctor.request.UpdateScheduleRequest;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class DoctorController extends BaseController{
         return doctorService.detailSchedule(detailDoctorScheduleRequest, httpServletRequest);
     }
 
-    @PostMapping("/schedule/done/{scheduleId}")
-    public BaseResponse checkDone(@PathVariable Long scheduleId, HttpServletRequest httpServletRequest) {
-        return doctorService.checkDone(scheduleId, authenticationFacade.getUserId(), httpServletRequest);
+    @PostMapping("/schedule/update")
+    public BaseResponse checkDone(@RequestBody UpdateScheduleRequest updateScheduleRequest, HttpServletRequest httpServletRequest) {
+        return doctorService.checkDone(updateScheduleRequest, httpServletRequest);
     }
 }

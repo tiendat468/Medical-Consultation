@@ -2,11 +2,13 @@ package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.entities.database.Doctor;
 import com.kltn.medical_consultation.entities.database.MedicalSchedule;
+import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.doctor.DoctorMessageCode;
+import com.kltn.medical_consultation.models.doctor.request.UpdateScheduleRequest;
 import com.kltn.medical_consultation.models.patient.PatientProfileDTO;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
@@ -79,22 +81,27 @@ public class DoctorService extends BaseService{
         return new BaseResponse<>(response);
     }
 
-    public BaseResponse checkDone(Long scheduleId, Long userId, HttpServletRequest httpServletRequest) {
-        if (scheduleId == null) {
+    public BaseResponse checkDone(UpdateScheduleRequest request, HttpServletRequest httpServletRequest) {
+        if (request.getScheduleId() == null) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ScheduleId"));
         }
 
-        Optional<MedicalSchedule> optionalMedicalSchedule = scheduleRepository.findById(scheduleId);
+        Optional<MedicalSchedule> optionalMedicalSchedule = scheduleRepository.findById(request.getScheduleId());
         if (optionalMedicalSchedule.isEmpty()) {
             throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
         }
 
         MedicalSchedule medicalSchedule = optionalMedicalSchedule.get();
-        if (medicalSchedule.getDoctorId() != userId) {
-            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_BELONG);
+        if (medicalSchedule.getPatientProfile() == null) {
+            throw new ApiException(ScheduleMessageCode.SCHEDULE_INVALID);
         }
 
+        PatientProfile patientProfile = medicalSchedule.getPatientProfile();
+        patientProfile.setDiagnostic(request.getDiagnostic());
+        patientProfileRepository.save(patientProfile);
+
         medicalSchedule.setIsDone(true);
+        medicalSchedule.setIsPay(request.isPay());
         scheduleRepository.save(medicalSchedule);
         return new BaseResponse<>(ERROR.SUCCESS);
     }

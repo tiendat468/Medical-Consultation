@@ -144,6 +144,9 @@ public class VNPayService extends BaseService {
         if(paymentDTO.getVnp_Amount() == null){
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("vnp_Amount"));
         }
+        if(paymentDTO.getScheduleId() == null){
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ScheduleId"));
+        }
 
         Optional<User> optionalUser = userRepository.findById(paymentDTO.getUser_id());
         if (optionalUser.isEmpty()) {
