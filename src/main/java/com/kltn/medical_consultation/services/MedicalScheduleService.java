@@ -90,7 +90,7 @@ public class MedicalScheduleService extends BaseService{
         patientProfile.setSymptom(request.getSymptom());
         patientProfile = patientProfileRepository.save(patientProfile);
 
-        // create patient profile
+        // create medicalSchedule
         MedicalSchedule medicalSchedule = new MedicalSchedule();
         if (patientProfile != null) {
             medicalSchedule.setMedicalDate(request.getMedicalDate());
@@ -206,7 +206,7 @@ public class MedicalScheduleService extends BaseService{
     }
 
     public List<MedicalSchedule> findScheduleByDoctorAndMedicalDate(Long doctorId, String medicalDate) {
-        List<MedicalSchedule> scheduleList = scheduleRepository.findByDoctorIdAndMedicalDate(doctorId, medicalDate);
+        List<MedicalSchedule> scheduleList = scheduleRepository.findByDoctorIdAndMedicalDateAndIsDeleteFalse(doctorId, medicalDate);
         if (scheduleList.isEmpty()) {
             return new ArrayList<>();
         }
