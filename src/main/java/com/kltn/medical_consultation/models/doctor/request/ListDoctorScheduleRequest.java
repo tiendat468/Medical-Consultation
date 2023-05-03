@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 public class ListDoctorScheduleRequest extends SpecificationBaseRequest {
     private Long doctorId;
     private String medicalDate;
+    private Boolean isDone;
+    private Boolean isPay;
     @JsonIgnore
     public Specification<MedicalSchedule> getSpecification() {
         Specification<MedicalSchedule> specification = (entity, cq, cb) -> cb.equal(entity.get("doctorId"), doctorId);
@@ -21,6 +23,17 @@ public class ListDoctorScheduleRequest extends SpecificationBaseRequest {
             specification = SpecificationUtil.addSpecification(specification, (entity, cq, cb) ->
                     cb.equal(entity.get("medicalDate"), medicalDate));
         }
+
+        if (isDone != null) {
+            specification = SpecificationUtil.addSpecification(specification, (entity, cq, cb) ->
+                    cb.equal(entity.get("isDone"), isDone));
+        }
+
+        if (isPay != null) {
+            specification = SpecificationUtil.addSpecification(specification, (entity, cq, cb) ->
+                    cb.equal(entity.get("isPay"), isPay));
+        }
+
         return specification;
     }
 }

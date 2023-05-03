@@ -23,6 +23,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +58,7 @@ public class DoctorService extends BaseService{
 
         Page<SchedulesResponse> doctorScheduleResponses = scheduleRepository.findAll(
                 request.getSpecification(),
-                pageable
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), request.getSortSchedule())
         ).map(medicalSchedule -> {
             SchedulesResponse schedulesResponse = SchedulesResponse.of(medicalSchedule);
             return schedulesResponse;
