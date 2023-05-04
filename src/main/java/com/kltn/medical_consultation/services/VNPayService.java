@@ -6,12 +6,12 @@ import com.kltn.medical_consultation.models.auth.AuthMessageCode;
 import com.kltn.medical_consultation.models.patient.PatientMessageCode;
 import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.models.vnpay.*;
+import com.kltn.medical_consultation.models.vnpay.response.VNPayPaymentResponse;
 import com.kltn.medical_consultation.repository.database.*;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.ShareConstant;
-import com.kltn.medical_consultation.utils.JsonHelper;
 import com.kltn.medical_consultation.utils.MessageUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
@@ -79,7 +78,7 @@ public class VNPayService extends BaseService {
         }
     }
 
-    public BaseResponse getPayment(String vnpTxnRef, HttpServletRequest request) {
+    public BaseResponse<VNPayPaymentResponse> getPayment(String vnpTxnRef, HttpServletRequest request) {
         if(StringUtils.isBlank(vnpTxnRef)){
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("vnpTxnRef"));
         }
@@ -211,15 +210,13 @@ public class VNPayService extends BaseService {
         scheduleRepository.save(medicalSchedule);
     }
 
-    public BaseResponse getTransaction(Payment payment, HttpServletRequest request) {
-        BaseResponse baseResponse = new BaseResponse();
+    public BaseResponse<VNPayPaymentResponse> getTransaction(Payment payment, HttpServletRequest request) {
         List<Values> key = initRequestTransaction(payment, request);
         Optional<VnpayPayment> optionalVnpayPayment = vnpayPaymentRepository.findByPaymentId(payment.getId());
         VnpayPayment vnpayPayment = optionalVnpayPayment.orElseGet(VnpayPayment::new);
 
         if (vnpayPayment.getIs_done()){
-            baseResponse.setData(vnpayPayment);
-            return baseResponse;
+            return new BaseResponse<>(new VNPayPaymentResponse(vnpayPayment));
         }
 
         return processQuerydr(vnpayPayment, key, payment);
@@ -282,15 +279,7 @@ public class VNPayService extends BaseService {
         queryDrDTO.setVnp_TransactionNo(payment.getVnpTransactionNo());
         VnpayPaymentDTO vnpayPaymentDTO = redirectApiVnpay(queryDrDTO);
         vnpayPayment = createVnpayPayment(vnpayPayment, vnpayPaymentDTO, payment);
-
-        BaseResponse baseResponse = new BaseResponse();
-        if(vnpayPaymentDTO.getVnp_TransactionStatus() != null && vnpayPaymentDTO.getVnp_TransactionStatus().equals("00")){
-            baseResponse.setData(vnpayPayment);
-            return baseResponse;
-        }
-
-        baseResponse.setData(vnpayPaymentDTO);
-        return baseResponse;
+        return new BaseResponse<>(new VNPayPaymentResponse(vnpayPayment));
     }
 
     public List<Values> initRequestTransaction(Payment payment, HttpServletRequest request) {
