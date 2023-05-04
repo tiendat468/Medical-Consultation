@@ -29,7 +29,7 @@ public class PatientController extends BaseController {
 //    }
 
     @PostMapping("/save")
-    public BaseResponse detailProfile(@RequestBody SavePatientRequest request, HttpServletRequest httpServletRequest) throws ApiException{
+    public BaseResponse saveProfile(@RequestBody SavePatientRequest request, HttpServletRequest httpServletRequest) throws ApiException{
         return patientService.savePatient(request, authenticationFacade.getUserId(), httpServletRequest);
     }
 

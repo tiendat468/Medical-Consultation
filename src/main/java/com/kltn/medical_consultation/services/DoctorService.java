@@ -8,11 +8,11 @@ import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.doctor.DoctorMessageCode;
+import com.kltn.medical_consultation.models.doctor.request.SaveProfileRequest;
 import com.kltn.medical_consultation.models.doctor.request.UpdateScheduleRequest;
-import com.kltn.medical_consultation.models.patient.PatientProfileDTO;
+import com.kltn.medical_consultation.models.doctor.response.DoctorProfileResponse;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
-import com.kltn.medical_consultation.models.doctor.response.DetailDoctorScheduleResponse;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.repository.database.DoctorRepository;
@@ -43,6 +43,59 @@ public class DoctorService extends BaseService{
     private DoctorRepository doctorRepository;
     @Autowired
     MedicalScheduleRepository scheduleRepository;
+    @Autowired
+    UserService userService;
+
+    public BaseResponse<DoctorProfileResponse> getProfile(Long userId, HttpServletRequest httpServletRequest) throws ApiException {
+        userService.validateUser(userId);
+        Optional<Doctor> optionalDoctor = doctorRepository.findByUserId(userId);
+        if (optionalDoctor.isEmpty()) {
+            return new BaseResponse<>(DoctorMessageCode.DOCTOR_NOT_FOUND);
+        }
+
+        Doctor doctor = optionalDoctor.get();
+        if (doctor.getIsDelete()) {
+            return new BaseResponse<>(DoctorMessageCode.DOCTOR_EXIST);
+        }
+
+        return new BaseResponse<>(DoctorProfileResponse.of(doctor));
+    }
+
+    public BaseResponse<DoctorProfileResponse> updateProfile(SaveProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
+        userService.validateUser(userId);
+        if (request.getId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Id"));
+        }
+
+        if (StringUtils.isEmpty(request.getFullName())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("FullName"));
+        }
+
+        if (StringUtils.isEmpty(request.getSex())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Sex"));
+        }
+
+        if (StringUtils.isEmpty(request.getIdentityNumber())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("IdentityNumber"));
+        }
+
+        if (StringUtils.isEmpty(request.getPhoneNumber())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PhoneNumber"));
+        }
+
+        Optional<Doctor> optionalDoctor = doctorRepository.findByUserId(userId);
+        if (optionalDoctor.isEmpty()) {
+            throw new ApiException(DoctorMessageCode.DOCTOR_NOT_FOUND);
+        }
+        Doctor doctor = optionalDoctor.get();
+
+        doctor.setFullName(request.getFullName());
+        doctor.setSex(request.getSex());
+        doctor.setIdentityNumber(request.getIdentityNumber());
+        doctor.setPhoneNumber(request.getPhoneNumber());
+        doctor = doctorRepository.save(doctor);
+        return new BaseResponse<>(DoctorProfileResponse.of(doctor));
+    }
 
     public BasePaginationResponse<SchedulesResponse> listSchedule(ListDoctorScheduleRequest request, Pageable pageable, HttpServletRequest httpServletRequest) {
         if (request.getDoctorId() == null) {
