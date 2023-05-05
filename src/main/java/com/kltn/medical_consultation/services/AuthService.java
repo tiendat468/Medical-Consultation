@@ -62,7 +62,7 @@ public class AuthService extends BaseService{
     @Autowired
     UserService userService;
 
-    public BaseResponse<LoginResponse> login(LoginRequest request) {
+    public BaseResponse<LoginResponse> login(LoginRequest request, Boolean isAdmin) {
         if (StringUtils.isBlank(request.getEmail())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Email"));
         }
@@ -72,10 +72,16 @@ public class AuthService extends BaseService{
         }
 
         User existedUser;
-        if (request.getLoginWithDoctor()) {
-            existedUser = userRepository.findByEmailAndType(request.getEmail(), UserType.DOCTOR.getType()).orElse(null);
+        if (isAdmin) {
+            //Login Admin
+            existedUser = userRepository.findByEmailAndType(request.getEmail(), UserType.ADMIN.getType()).orElse(null);
         } else {
-            existedUser = userRepository.findByEmailAndType(request.getEmail(), UserType.PATIENT.getType()).orElse(null);
+            //Login User
+            if (request.getLoginWithDoctor()) {
+                existedUser = userRepository.findByEmailAndType(request.getEmail(), UserType.DOCTOR.getType()).orElse(null);
+            } else {
+                existedUser = userRepository.findByEmailAndType(request.getEmail(), UserType.PATIENT.getType()).orElse(null);
+            }
         }
 
         if (existedUser == null){
@@ -108,12 +114,11 @@ public class AuthService extends BaseService{
 
         long currentTime = System.currentTimeMillis();
         tokenDTO.setExpiredAt(1440L); // fix 1 request co expired 1 ngay
-        tokenRepository.save(tokenDTO);
+        tokenDTO = tokenRepository.save(tokenDTO);
 
         LoginResponse response = new LoginResponse();
-        response.setToken(token);
+        response.setToken(tokenDTO.getToken());
         response.setExpiredAt(TimeUtils.dateToStringSimpleDateFormat(currentTime + tokenDTO.getExpiredAt() * 60 * 1000));
-
         return new BaseResponse<>(AuthMessageCode.AUTH_1_1, response);
     }
 
@@ -140,6 +145,9 @@ public class AuthService extends BaseService{
         userProfileResponse.setType(UserType.from(user.getType()).getCode());
 
         switch (user.getType()) {
+            case 1:
+                userProfileResponse.setId(user.getId());
+                break;
             case 2:
                 Doctor doctor = userService.fetchDoctor(user.getId());
                 userProfileResponse.setId(doctor.getId());
