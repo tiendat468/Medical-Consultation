@@ -9,12 +9,16 @@ public class DoctorDTO {
     private Long id;
     private String fullName;
     private String sex;
+    private String identityNumber;
+    private String phoneNumber;
     private DepartmentDTO department;
 
     public DoctorDTO(Doctor doctor) {
         this.id = doctor.getId();
         this.fullName = doctor.getFullName();
         this.sex = doctor.getSex();
+        this.identityNumber = doctor.getIdentityNumber();
+        this.phoneNumber = doctor.getPhoneNumber();
         this.department = new DepartmentDTO(doctor.getDepartment());
     }
 }
