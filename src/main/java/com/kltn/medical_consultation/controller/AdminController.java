@@ -2,6 +2,7 @@ package com.kltn.medical_consultation.controller;
 
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
+import com.kltn.medical_consultation.models.admin.request.AddUserRequest;
 import com.kltn.medical_consultation.models.admin.request.ListDoctorRequest;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
 import com.kltn.medical_consultation.models.auth.request.LoginRequest;
@@ -27,6 +28,12 @@ public class AdminController extends BaseController{
     @PostMapping("/login")
     public BaseResponse<LoginResponse> login(@RequestBody LoginRequest request) {
         return authService.login(request, true);
+    }
+
+    @PostMapping("/add-user")
+    public BaseResponse addUser(@RequestBody AddUserRequest request) {
+        authService.checkPermission(authenticationFacade.getUserId());
+        return adminService.addUser(request);
     }
 
     @GetMapping("/doctors")
