@@ -99,7 +99,7 @@ public class AdminService extends BaseService {
         }
 
         if (StringUtils.isNoneBlank(addUserRequest.getPhoneNumber())) {
-            if (CustomStringUtils.phoneNumberValidate(addUserRequest.getPhoneNumber())) {
+            if (!CustomStringUtils.phoneNumberValidate(addUserRequest.getPhoneNumber())) {
                 throw new ApiException(ERROR.INVALID_EMAIL, MessageUtils.wrongFormatPhoneNumber("PhoneNumber"));
             }
         }
