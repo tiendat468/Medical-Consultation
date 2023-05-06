@@ -10,6 +10,7 @@ import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.admin.AdminMessageCode;
+import com.kltn.medical_consultation.models.admin.request.ActivateUserRequest;
 import com.kltn.medical_consultation.models.admin.request.ListDoctorRequest;
 import com.kltn.medical_consultation.models.admin.request.AddUserRequest;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
@@ -168,8 +169,21 @@ public class AdminService extends BaseService {
         return baseResponse;
     }
 
-    public void activate() {
+    public BaseResponse activate(ActivateUserRequest request) {
+        if (request.getUserId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("UserId"));
+        }
 
+        Optional<User> optionalUser = userRepository.findById(request.getUserId());
+        if (optionalUser.isEmpty()) {
+            throw new ApiException(AdminMessageCode.USER_NOT_FOUND);
+        }
+
+        User user = optionalUser.get();
+        user.setIsActive(request.getIsActive());
+        userRepository.save(user);
+
+        return new BaseResponse<>();
     }
 
 }

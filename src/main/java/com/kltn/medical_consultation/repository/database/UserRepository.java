@@ -15,5 +15,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmailAndType(String email, int type);
 
     List<User> findByCreatedAt(OffsetDateTime createdAt);
-
 }

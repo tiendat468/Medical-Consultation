@@ -5,6 +5,7 @@ import com.kltn.medical_consultation.models.IMessageCode;
 public enum AdminMessageCode  implements IMessageCode {
     USER_TYPE_INVALID("USER_TYPE_INVALID", "Loại người dùng không hợp lệ"),
     USER_EXIST("USER_EXIST", "Email đã tồn tại"),
+    USER_NOT_FOUND("USER_NOT_FOUND", "Tài khoản không tồn tại"),
     ;
 
     private String code;
