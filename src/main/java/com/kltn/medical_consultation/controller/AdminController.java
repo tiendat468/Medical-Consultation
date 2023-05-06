@@ -31,6 +31,13 @@ public class AdminController extends BaseController{
 
     @GetMapping("/doctors")
     public BasePaginationResponse<DoctorResponse> listDoctors(@RequestBody ListDoctorRequest listDoctorRequest, Pageable pageable, HttpServletRequest httpServletRequest) {
+        authService.checkPermission(authenticationFacade.getUserId());
         return adminService.listDoctors(listDoctorRequest, pageable);
+    }
+
+    @GetMapping("/doctor/{doctorId}")
+    public BaseResponse<DoctorResponse> getDoctorBy(@PathVariable Long doctorId, HttpServletRequest httpServletRequest) {
+        authService.checkPermission(authenticationFacade.getUserId());
+        return adminService.getDoctorById(doctorId);
     }
 }

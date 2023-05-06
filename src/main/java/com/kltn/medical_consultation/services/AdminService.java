@@ -1,6 +1,7 @@
 package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.entities.database.Department;
+import com.kltn.medical_consultation.entities.database.Doctor;
 import com.kltn.medical_consultation.entities.database.User;
 import com.kltn.medical_consultation.enumeration.UserType;
 import com.kltn.medical_consultation.models.ApiException;
@@ -12,6 +13,7 @@ import com.kltn.medical_consultation.models.admin.request.ListDoctorRequest;
 import com.kltn.medical_consultation.models.admin.request.SaveUserRequest;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
 import com.kltn.medical_consultation.models.department.DepartmentMessageCode;
+import com.kltn.medical_consultation.models.doctor.DoctorMessageCode;
 import com.kltn.medical_consultation.repository.database.DepartmentRepository;
 import com.kltn.medical_consultation.repository.database.DoctorRepository;
 import com.kltn.medical_consultation.repository.database.UserRepository;
@@ -37,13 +39,10 @@ public class AdminService extends BaseService {
     private DepartmentRepository departmentRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Value("${mc.default_password:123456}")
     String defaultPassword;
-
     @Autowired
     ICheckBCryptPasswordEncoder passwordEncoder;
-
 
     public BasePaginationResponse<DoctorResponse> listDoctors(ListDoctorRequest request, Pageable pageable) {
         if (request.getDepartmentId() != null) {
@@ -63,6 +62,18 @@ public class AdminService extends BaseService {
         });
         return new BasePaginationResponse<>(doctorResponses);
 
+    }
+
+    public BaseResponse<DoctorResponse> getDoctorById(Long doctorId) {
+        if (doctorId == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("DoctorId"));
+        }
+
+        Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
+        if (optionalDoctor.isEmpty()) {
+            throw new ApiException(DoctorMessageCode.DOCTOR_NOT_FOUND);
+        }
+        return new BaseResponse<>(DoctorResponse.of(optionalDoctor.get()));
     }
 
     public void listPatients() {

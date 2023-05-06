@@ -12,11 +12,11 @@ import java.util.List;
 @Setter
 public class BasePaginationResponse<T>{
 
-    @Schema(defaultValue = "1" , description = "Result Code")
-    private int code;
+    @Schema(defaultValue = "1" , description = "Mã code thành công hoặc mã lỗi của api")
+    private int code = ERROR.SUCCESS.getCode();
 
-    @Schema(defaultValue = "Message" , description = "Result message")
-    private String message;
+    @Schema(defaultValue = "Message" , description = "message của server trả về")
+    private String message = ERROR.SUCCESS.getMessage();
 
     @Schema(defaultValue = "MESSAGE_CODE" , description = "Message code")
     private String messageCode;

@@ -19,6 +19,7 @@ public enum AuthMessageCode implements IMessageCode {
     AUTH_5_0_NOT_EXIST("AUTH_5_0_NOT_EXIST","Tài khoản không tồn tại","Tài khoản đã bị xóa"),
     AUTH_5_0_EXIST("AUTH_5_0_EXIST","Tài khoản đã tồn tại","Tài khoản đã tồn tại"),
     AUTH_5_0_INACTIVE("AUTH_5_0_INACTIVE","Tài khoản của bạn chưa được xác thực. Vui lòng xác thực tài khoản!","Tài khoản đã bị vô hiệu hóa"),
+    PERMISSION_DENIED("PERMISSION_DENIED","Tài khoản không có quyền truy cập","Tài khoản không có quyền truy cập"),
     ;
     private String code;
     private String message;

@@ -352,4 +352,20 @@ public class AuthService extends BaseService{
         }
         return false;
     }
+
+    public void checkPermission(Long userId) {
+        if (userId == null) {
+            throw new ApiException(AuthMessageCode.PERMISSION_DENIED);
+        }
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (UserType.ADMIN.getType() == user.getType()) {
+                return;
+            }
+        }
+
+        throw new ApiException(AuthMessageCode.PERMISSION_DENIED);
+    }
 }
