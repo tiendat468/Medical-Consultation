@@ -2,14 +2,22 @@ package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.entities.database.Department;
 import com.kltn.medical_consultation.entities.database.Symptom;
+import com.kltn.medical_consultation.models.ApiException;
+import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
+import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
+import com.kltn.medical_consultation.models.department.DepartmentMessageCode;
+import com.kltn.medical_consultation.models.department.request.ListDepartmentRequest;
 import com.kltn.medical_consultation.models.department.response.DepartmentPercent;
+import com.kltn.medical_consultation.models.department.response.DepartmentResponse;
 import com.kltn.medical_consultation.models.schedule.ListFreeSchedule;
 import com.kltn.medical_consultation.models.department.request.FetchDepartmentRequest;
 import com.kltn.medical_consultation.repository.database.DepartmentRepository;
 import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
 import com.kltn.medical_consultation.repository.database.SymptomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +41,7 @@ public class DepartmentService extends BaseService{
         String[] patientSymptoms = request.getSymptom().split(",");
         int totalPatientSymptom = patientSymptoms.length;
         List<DepartmentPercent> departmentPercents = new ArrayList<>();
-        List<Department> departments = getAllDepartments();
+        List<Department> departments = departmentRepository.findAll();
         for (Department department : departments) {
             Double countSymptom = 0.0;
             Double percent = 0.0;
@@ -57,8 +65,15 @@ public class DepartmentService extends BaseService{
         return new BaseResponse<>(listFreeSchedule);
     }
 
-    public List<Department> getAllDepartments() {
-        return departmentRepository.findAll();
+    public BasePaginationResponse<DepartmentResponse> listDepartments(ListDepartmentRequest request, Pageable pageable) {
+        Page<DepartmentResponse> departmentResponses = departmentRepository.findAll(
+                request.getSpecification(),
+                pageable
+        ).map(department -> {
+            DepartmentResponse departmentResponse = DepartmentResponse.of(department);
+            return departmentResponse;
+        });
+        return new BasePaginationResponse<>(departmentResponses);
     }
 
     public List<Symptom> fetchSymptoms(Long departmentId) {
