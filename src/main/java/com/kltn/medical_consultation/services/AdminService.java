@@ -13,10 +13,12 @@ import com.kltn.medical_consultation.models.admin.AdminMessageCode;
 import com.kltn.medical_consultation.models.admin.request.ActivateUserRequest;
 import com.kltn.medical_consultation.models.admin.request.ListDoctorRequest;
 import com.kltn.medical_consultation.models.admin.request.AddUserRequest;
+import com.kltn.medical_consultation.models.admin.request.ListPatientRequest;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
 import com.kltn.medical_consultation.models.admin.response.PatientResponse;
 import com.kltn.medical_consultation.models.department.DepartmentMessageCode;
 import com.kltn.medical_consultation.models.doctor.DoctorMessageCode;
+import com.kltn.medical_consultation.models.patient.PatientMessageCode;
 import com.kltn.medical_consultation.repository.database.DepartmentRepository;
 import com.kltn.medical_consultation.repository.database.DoctorRepository;
 import com.kltn.medical_consultation.repository.database.PatientRepository;
@@ -67,7 +69,6 @@ public class AdminService extends BaseService {
             return doctorResponse;
         });
         return new BasePaginationResponse<>(doctorResponses);
-
     }
 
     public BaseResponse<DoctorResponse> getDoctorById(Long doctorId) {
@@ -82,8 +83,29 @@ public class AdminService extends BaseService {
         return new BaseResponse<>(DoctorResponse.of(optionalDoctor.get()));
     }
 
-    public void listPatients() {
+    public BasePaginationResponse<PatientResponse> listPatients(ListPatientRequest request, Pageable pageable) {
+        Page<PatientResponse> patientResponses = patientRepository.findAll(
+                request.getSpecification(),
+                pageable
+        ).map(patient -> {
+            PatientResponse patientResponse = PatientResponse.of(patient);
+            return patientResponse;
+        });
+        return new BasePaginationResponse<>(patientResponses);
+    }
 
+
+
+    public BaseResponse<PatientResponse> getPatientById(Long patientId) {
+        if (patientId == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PatientId"));
+        }
+
+        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+        if (optionalPatient.isEmpty()) {
+            throw new ApiException(PatientMessageCode.PATIENT_NOT_FOUND);
+        }
+        return new BaseResponse<>(PatientResponse.of(optionalPatient.get()));
     }
 
     public BaseResponse addUser(AddUserRequest addUserRequest) {

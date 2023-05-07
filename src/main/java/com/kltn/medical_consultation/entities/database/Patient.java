@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,7 +32,7 @@ public class Patient extends BaseEntity{
     private String phoneNumber;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<PatientProfile> patientProfiles;
+    private List<PatientProfile> patientProfiles;
 
     @OneToOne
     @JsonIgnore

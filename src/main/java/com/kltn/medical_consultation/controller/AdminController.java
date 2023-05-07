@@ -5,7 +5,9 @@ import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.admin.request.ActivateUserRequest;
 import com.kltn.medical_consultation.models.admin.request.AddUserRequest;
 import com.kltn.medical_consultation.models.admin.request.ListDoctorRequest;
+import com.kltn.medical_consultation.models.admin.request.ListPatientRequest;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
+import com.kltn.medical_consultation.models.admin.response.PatientResponse;
 import com.kltn.medical_consultation.models.auth.request.LoginRequest;
 import com.kltn.medical_consultation.models.auth.response.LoginResponse;
 import com.kltn.medical_consultation.services.AdminService;
@@ -50,8 +52,21 @@ public class AdminController extends BaseController{
     }
 
     @GetMapping("/doctor/{doctorId}")
-    public BaseResponse<DoctorResponse> getDoctorBy(@PathVariable Long doctorId, HttpServletRequest httpServletRequest) {
+    public BaseResponse<DoctorResponse> getDoctorById(@PathVariable Long doctorId, HttpServletRequest httpServletRequest) {
         authService.checkPermission(authenticationFacade.getUserId());
         return adminService.getDoctorById(doctorId);
     }
+
+    @GetMapping("/patients")
+    public BasePaginationResponse<PatientResponse> listPatients(@RequestBody ListPatientRequest listPatientRequest, Pageable pageable, HttpServletRequest httpServletRequest) {
+        authService.checkPermission(authenticationFacade.getUserId());
+        return adminService.listPatients(listPatientRequest, pageable);
+    }
+
+    @GetMapping("/patient/{patientId}")
+    public BaseResponse<PatientResponse> getPatientById(@PathVariable Long patientId, HttpServletRequest httpServletRequest) {
+        authService.checkPermission(authenticationFacade.getUserId());
+        return adminService.getPatientById(patientId);
+    }
+
 }
