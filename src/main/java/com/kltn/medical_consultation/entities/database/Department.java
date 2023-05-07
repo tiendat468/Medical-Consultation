@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,9 +24,9 @@ public class Department extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<Doctor> doctors;
+    private List<Doctor> doctors;
 
     @JsonIgnore
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<Symptom> symptoms;
+    private List<Symptom> symptoms;
 }

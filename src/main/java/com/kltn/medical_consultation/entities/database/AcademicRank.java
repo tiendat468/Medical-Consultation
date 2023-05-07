@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,6 +24,6 @@ public class AcademicRank extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "academicRank", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<DoctorRank> doctorRanks;
+    private List<DoctorRank> doctorRanks;
 
 }

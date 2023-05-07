@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,7 +24,7 @@ public class PatientProfile extends BaseEntity {
     private Boolean isComplete = false;
 
     @OneToMany(mappedBy = "patientProfile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<MedicalSchedule> medicalSchedules;
+    private List<MedicalSchedule> medicalSchedules;
 
     @ManyToOne
     @JsonIgnore

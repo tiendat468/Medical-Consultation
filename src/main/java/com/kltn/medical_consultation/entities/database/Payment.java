@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -36,7 +37,7 @@ public class Payment extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<VnpayPayment> vnpayPayments;
+    private List<VnpayPayment> vnpayPayments;
 
 
     public Payment payment(PaymentDTO paymentDTO){
