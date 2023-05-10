@@ -2,12 +2,10 @@ package com.kltn.medical_consultation.controller;
 
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
-import com.kltn.medical_consultation.models.admin.request.ActivateUserRequest;
-import com.kltn.medical_consultation.models.admin.request.AddUserRequest;
-import com.kltn.medical_consultation.models.admin.request.ListDoctorRequest;
-import com.kltn.medical_consultation.models.admin.request.ListPatientRequest;
+import com.kltn.medical_consultation.models.admin.request.*;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
 import com.kltn.medical_consultation.models.admin.response.PatientResponse;
+import com.kltn.medical_consultation.models.admin.response.StatsRevenueResponse;
 import com.kltn.medical_consultation.models.auth.request.LoginRequest;
 import com.kltn.medical_consultation.models.auth.response.LoginResponse;
 import com.kltn.medical_consultation.services.AdminService;
@@ -67,6 +65,12 @@ public class AdminController extends BaseController{
     public BaseResponse<PatientResponse> getPatientById(@PathVariable Long patientId, HttpServletRequest httpServletRequest) {
         authService.checkPermission(authenticationFacade.getUserId());
         return adminService.getPatientById(patientId);
+    }
+
+    @GetMapping("/stats-revenue")
+    public BaseResponse<StatsRevenueResponse> statsRevenue(HttpServletRequest httpServletRequest) {
+        authService.checkPermission(authenticationFacade.getUserId());
+        return adminService.statsRevenue();
     }
 
 }

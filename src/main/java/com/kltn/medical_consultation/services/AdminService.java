@@ -1,28 +1,20 @@
 package com.kltn.medical_consultation.services;
 
-import com.kltn.medical_consultation.entities.database.Department;
-import com.kltn.medical_consultation.entities.database.Doctor;
-import com.kltn.medical_consultation.entities.database.Patient;
-import com.kltn.medical_consultation.entities.database.User;
+import com.kltn.medical_consultation.entities.database.*;
 import com.kltn.medical_consultation.enumeration.UserType;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.admin.AdminMessageCode;
-import com.kltn.medical_consultation.models.admin.request.ActivateUserRequest;
-import com.kltn.medical_consultation.models.admin.request.ListDoctorRequest;
-import com.kltn.medical_consultation.models.admin.request.AddUserRequest;
-import com.kltn.medical_consultation.models.admin.request.ListPatientRequest;
+import com.kltn.medical_consultation.models.admin.request.*;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
 import com.kltn.medical_consultation.models.admin.response.PatientResponse;
+import com.kltn.medical_consultation.models.admin.response.StatsRevenueResponse;
 import com.kltn.medical_consultation.models.department.DepartmentMessageCode;
 import com.kltn.medical_consultation.models.doctor.DoctorMessageCode;
 import com.kltn.medical_consultation.models.patient.PatientMessageCode;
-import com.kltn.medical_consultation.repository.database.DepartmentRepository;
-import com.kltn.medical_consultation.repository.database.DoctorRepository;
-import com.kltn.medical_consultation.repository.database.PatientRepository;
-import com.kltn.medical_consultation.repository.database.UserRepository;
+import com.kltn.medical_consultation.repository.database.*;
 import com.kltn.medical_consultation.utils.CustomStringUtils;
 import com.kltn.medical_consultation.utils.ICheckBCryptPasswordEncoder;
 import com.kltn.medical_consultation.utils.MessageUtils;
@@ -34,11 +26,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Log4j2
 public class AdminService extends BaseService {
+    @Autowired
+    private MedicalScheduleRepository scheduleRepository;
     @Autowired
     private PatientRepository patientRepository;
     @Autowired
@@ -206,6 +204,35 @@ public class AdminService extends BaseService {
         userRepository.save(user);
 
         return new BaseResponse<>();
+    }
+
+    public BaseResponse<StatsRevenueResponse> statsRevenue() {
+        StatsRevenueRequest statsRevenueRequest = new StatsRevenueRequest();
+        Date currentDate = new Date();
+        statsRevenueRequest.setYear(currentDate.getYear() + 1900);
+
+        StatsRevenueResponse statsRevenueResponse = new StatsRevenueResponse();
+        statsRevenueResponse.setYear(currentDate.getYear() + 1900);
+        List<MedicalSchedule> medicalSchedules = scheduleRepository.findAll(statsRevenueRequest.getSpecification());
+        for (int i = 1; i < 13; i++) {
+            Double revenue = 0.0;
+            for (MedicalSchedule medicalSchedule : medicalSchedules) {
+                try {
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(medicalSchedule.getMedicalDate());
+                    if (i == (date.getMonth() + 1)) {
+                        revenue += medicalSchedule.getPrice();
+                    }
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            StatsRevenueResponse.StatsRevenue statsRevenue = new StatsRevenueResponse.StatsRevenue();
+            statsRevenue.setMonth(i);
+            statsRevenue.setRevenues(revenue);
+            statsRevenueResponse.getStatsRevenues().add(statsRevenue);
+        }
+
+        return new BaseResponse<>(statsRevenueResponse);
     }
 
 }
