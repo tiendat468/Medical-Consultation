@@ -7,10 +7,13 @@ import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.ERROR;
 import com.kltn.medical_consultation.models.admin.AdminMessageCode;
+import com.kltn.medical_consultation.models.admin.StatsSchedule;
 import com.kltn.medical_consultation.models.admin.request.*;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
 import com.kltn.medical_consultation.models.admin.response.PatientResponse;
 import com.kltn.medical_consultation.models.admin.response.StatsRevenueResponse;
+import com.kltn.medical_consultation.models.admin.response.StatsScheduleResponse;
+import com.kltn.medical_consultation.models.department.DepartmentDTO;
 import com.kltn.medical_consultation.models.department.DepartmentMessageCode;
 import com.kltn.medical_consultation.models.doctor.DoctorMessageCode;
 import com.kltn.medical_consultation.models.patient.PatientMessageCode;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -209,10 +213,11 @@ public class AdminService extends BaseService {
     public BaseResponse<StatsRevenueResponse> statsRevenue() {
         StatsRevenueRequest statsRevenueRequest = new StatsRevenueRequest();
         Date currentDate = new Date();
-        statsRevenueRequest.setYear(currentDate.getYear() + 1900);
+        int currentYear = currentDate.getYear() + 1900;
+        statsRevenueRequest.setYear(currentYear);
 
         StatsRevenueResponse statsRevenueResponse = new StatsRevenueResponse();
-        statsRevenueResponse.setYear(currentDate.getYear() + 1900);
+        statsRevenueResponse.setYear(currentYear);
         List<MedicalSchedule> medicalSchedules = scheduleRepository.findAll(statsRevenueRequest.getSpecification());
         for (int i = 1; i < 13; i++) {
             Double revenue = 0.0;
@@ -233,6 +238,55 @@ public class AdminService extends BaseService {
         }
 
         return new BaseResponse<>(statsRevenueResponse);
+    }
+
+    public BaseResponse<StatsScheduleResponse> statsSchedule(StatsScheduleRequest request) {
+        StatsScheduleResponse statsScheduleResponse = new StatsScheduleResponse();
+        List<Department> departments = new ArrayList<>();
+        if (request.getDepartmentId() != null ) {
+            Optional<Department> optionalDepartment =  departmentRepository.findById(request.getDepartmentId());
+            if (optionalDepartment.isEmpty()) {
+                throw new ApiException(DepartmentMessageCode.DEPARTMENT_NOT_FOUND);
+            }
+
+            departments.add(optionalDepartment.get());
+        } else {
+            departments = departmentRepository.findAll();
+        }
+
+        if (StringUtils.isEmpty(request.getCondition())) {
+            Date currentDate = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = dateFormat.format(currentDate);
+            String[] string = dateString.split("-");
+            String medicalDate =  (string[0]) + "-" + (string[1]);
+            request.setCondition(medicalDate);
+        }
+
+        for (Department department : departments) {
+            StatsSchedule.ScheduleRevenue scheduleRevenue = new StatsSchedule.ScheduleRevenue();
+            System.out.println(request.getCondition());
+//            scheduleRevenue.setTotalSchedule(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalse(request.getCondition(), request.getDepartmentId()));
+//            scheduleRevenue.setTotalDone(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneTrue(request.getCondition(), request.getDepartmentId()));
+//            scheduleRevenue.setTotalNotDone(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneFalse(request.getCondition(), request.getDepartmentId()));
+//            scheduleRevenue.setTotalPay(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayTrue(request.getCondition(), request.getDepartmentId()));
+//            scheduleRevenue.setTotalNotPay(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayFalse(request.getCondition(), request.getDepartmentId()));
+
+
+            scheduleRevenue.setTotalSchedule(scheduleRepository.countByMedicalDateContains(request.getCondition()));
+            scheduleRevenue.setTotalDone(scheduleRepository.countByMedicalDateContains(request.getCondition()));
+            scheduleRevenue.setTotalNotDone(scheduleRepository.countByMedicalDateContains(request.getCondition()));
+            scheduleRevenue.setTotalPay(scheduleRepository.countByMedicalDateContains(request.getCondition()));
+            scheduleRevenue.setTotalNotPay(scheduleRepository.countByMedicalDateContains(request.getCondition()));
+
+
+            StatsSchedule statsSchedule = new StatsSchedule();
+            statsSchedule.setDepartment(new DepartmentDTO(department));
+            statsSchedule.setScheduleRevenue(scheduleRevenue);
+            statsScheduleResponse.getStatsSchedules().add(statsSchedule);
+        }
+
+        return new BaseResponse<>(statsScheduleResponse);
     }
 
 }

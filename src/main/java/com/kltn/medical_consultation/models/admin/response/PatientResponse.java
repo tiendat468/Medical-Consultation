@@ -7,6 +7,7 @@ import com.kltn.medical_consultation.models.auth.UserDTO;
 import com.kltn.medical_consultation.models.patient.PatientDTO;
 import com.kltn.medical_consultation.models.patient.PatientProfileDTO;
 import lombok.Data;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +41,11 @@ public class PatientResponse {
 
         List<PatientProfileDTO> profileDTOs = new ArrayList<>();
         List<PatientProfile> profiles = patient.getPatientProfiles();
-        for (PatientProfile patientProfile : profiles) {
-            PatientProfileDTO profileDTO = PatientProfileDTO.of(patientProfile);
-            profileDTOs.add(profileDTO);
+        if (!CollectionUtils.isEmpty(profiles)) {
+            for (PatientProfile patientProfile : profiles) {
+                PatientProfileDTO profileDTO = PatientProfileDTO.of(patientProfile);
+                profileDTOs.add(profileDTO);
+            }
         }
 
         response.setPatientProfiles(profileDTOs);

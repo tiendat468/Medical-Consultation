@@ -38,8 +38,8 @@ public interface ShareConstant {
     }
 
     class SEX {
-        public static final String MALE = "MALE";
-        public static final String FEMALE = "FEMALE";
+        public static final String MALE = "M";
+        public static final String FEMALE = "F";
     }
 
     class VN_PAY {

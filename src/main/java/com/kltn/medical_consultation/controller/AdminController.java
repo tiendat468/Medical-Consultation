@@ -6,6 +6,7 @@ import com.kltn.medical_consultation.models.admin.request.*;
 import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
 import com.kltn.medical_consultation.models.admin.response.PatientResponse;
 import com.kltn.medical_consultation.models.admin.response.StatsRevenueResponse;
+import com.kltn.medical_consultation.models.admin.response.StatsScheduleResponse;
 import com.kltn.medical_consultation.models.auth.request.LoginRequest;
 import com.kltn.medical_consultation.models.auth.response.LoginResponse;
 import com.kltn.medical_consultation.services.AdminService;
@@ -71,6 +72,12 @@ public class AdminController extends BaseController{
     public BaseResponse<StatsRevenueResponse> statsRevenue(HttpServletRequest httpServletRequest) {
         authService.checkPermission(authenticationFacade.getUserId());
         return adminService.statsRevenue();
+    }
+
+    @PostMapping("/stats-schedule")
+    public BaseResponse<StatsScheduleResponse> statsSchedule(@RequestBody StatsScheduleRequest statsScheduleRequest, HttpServletRequest httpServletRequest) {
+        authService.checkPermission(authenticationFacade.getUserId());
+        return adminService.statsSchedule(statsScheduleRequest);
     }
 
 }
