@@ -68,10 +68,10 @@ public class AdminController extends BaseController{
         return adminService.getPatientById(patientId);
     }
 
-    @GetMapping("/stats-revenue")
-    public BaseResponse<StatsRevenueResponse> statsRevenue(HttpServletRequest httpServletRequest) {
+    @PostMapping("/stats-revenue")
+    public BaseResponse<StatsRevenueResponse> statsRevenue(@RequestBody StatsRevenueRequest statsRevenueRequest, HttpServletRequest httpServletRequest) {
         authService.checkPermission(authenticationFacade.getUserId());
-        return adminService.statsRevenue();
+        return adminService.statsRevenue(statsRevenueRequest);
     }
 
     @PostMapping("/stats-schedule")

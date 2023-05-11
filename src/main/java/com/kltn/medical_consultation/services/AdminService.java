@@ -210,14 +210,16 @@ public class AdminService extends BaseService {
         return new BaseResponse<>();
     }
 
-    public BaseResponse<StatsRevenueResponse> statsRevenue() {
-        StatsRevenueRequest statsRevenueRequest = new StatsRevenueRequest();
-        Date currentDate = new Date();
-        int currentYear = currentDate.getYear() + 1900;
-        statsRevenueRequest.setYear(currentYear);
-
+    public BaseResponse<StatsRevenueResponse> statsRevenue(StatsRevenueRequest statsRevenueRequest) {
         StatsRevenueResponse statsRevenueResponse = new StatsRevenueResponse();
-        statsRevenueResponse.setYear(currentYear);
+
+        if (statsRevenueRequest.getYear() == null) {
+            Date currentDate = new Date();
+            int currentYear = currentDate.getYear() + 1900;
+            statsRevenueRequest.setYear(currentYear);
+        }
+
+        statsRevenueResponse.setYear(statsRevenueRequest.getYear());
         List<MedicalSchedule> medicalSchedules = scheduleRepository.findAll(statsRevenueRequest.getSpecification());
         for (int i = 1; i < 13; i++) {
             Double revenue = 0.0;

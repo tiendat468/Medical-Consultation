@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 @Data
 public class StatsRevenueRequest extends SpecificationBaseRequest {
-    private int year;
+    private Integer year;
 
     @JsonIgnore
     public Specification<MedicalSchedule> getSpecification() {
