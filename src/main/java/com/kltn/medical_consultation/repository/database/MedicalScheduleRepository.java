@@ -3,6 +3,7 @@ package com.kltn.medical_consultation.repository.database;
 import com.kltn.medical_consultation.entities.database.MedicalSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,17 +16,23 @@ public interface MedicalScheduleRepository extends JpaRepository<MedicalSchedule
 
     List<MedicalSchedule> findByPatientProfileId(Long patientProfileId);
 
-    int countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayTrue(String medicalDate, Long departmentId);
-    int countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayFalse(String medicalDate, Long departmentId);
-    int countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneTrue(String medicalDate, Long departmentId);
-    int countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneFalse(String medicalDate, Long departmentId);
-    int countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalse(String medicalDate, Long departmentId);
+    @Query("select count(m) from MedicalSchedule m " +
+            "where m.medicalDate like ?1 and m.doctor.departmentId = ?2 and m.isDelete = false")
+    long countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalse(String medicalDate, Long departmentId);
 
-    int countByMedicalDateLikeAndIsDeleteFalseAndIsPayTrue(String medicalDate);
+    @Query(value = "select count(m) from MedicalSchedule m " +
+            "where m.medicalDate like ?1 and m.doctor.departmentId = ?2 and m.isDelete = false and m.isPay = true")
+    long countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayTrue(String medicalDate, Long departmentId);
 
-    long countByMedicalDateContains(String medicalDate);
-    int countByMedicalDateLikeAndIsDeleteFalseAndIsPayFalse(String medicalDate);
-    int countByMedicalDateLikeAndIsDeleteFalseAndIsDoneTrue(String medicalDate);
-    int countByMedicalDateLikeAndIsDeleteFalseAndIsDoneFalse(String medicalDate);
-    int countByMedicalDateLikeAndIsDeleteFalse(String medicalDate);
+    @Query("select count(m) from MedicalSchedule m " +
+            "where m.medicalDate like ?1 and m.doctor.departmentId = ?2 and m.isDelete = false and m.isPay = false")
+    long countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayFalse(String medicalDate, Long departmentId);
+
+    @Query("select count(m) from MedicalSchedule m " +
+            "where m.medicalDate like ?1 and m.doctor.departmentId = ?2 and m.isDelete = false and m.isDone = true")
+    long countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneTrue(String medicalDate, Long departmentId);
+
+    @Query("select count(m) from MedicalSchedule m " +
+            "where m.medicalDate like ?1 and m.doctor.departmentId = ?2 and m.isDelete = false and m.isDone = false")
+    long countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneFalse(String medicalDate, Long departmentId);
 }

@@ -246,7 +246,7 @@ public class AdminService extends BaseService {
         StatsScheduleResponse statsScheduleResponse = new StatsScheduleResponse();
         List<Department> departments = new ArrayList<>();
         if (request.getDepartmentId() != null ) {
-            Optional<Department> optionalDepartment =  departmentRepository.findById(request.getDepartmentId());
+            Optional<Department> optionalDepartment = departmentRepository.findById(request.getDepartmentId());
             if (optionalDepartment.isEmpty()) {
                 throw new ApiException(DepartmentMessageCode.DEPARTMENT_NOT_FOUND);
             }
@@ -264,23 +264,23 @@ public class AdminService extends BaseService {
             String medicalDate =  (string[0]) + "-" + (string[1]);
             request.setCondition(medicalDate);
         }
+//        String condition = "%" + request.getCondition() + "%";
+//        System.out.println(condition);
 
         for (Department department : departments) {
+            System.out.println(department.getId());
             StatsSchedule.ScheduleRevenue scheduleRevenue = new StatsSchedule.ScheduleRevenue();
-            System.out.println(request.getCondition());
-//            scheduleRevenue.setTotalSchedule(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalse(request.getCondition(), request.getDepartmentId()));
-//            scheduleRevenue.setTotalDone(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneTrue(request.getCondition(), request.getDepartmentId()));
-//            scheduleRevenue.setTotalNotDone(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneFalse(request.getCondition(), request.getDepartmentId()));
-//            scheduleRevenue.setTotalPay(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayTrue(request.getCondition(), request.getDepartmentId()));
-//            scheduleRevenue.setTotalNotPay(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayFalse(request.getCondition(), request.getDepartmentId()));
+            scheduleRevenue.setTotalSchedule(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalse(request.getCondition(), request.getDepartmentId()));
+            scheduleRevenue.setTotalDone(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneTrue(request.getCondition(), request.getDepartmentId()));
+            scheduleRevenue.setTotalNotDone(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneFalse(request.getCondition(), request.getDepartmentId()));
+            scheduleRevenue.setTotalPay(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayTrue(request.getCondition(), request.getDepartmentId()));
+            scheduleRevenue.setTotalNotPay(scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayFalse(request.getCondition(), request.getDepartmentId()));
 
-
-            scheduleRevenue.setTotalSchedule(scheduleRepository.countByMedicalDateContains(request.getCondition()));
-            scheduleRevenue.setTotalDone(scheduleRepository.countByMedicalDateContains(request.getCondition()));
-            scheduleRevenue.setTotalNotDone(scheduleRepository.countByMedicalDateContains(request.getCondition()));
-            scheduleRevenue.setTotalPay(scheduleRepository.countByMedicalDateContains(request.getCondition()));
-            scheduleRevenue.setTotalNotPay(scheduleRepository.countByMedicalDateContains(request.getCondition()));
-
+            System.out.println("TotalSchedule:" + scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalse(request.getCondition(), request.getDepartmentId()));
+            System.out.println("TotalDone:" + scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneTrue(request.getCondition(), request.getDepartmentId()));
+            System.out.println("TotalNotDone:" + scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsDoneFalse(request.getCondition(), request.getDepartmentId()));
+            System.out.println("TotalPay:" + scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayTrue(request.getCondition(), department.getId()));
+            System.out.println("TotalNotPay:" + scheduleRepository.countByMedicalDateLikeAndDoctor_DepartmentIdAndIsDeleteFalseAndIsPayFalse(request.getCondition(), request.getDepartmentId()));
 
             StatsSchedule statsSchedule = new StatsSchedule();
             statsSchedule.setDepartment(new DepartmentDTO(department));
