@@ -56,6 +56,12 @@ public class AdminController extends BaseController{
         return adminService.getDoctorById(doctorId);
     }
 
+    @PostMapping("/doctor/update")
+    public BaseResponse<DoctorResponse> updateDoctor(@RequestBody UpdateDoctorRequest request) {
+        authService.checkPermission(authenticationFacade.getUserId());
+        return adminService.updateDoctor(request);
+    }
+
     @GetMapping("/patients")
     public BasePaginationResponse<PatientResponse> listPatients(@RequestBody ListPatientRequest listPatientRequest, Pageable pageable, HttpServletRequest httpServletRequest) {
         authService.checkPermission(authenticationFacade.getUserId());

@@ -85,6 +85,26 @@ public class AdminService extends BaseService {
         return new BaseResponse<>(DoctorResponse.of(optionalDoctor.get()));
     }
 
+    public BaseResponse<DoctorResponse> updateDoctor(UpdateDoctorRequest request) {
+        if (request.getId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Id"));
+        }
+
+        Optional<Doctor> optionalDoctor = doctorRepository.findById(request.getId());
+        if (optionalDoctor.isEmpty()) {
+            throw new ApiException(DoctorMessageCode.DOCTOR_NOT_FOUND);
+        }
+
+        Doctor doctor = optionalDoctor.get();
+        doctor.setFullName(request.getName());
+        doctor.setSex(request.getSex());
+        doctor.setIdentityNumber(request.getIdentityNumber());
+        doctor.setPhoneNumber(request.getPhoneNumber());
+        doctor = doctorRepository.save(doctor);
+
+        return new BaseResponse<>(DoctorResponse.of(doctor));
+    }
+
     public BasePaginationResponse<PatientResponse> listPatients(ListPatientRequest request, Pageable pageable) {
         Page<PatientResponse> patientResponses = patientRepository.findAll(
                 request.getSpecification(),
