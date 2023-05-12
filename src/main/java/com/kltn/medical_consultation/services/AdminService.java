@@ -285,6 +285,7 @@ public class AdminService extends BaseService {
             request.setCondition(medicalDate);
         }
         String condition = "%" + request.getCondition() + "%";
+        statsScheduleResponse.setCondition(request.getCondition());
 
         for (Department department : departments) {
             StatsSchedule.ScheduleRevenue scheduleRevenue = new StatsSchedule.ScheduleRevenue();
