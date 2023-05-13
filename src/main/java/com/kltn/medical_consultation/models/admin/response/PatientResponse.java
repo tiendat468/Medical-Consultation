@@ -26,8 +26,10 @@ public class PatientResponse {
 
         List<PatientProfile> profiles = patient.getPatientProfiles();
         for (PatientProfile patientProfile : profiles) {
-            PatientProfileDTO profileDTO = PatientProfileDTO.of(patientProfile);
-            profileDTOs.add(profileDTO);
+            if (!patientProfile.getIsDelete()) {
+                PatientProfileDTO profileDTO = PatientProfileDTO.of(patientProfile);
+                profileDTOs.add(profileDTO);
+            }
         }
 
         response.setPatientProfiles(profileDTOs);
@@ -43,8 +45,10 @@ public class PatientResponse {
         List<PatientProfile> profiles = patient.getPatientProfiles();
         if (!CollectionUtils.isEmpty(profiles)) {
             for (PatientProfile patientProfile : profiles) {
-                PatientProfileDTO profileDTO = PatientProfileDTO.of(patientProfile);
-                profileDTOs.add(profileDTO);
+                if (!patientProfile.getIsDelete()) {
+                    PatientProfileDTO profileDTO = PatientProfileDTO.of(patientProfile);
+                    profileDTOs.add(profileDTO);
+                }
             }
         }
 

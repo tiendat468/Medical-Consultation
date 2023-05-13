@@ -32,6 +32,8 @@ import java.util.*;
 @Log4j2
 public class VNPayService extends BaseService {
     @Autowired
+    private PatientProfileRepository patientProfileRepository;
+    @Autowired
     private MedicalScheduleRepository scheduleRepository;
     @Autowired
     private PatientRepository patientRepository;
@@ -340,6 +342,14 @@ public class VNPayService extends BaseService {
         }
 
         MedicalSchedule medicalSchedule = optionalMedicalSchedule.get();
+        Optional<PatientProfile> optionalPatientProfile = patientProfileRepository.findById(medicalSchedule.getPatientProfileId());
+        if (optionalPatientProfile.isEmpty()) {
+            throw new ApiException(PatientMessageCode.PATIENT_PROFILE_NOT_FOUND);
+        }
+
+        PatientProfile patientProfile = optionalPatientProfile.get();
+        patientProfile.setIsDelete(true);
+        patientProfileRepository.save(patientProfile);
         medicalSchedule.setIsDelete(true);
         scheduleRepository.save(medicalSchedule);
     }

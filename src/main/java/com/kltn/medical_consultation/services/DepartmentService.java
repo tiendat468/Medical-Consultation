@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.regex.*;
 
 @Service
 public class DepartmentService extends BaseService{
@@ -39,21 +40,29 @@ public class DepartmentService extends BaseService{
     MedicalScheduleService scheduleService;
 
     public BaseResponse<ListFreeSchedule> fetchDepartment(FetchDepartmentRequest request, HttpServletRequest httpServletRequest) {
-        String[] patientSymptoms = request.getSymptom().split(",");
-        int totalPatientSymptom = patientSymptoms.length;
+        String[] resultList = request.getSymptom().split(",");
+
+        for (int i = 0; i < resultList.length; i++) {
+            resultList[i] = resultList[i].trim();
+        }
+        List<String> patientSymptoms = new ArrayList<>();
+        for (String s : resultList) {
+            if (!s.isEmpty()) {
+                patientSymptoms.add(s);
+            }
+        }
+        int totalPatientSymptom = patientSymptoms.size();
         List<DepartmentPercent> departmentPercents = new ArrayList<>();
         List<Department> departments = departmentRepository.findAll();
         for (Department department : departments) {
             Double countSymptom = 0.0;
             Double percent = 0.0;
             List<Symptom> depSymptoms = fetchSymptoms(department.getId());
-            for (Symptom depSymptom : depSymptoms) {
-                for (String patSymptom : patientSymptoms) {
-                    if (StringUtils.isNoneBlank(patSymptom)) {
-                        if (depSymptom.getName().toLowerCase().contains(patSymptom.trim().toLowerCase())
-                                || patSymptom.trim().toLowerCase().contains(depSymptom.getName().toLowerCase())) {
-                            countSymptom++;
-                        }
+            for (String patSymptom : patientSymptoms) {
+                for (Symptom depSymptom : depSymptoms) {
+                    if (check(depSymptom.getName().toLowerCase(), patSymptom.trim().toLowerCase())) {
+                        countSymptom++;
+                        break;
                     }
                 }
             }
@@ -99,4 +108,13 @@ public class DepartmentService extends BaseService{
         });
     }
 
+    private boolean check(String depSysSymptom, String patSymptom){
+        Pattern pattern1 = Pattern.compile("\\b" + depSysSymptom + "\\b.*");
+        Matcher matcher1 = pattern1.matcher(patSymptom);
+
+        Pattern pattern2 = Pattern.compile("\\b" + patSymptom + "\\b.*");
+        Matcher matcher2 = pattern2.matcher(depSysSymptom);
+
+        return matcher1.find() || matcher2.find();
+    }
 }
