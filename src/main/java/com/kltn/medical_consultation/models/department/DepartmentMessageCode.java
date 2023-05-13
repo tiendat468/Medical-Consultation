@@ -7,6 +7,7 @@ public enum DepartmentMessageCode implements IMessageCode {
     DOCTOR_NOT_FOUND("DOCTOR_NOT_FOUND","Không tìm thấy bác sĩ"),
     DOCTOR_NOT_BELONG("DOCTOR_NOT_BELONG","Bác sĩ không thuộc khoa"),
     DOCTOR_BUSY("DOCTOR_BUSY","Bác sĩ đã có lịch khám"),
+    EMPTY_SYMPTOM("EMPTY_SYMPTOM","Không tìm thấy khoa phù hợp với các triệu chứng đã nhập."),
     ;
     private String code;
     private String message;

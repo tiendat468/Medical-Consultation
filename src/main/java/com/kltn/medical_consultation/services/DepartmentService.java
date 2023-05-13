@@ -5,7 +5,6 @@ import com.kltn.medical_consultation.entities.database.Symptom;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
-import com.kltn.medical_consultation.models.admin.response.DoctorResponse;
 import com.kltn.medical_consultation.models.department.DepartmentMessageCode;
 import com.kltn.medical_consultation.models.department.request.ListDepartmentRequest;
 import com.kltn.medical_consultation.models.department.response.DepartmentPercent;
@@ -15,7 +14,6 @@ import com.kltn.medical_consultation.models.department.request.FetchDepartmentRe
 import com.kltn.medical_consultation.repository.database.DepartmentRepository;
 import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
 import com.kltn.medical_consultation.repository.database.SymptomRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,7 +58,7 @@ public class DepartmentService extends BaseService{
             List<Symptom> depSymptoms = fetchSymptoms(department.getId());
             for (String patSymptom : patientSymptoms) {
                 for (Symptom depSymptom : depSymptoms) {
-                    if (check(depSymptom.getName().toLowerCase(), patSymptom.trim().toLowerCase())) {
+                    if (checkSymptom(depSymptom.getName().toLowerCase(), patSymptom.trim().toLowerCase())) {
                         countSymptom++;
                         break;
                     }
@@ -71,8 +69,18 @@ public class DepartmentService extends BaseService{
             departmentPercents.add(departmentPercent);
         }
 
-
         sortByPercent(departmentPercents);
+
+        int count = 0;
+        for (DepartmentPercent departmentPercent : departmentPercents) {
+            if (departmentPercent.getPercent() == 0) {
+                count++;
+            }
+            if (count == departmentPercents.size()) {
+                throw new ApiException(DepartmentMessageCode.EMPTY_SYMPTOM);
+            }
+        }
+
         ListFreeSchedule listFreeSchedule = scheduleService.fetchSchedule(departmentPercents, request.getMedicalDate());
         listFreeSchedule.setMedicalDate(request.getMedicalDate());
         return new BaseResponse<>(listFreeSchedule);
@@ -108,7 +116,7 @@ public class DepartmentService extends BaseService{
         });
     }
 
-    private boolean check(String depSysSymptom, String patSymptom){
+    private boolean checkSymptom(String depSysSymptom, String patSymptom){
         Pattern pattern1 = Pattern.compile("\\b" + depSysSymptom + "\\b.*");
         Matcher matcher1 = pattern1.matcher(patSymptom);
 
