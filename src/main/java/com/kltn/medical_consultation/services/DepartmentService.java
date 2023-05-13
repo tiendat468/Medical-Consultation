@@ -15,6 +15,7 @@ import com.kltn.medical_consultation.models.department.request.FetchDepartmentRe
 import com.kltn.medical_consultation.repository.database.DepartmentRepository;
 import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
 import com.kltn.medical_consultation.repository.database.SymptomRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,9 +49,11 @@ public class DepartmentService extends BaseService{
             List<Symptom> depSymptoms = fetchSymptoms(department.getId());
             for (Symptom depSymptom : depSymptoms) {
                 for (String patSymptom : patientSymptoms) {
-                    if (depSymptom.getName().toLowerCase().contains(patSymptom.trim().toLowerCase())
-                            || patSymptom.trim().toLowerCase().contains(depSymptom.getName().toLowerCase())) {
-                        countSymptom++;
+                    if (StringUtils.isNoneBlank(patSymptom)) {
+                        if (depSymptom.getName().toLowerCase().contains(patSymptom.trim().toLowerCase())
+                                || patSymptom.trim().toLowerCase().contains(depSymptom.getName().toLowerCase())) {
+                            countSymptom++;
+                        }
                     }
                 }
             }
@@ -58,6 +61,7 @@ public class DepartmentService extends BaseService{
             DepartmentPercent departmentPercent = new DepartmentPercent(department.getSymbol(), roundDouble(percent));
             departmentPercents.add(departmentPercent);
         }
+
 
         sortByPercent(departmentPercents);
         ListFreeSchedule listFreeSchedule = scheduleService.fetchSchedule(departmentPercents, request.getMedicalDate());
