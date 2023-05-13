@@ -177,13 +177,13 @@ public class AuthService extends BaseService{
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PhoneNumber"));
         }
 
-        if (StringUtils.isEmpty(request.getBirthday())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Birthday"));
-        }
+//        if (StringUtils.isEmpty(request.getBirthday())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Birthday"));
+//        }
 
-        if (StringUtils.isEmpty(request.getSex())) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Sex"));
-        }
+//        if (StringUtils.isEmpty(request.getSex())) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Sex"));
+//        }
 
         if (StringUtils.isEmpty(request.getPassword())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Password"));
