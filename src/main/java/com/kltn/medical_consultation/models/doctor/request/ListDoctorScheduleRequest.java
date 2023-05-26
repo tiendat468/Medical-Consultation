@@ -30,10 +30,10 @@ public class ListDoctorScheduleRequest extends SpecificationBaseRequest {
                     cb.equal(entity.get("isDone"), isDone));
         }
 
-        if (isPay != null) {
+//        if (isPay != null) {
             specification = SpecificationUtil.addSpecification(specification, (entity, cq, cb) ->
-                    cb.equal(entity.get("isPay"), isPay));
-        }
+                    cb.equal(entity.get("isPay"), true));
+//        }
 
         return specification;
     }
