@@ -7,6 +7,7 @@ import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.models.*;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.patient.response.CreatePatientResponse;
+import com.kltn.medical_consultation.models.patient.response.SearchPatientResponse;
 import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.patient.*;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -151,6 +153,23 @@ public class PatientService extends BaseService{
         patient = patientRepository.save(patient);
         CreatePatientResponse createPatientResponse = new CreatePatientResponse(parent, patient);
         return new BaseResponse<>(createPatientResponse);
+    }
+
+    public BaseResponse searchPatient(String phone) {
+        if (StringUtils.isEmpty(phone)) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PhoneNumber"));
+            return new BaseResponse<>(ShareConstant.ResultMessage.PHONE_IS_MANDATORY);
+        }
+
+        Optional<Parent> optionalParent = parentRepository.findByPhoneNumber(phone);
+        if (optionalParent.isEmpty()) {
+//            throw new ApiException(ShareConstant.ResultMessage.PATIENT_NOT_FOUND);
+            return new BaseResponse<>(ShareConstant.ResultMessage.PATIENT_NOT_FOUND);
+        }
+        SearchPatientResponse searchPatientResponse = new SearchPatientResponse(optionalParent.get());
+        BaseResponse baseResponse = new BaseResponse<>();
+        baseResponse.setData(searchPatientResponse);
+        return baseResponse;
     }
 
 //    public BasePaginationResponse<PatientProfileResponse> listProfile(Long userId, Pageable pageable, HttpServletRequest httpServletRequest) throws ApiException{

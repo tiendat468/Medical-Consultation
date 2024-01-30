@@ -39,6 +39,11 @@ public class PatientController extends BaseController {
         return patientService.createPatient(request, authenticationFacade.getUserId(), httpServletRequest);
     }
 
+    @PostMapping("/search")
+    public BaseResponse searchPatient(@RequestParam("phone") String phone, HttpServletRequest httpServletRequest) throws ApiException{
+        return patientService.searchPatient(phone);
+    }
+
     @GetMapping("/detail")
     public BaseResponse detailPatient(HttpServletRequest httpServletRequest) throws ApiException{
         return patientService.detailPatient(authenticationFacade.getUserId(), httpServletRequest);

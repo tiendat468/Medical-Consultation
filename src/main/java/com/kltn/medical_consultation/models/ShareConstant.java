@@ -78,4 +78,9 @@ public interface ShareConstant {
         public static final String PAY_CASH = "CASH";
 
     }
+
+    class ResultMessage {
+        public static final String PATIENT_NOT_FOUND = "Không tìm thấy bệnh nhân";
+        public static final String PHONE_IS_MANDATORY = "Số điện thoại không được để trống";
+    }
 }
