@@ -1,16 +1,14 @@
 package com.kltn.medical_consultation.entities.database;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name = "patient")
-public class Patient extends BaseEntity{
+@Table(name = "parent")
+public class Parent extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,21 +28,7 @@ public class Patient extends BaseEntity{
     private String identityNumber;
     @Column(name = "phone_number")
     private String phoneNumber;
-    @Column(name = "weight")
-    private Long weight;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PatientProfile> patientProfiles;
-
-    @OneToOne
-    @JsonIgnore
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @Column(name = "user_id", insertable = false, updatable = false)
-    private Long userId;
-
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Parent parent;
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Patient> patients;
 }

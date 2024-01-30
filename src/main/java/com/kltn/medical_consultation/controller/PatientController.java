@@ -4,6 +4,7 @@ import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
+import com.kltn.medical_consultation.models.patient.CreatePatientRequest;
 import com.kltn.medical_consultation.models.patient.request.*;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.services.PatientService;
@@ -31,6 +32,11 @@ public class PatientController extends BaseController {
     @PostMapping("/save")
     public BaseResponse saveProfile(@RequestBody SavePatientRequest request, HttpServletRequest httpServletRequest) throws ApiException{
         return patientService.savePatient(request, authenticationFacade.getUserId(), httpServletRequest);
+    }
+
+    @PostMapping("/create")
+    public BaseResponse createPatient(@RequestBody CreatePatientRequest request, HttpServletRequest httpServletRequest) throws ApiException{
+        return patientService.createPatient(request, authenticationFacade.getUserId(), httpServletRequest);
     }
 
     @GetMapping("/detail")

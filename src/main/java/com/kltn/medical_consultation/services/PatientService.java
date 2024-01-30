@@ -1,20 +1,19 @@
 package com.kltn.medical_consultation.services;
 
 import com.kltn.medical_consultation.entities.database.MedicalSchedule;
+import com.kltn.medical_consultation.entities.database.Parent;
 import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.models.*;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
+import com.kltn.medical_consultation.models.patient.response.CreatePatientResponse;
 import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.patient.*;
 import com.kltn.medical_consultation.models.patient.request.*;
 import com.kltn.medical_consultation.models.patient.response.PatientProfileResponse;
 import com.kltn.medical_consultation.models.patient.response.PatientResponse;
-import com.kltn.medical_consultation.repository.database.MedicalScheduleRepository;
-import com.kltn.medical_consultation.repository.database.PatientProfileRepository;
-import com.kltn.medical_consultation.repository.database.PatientRepository;
-import com.kltn.medical_consultation.repository.database.UserRepository;
+import com.kltn.medical_consultation.repository.database.*;
 import com.kltn.medical_consultation.utils.CustomStringUtils;
 import com.kltn.medical_consultation.utils.MessageUtils;
 import com.kltn.medical_consultation.utils.TimeUtils;
@@ -32,6 +31,8 @@ import java.util.Optional;
 @Service
 @Log4j2
 public class PatientService extends BaseService{
+    @Autowired
+    private ParentRepository parentRepository;
     @Autowired
     private MedicalScheduleRepository scheduleRepository;
     @Autowired
@@ -103,6 +104,53 @@ public class PatientService extends BaseService{
         patientRepository.save(patient);
         PatientResponse patientResponse = PatientResponse.of(patient);
         return new BaseResponse<>(patientResponse);
+    }
+
+    public BaseResponse createPatient(CreatePatientRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
+//        userService.validateUser(userId);
+        if (StringUtils.isEmpty(request.getFullName())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("FullName"));
+        }
+
+        if (StringUtils.isEmpty(request.getAddress())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Address"));
+        }
+
+        if (!CustomStringUtils.isNotEmptyWithCondition(request.getAddress(), 255)) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("Address"));
+        }
+
+        if (StringUtils.isEmpty(request.getPhoneNumber())) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PhoneNumber"));
+        }
+
+        Optional<Parent> optionalParent = parentRepository.findByPhoneNumber(request.getPhoneNumber());
+        Parent parent = new Parent();
+        if (optionalParent.isPresent()) {
+            parent = optionalParent.get();
+        }
+        parent.setPhoneNumber(request.getPhoneNumber());
+        parent.setFullName(request.getFullName());
+        parent.setAddress(request.getAddress());
+        parent = parentRepository.save(parent);
+
+        PatientDetail patientDetail = request.getPatientDetail();
+        Patient patient = new Patient();
+        if (patientDetail.getId() != null) {
+            Optional<Patient> optionalPatient = patientRepository.findById(request.getPatientDetail().getId());
+            if (optionalPatient.isPresent()) {
+                patient = optionalPatient.get();
+            }
+        }
+
+        patient.setFullName(patientDetail.getFullName());
+        patient.setBirthday(patientDetail.getBirthday());
+        patient.setSex(patientDetail.getSex());
+        patient.setWeight(patientDetail.getWeight());
+        patient.setParent(parent);
+        patient = patientRepository.save(patient);
+        CreatePatientResponse createPatientResponse = new CreatePatientResponse(parent, patient);
+        return new BaseResponse<>(createPatientResponse);
     }
 
 //    public BasePaginationResponse<PatientProfileResponse> listProfile(Long userId, Pageable pageable, HttpServletRequest httpServletRequest) throws ApiException{
