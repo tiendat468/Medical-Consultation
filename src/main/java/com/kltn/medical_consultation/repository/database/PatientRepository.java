@@ -12,4 +12,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long>, JpaSpec
 
     Optional<Patient> findByUserId(Long userId);
 
+    Optional<Patient> findByIdAndIsDeleteFalse(Long id);
+
 }

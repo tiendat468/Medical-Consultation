@@ -108,8 +108,7 @@ public class PatientService extends BaseService{
         return new BaseResponse<>(patientResponse);
     }
 
-    public BaseResponse createPatient(CreatePatientRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
-//        userService.validateUser(userId);
+    public BaseResponse createPatient(CreatePatientRequest request, HttpServletRequest httpServletRequest) throws ApiException{
         if (StringUtils.isEmpty(request.getFullName())) {
             throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("FullName"));
         }
@@ -157,14 +156,12 @@ public class PatientService extends BaseService{
 
     public BaseResponse searchPatient(String phone) {
         if (StringUtils.isEmpty(phone)) {
-//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PhoneNumber"));
-            return new BaseResponse<>(ShareConstant.ResultMessage.PHONE_IS_MANDATORY);
+            return new BaseResponse<>(PatientMessageCode.PHONE_IS_MANDATORY);
         }
 
         Optional<Parent> optionalParent = parentRepository.findByPhoneNumber(phone);
         if (optionalParent.isEmpty()) {
-//            throw new ApiException(ShareConstant.ResultMessage.PATIENT_NOT_FOUND);
-            return new BaseResponse<>(ShareConstant.ResultMessage.PATIENT_NOT_FOUND);
+            return new BaseResponse<>(PatientMessageCode.PATIENT_NOT_FOUND);
         }
         SearchPatientResponse searchPatientResponse = new SearchPatientResponse(optionalParent.get());
         BaseResponse baseResponse = new BaseResponse<>();
@@ -187,19 +184,19 @@ public class PatientService extends BaseService{
 //        return new BasePaginationResponse<>(pageResult.getContent(), pageable.getPageNumber(), pageable.getPageSize(), pageResult.getTotalElements());
 //    }
 
-    public BaseResponse<PatientResponse> detailPatient(Long userId, HttpServletRequest httpServletRequest) throws ApiException {
-        userService.validateUser(userId);
-        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+    public BaseResponse detailPatient(Long patientId, HttpServletRequest httpServletRequest) throws ApiException {
+        if (patientId == null) {
+            return new BaseResponse<>(PatientMessageCode.PATIENT_ID_IS_MANDATORY);
+        }
+        Optional<Patient> optionalPatient = patientRepository.findByIdAndIsDeleteFalse(patientId);
         if (optionalPatient.isEmpty()) {
             return new BaseResponse<>(PatientMessageCode.PATIENT_NOT_FOUND);
         }
-
         Patient patient = optionalPatient.get();
-        if (patient.getIsDelete()) {
-            return new BaseResponse<>(PatientMessageCode.PATIENT_NOT_EXIST);
-        }
-
-        return new BaseResponse<>(PatientResponse.of(patient));
+        CreatePatientResponse createPatientResponse = new CreatePatientResponse(patient.getParent(), patient);
+        BaseResponse baseResponse = new BaseResponse<>();
+        baseResponse.setData(createPatientResponse);
+        return baseResponse;
     }
 
     public BaseResponse<PatientProfileResponse> createPatientProfile(CreatePatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{

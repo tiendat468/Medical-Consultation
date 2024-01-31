@@ -36,7 +36,7 @@ public class PatientController extends BaseController {
 
     @PostMapping("/create")
     public BaseResponse createPatient(@RequestBody CreatePatientRequest request, HttpServletRequest httpServletRequest) throws ApiException{
-        return patientService.createPatient(request, authenticationFacade.getUserId(), httpServletRequest);
+        return patientService.createPatient(request, httpServletRequest);
     }
 
     @PostMapping("/search")
@@ -44,10 +44,15 @@ public class PatientController extends BaseController {
         return patientService.searchPatient(phone);
     }
 
-    @GetMapping("/detail")
-    public BaseResponse detailPatient(HttpServletRequest httpServletRequest) throws ApiException{
-        return patientService.detailPatient(authenticationFacade.getUserId(), httpServletRequest);
+    @GetMapping("/detail/{patientId}")
+    public BaseResponse detailPatient(@PathVariable Long patientId, HttpServletRequest httpServletRequest) throws ApiException {
+        return patientService.detailPatient(patientId, httpServletRequest);
     }
+
+//    @GetMapping("/detail")
+//    public BaseResponse detailPatient(HttpServletRequest httpServletRequest) throws ApiException{
+//        return patientService.detailPatient(authenticationFacade.getUserId(), httpServletRequest);
+//    }
 
     @PostMapping("/profile/save")
     public BaseResponse createPatientProfile(@RequestBody CreatePatientProfileRequest request, HttpServletRequest httpServletRequest) throws ApiException {
