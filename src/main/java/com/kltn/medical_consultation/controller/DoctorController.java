@@ -6,7 +6,7 @@ import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.SaveProfileRequest;
-import com.kltn.medical_consultation.models.doctor.request.UpdateScheduleRequest;
+import com.kltn.medical_consultation.models.doctor.request.MedicalPatientRequest;
 import com.kltn.medical_consultation.models.doctor.response.DoctorProfileResponse;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.services.DoctorService;
@@ -44,7 +44,7 @@ public class DoctorController extends BaseController{
     }
 
     @PostMapping("/schedule/update")
-    public BaseResponse checkDone(@RequestBody UpdateScheduleRequest updateScheduleRequest, HttpServletRequest httpServletRequest) {
-        return doctorService.checkDone(updateScheduleRequest, httpServletRequest);
+    public BaseResponse medicalPatient(@RequestBody MedicalPatientRequest medicalPatientRequest, HttpServletRequest httpServletRequest) {
+        return doctorService.medicalPatient(medicalPatientRequest, httpServletRequest);
     }
 }

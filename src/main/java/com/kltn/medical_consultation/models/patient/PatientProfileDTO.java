@@ -17,7 +17,7 @@ public class PatientProfileDTO {
 
     public static PatientProfileDTO of(PatientProfile patientProfile) {
         PatientProfileDTO patientProfileDTO = new PatientProfileDTO();
-        patientProfileDTO.setPatientId(patientProfile.getPatientId());
+        patientProfileDTO.setPatientId(patientProfile.getPatient().getId());
         patientProfileDTO.setPatientProfileId(patientProfile.getId());
         patientProfileDTO.setName(patientProfile.getPatient().getFullName());
         patientProfileDTO.setBirthday(patientProfile.getPatient().getBirthday());

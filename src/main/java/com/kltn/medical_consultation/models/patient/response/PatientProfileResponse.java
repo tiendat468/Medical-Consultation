@@ -14,7 +14,7 @@ public class PatientProfileResponse {
     public static PatientProfileResponse of(PatientProfile patientProfile) {
         PatientProfileResponse response = new PatientProfileResponse();
         response.setId(patientProfile.getId());
-        response.setPatientId(patientProfile.getPatientId());
+        response.setPatientId(patientProfile.getPatient().getId());
         response.setSymptom(patientProfile.getSymptom());
         response.setDiagnostic(patientProfile.getDiagnostic());
         response.setIsComplete(patientProfile.getIsComplete());

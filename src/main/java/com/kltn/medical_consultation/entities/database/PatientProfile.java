@@ -29,10 +29,6 @@ public class PatientProfile extends BaseEntity {
     private List<ProfileMedicine> medicines;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "patient_id")
     private Patient patient;
-
-    @Column(name = "patient_id", insertable = false, updatable = false)
-    private Long patientId;
 }

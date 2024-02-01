@@ -86,7 +86,6 @@ public class MedicalScheduleService extends BaseService{
         // create patient profile
         PatientProfile patientProfile = new PatientProfile();
         patientProfile.setPatient(patient);
-        patientProfile.setPatientId(patient.getId());
         patientProfile.setSymptom(request.getSymptom());
         patientProfile = patientProfileRepository.save(patientProfile);
 

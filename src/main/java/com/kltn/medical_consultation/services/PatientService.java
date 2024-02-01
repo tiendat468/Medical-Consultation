@@ -217,7 +217,7 @@ public class PatientService extends BaseService{
 
         PatientProfile patientProfile = new PatientProfile();
         patientProfile.setPatient(patient);
-        patientProfile.setPatientId(patient.getId());
+//        patientProfile.setPatientId(patient.getId());
         patientProfile.setSymptom(request.getSymptom());
         patientProfile = patientProfileRepository.save(patientProfile);
         return new BaseResponse<>(PatientProfileResponse.of(patientProfile));
@@ -254,20 +254,20 @@ public class PatientService extends BaseService{
         return new BaseResponse<>(ERROR.SUCCESS);
     }
 
-    public boolean validatePatientProfile(Long userId, PatientProfile patientProfile) {
-        try {
-            userService.validateUser(userId);
-        }catch (Exception e) {
-            return false;
-        }
-        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
-        if (optionalPatient.isPresent()) {
-            if (patientProfile.getPatientId() == optionalPatient.get().getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean validatePatientProfile(Long userId, PatientProfile patientProfile) {
+//        try {
+//            userService.validateUser(userId);
+//        }catch (Exception e) {
+//            return false;
+//        }
+//        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+//        if (optionalPatient.isPresent()) {
+//            if (patientProfile.getPatientId() == optionalPatient.get().getId()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public BasePaginationResponse<SchedulesResponse> getSchedules(ListPatientScheduleRequest request, Pageable pageable, HttpServletRequest httpServletRequest) {
         if (request.getPatientId() == null) {

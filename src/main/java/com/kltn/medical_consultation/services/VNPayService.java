@@ -188,7 +188,7 @@ public class VNPayService extends BaseService {
             throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
         }
 
-        if (optionalSchedule.get().getPatientProfile().getPatientId() != optionalPatient.get().getId()) {
+        if (optionalSchedule.get().getPatientProfile().getPatient().getId() != optionalPatient.get().getId()) {
             throw new ApiException(ScheduleMessageCode.SCHEDULE_INVALID);
         }
 

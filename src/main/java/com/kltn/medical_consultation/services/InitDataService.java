@@ -93,388 +93,396 @@ public class InitDataService implements CommandLineRunner {
             Department department = new Department();
 
             department = new Department();
-            department.setName("Nha Khoa");
-            department.setSymbol("NK");
+            department.setName("Nhi");
+            department.setSymbol("NHI");
             department.setPrice(200000.0);
             department = departmentRepository.save(department);
 
             initDoctor(department);
 
-            symptom = new Symptom();
-            symptom.setName("Răng vàng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Hôi miệng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đau răng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Nhức răng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Xưng nướu");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Răng lung lay");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Mọc răng khôn");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            department = new Department();
-            department.setName("Da liễu");
-            department.setSymbol("DL");
-            department.setPrice(200000.0);
-            department = departmentRepository.save(department);
-
-            initDoctor(department);
-
-            symptom = new Symptom();
-            symptom.setName("Da khô bong tróc");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Da dầu");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Da nổi nốt ruồi");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đỏ mặt");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Mụn");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Vảy nến");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Nổi mề đay");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Da bị châm chích");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Ngứa");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Lở miệng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Nhiệt miệng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            department = new Department();
-            department.setName("Mắt");
-            department.setSymbol("MAT");
-            department.setPrice(200000.0);
-            department = departmentRepository.save(department);
-
-            initDoctor(department);
-
-            symptom = new Symptom();
-            symptom.setName("Đau mắt đỏ");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Mắt mờ");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Mắt khô");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Nhức mỏi mắt");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Không phân biệt màu sắc");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Lóa mắt");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Xưng mắt");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Phù nề vùng góc mắt");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            department = new Department();
-            department.setName("Tai mũi họng");
-            department.setSymbol("TMH");
-            department.setPrice(200000.0);
-            department = departmentRepository.save(department);
-
-            initDoctor(department);
-
-            symptom = new Symptom();
-            symptom.setName("Ù tai");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Chảy máu mũi");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Chảy máu tai");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đau rát tai");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đau rát mũi");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đau rát họng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Sổ mũi");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Nghẹt mũi");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đau nhức quanh mũi");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đau họng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Ngứa họng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Viêm amidan");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Ho khan");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Ho có đờm");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            department = new Department();
-            department.setName("Tiêu hóa");
-            department.setSymbol("TH");
-            department.setPrice(200000.0);
-            department = departmentRepository.save(department);
-
-            initDoctor(department);
-
-            symptom = new Symptom();
-            symptom.setName("Đau bụng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Chướng bụng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đầy hơi");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đại tiện bất thường");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Buồn nôn, ói");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Khó tiêu");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Giảm cân không rõ nguyên nhân");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            department = new Department();
-            department.setName("Chấn thương chỉnh hình");
-            department.setSymbol("CTCN");
-            department.setPrice(200000.0);
-            department = departmentRepository.save(department);
-
-            initDoctor(department);
-
-            symptom = new Symptom();
-            symptom.setName("Đau nhức xương khớp");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Đau thắt lưng");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Bong gân");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Gãy tay");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Viêm khớp");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Viêm khớp dạng thấp");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Thoái hóa khớp");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Chấn thương ở xương khớp");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
-
-            symptom = new Symptom();
-            symptom.setName("Gãy chân");
-            symptom.setDepartment(department);
-            symptom.setDepartmentId(department.getId());
-            symptomRepository.save(symptom);
+//            department = new Department();
+//            department.setName("Nha Khoa");
+//            department.setSymbol("NK");
+//            department.setPrice(200000.0);
+//            department = departmentRepository.save(department);
+//
+//            initDoctor(department);
+
+//            symptom = new Symptom();
+//            symptom.setName("Răng vàng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Hôi miệng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau răng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Nhức răng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Xưng nướu");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Răng lung lay");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Mọc răng khôn");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            department = new Department();
+//            department.setName("Da liễu");
+//            department.setSymbol("DL");
+//            department.setPrice(200000.0);
+//            department = departmentRepository.save(department);
+//
+//            initDoctor(department);
+
+//            symptom = new Symptom();
+//            symptom.setName("Da khô bong tróc");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Da dầu");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Da nổi nốt ruồi");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đỏ mặt");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Mụn");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Vảy nến");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Nổi mề đay");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Da bị châm chích");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Ngứa");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Lở miệng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Nhiệt miệng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            department = new Department();
+//            department.setName("Mắt");
+//            department.setSymbol("MAT");
+//            department.setPrice(200000.0);
+//            department = departmentRepository.save(department);
+//
+//            initDoctor(department);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau mắt đỏ");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Mắt mờ");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Mắt khô");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Nhức mỏi mắt");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Không phân biệt màu sắc");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Lóa mắt");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Xưng mắt");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Phù nề vùng góc mắt");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            department = new Department();
+//            department.setName("Tai mũi họng");
+//            department.setSymbol("TMH");
+//            department.setPrice(200000.0);
+//            department = departmentRepository.save(department);
+//
+//            initDoctor(department);
+
+//            symptom = new Symptom();
+//            symptom.setName("Ù tai");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Chảy máu mũi");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Chảy máu tai");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau rát tai");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau rát mũi");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau rát họng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Sổ mũi");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Nghẹt mũi");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau nhức quanh mũi");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau họng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Ngứa họng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Viêm amidan");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Ho khan");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Ho có đờm");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            department = new Department();
+//            department.setName("Tiêu hóa");
+//            department.setSymbol("TH");
+//            department.setPrice(200000.0);
+//            department = departmentRepository.save(department);
+//
+//            initDoctor(department);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau bụng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Chướng bụng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đầy hơi");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đại tiện bất thường");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Buồn nôn, ói");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Khó tiêu");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Giảm cân không rõ nguyên nhân");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            department = new Department();
+//            department.setName("Chấn thương chỉnh hình");
+//            department.setSymbol("CTCN");
+//            department.setPrice(200000.0);
+//            department = departmentRepository.save(department);
+//
+//            initDoctor(department);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau nhức xương khớp");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Đau thắt lưng");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Bong gân");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Gãy tay");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Viêm khớp");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Viêm khớp dạng thấp");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Thoái hóa khớp");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Chấn thương ở xương khớp");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
+
+//            symptom = new Symptom();
+//            symptom.setName("Gãy chân");
+//            symptom.setDepartment(department);
+//            symptom.setDepartmentId(department.getId());
+//            symptomRepository.save(symptom);
         }
     }
 
