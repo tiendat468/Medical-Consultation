@@ -6,14 +6,11 @@ import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.models.*;
 import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
-import com.kltn.medical_consultation.models.patient.response.CreatePatientResponse;
-import com.kltn.medical_consultation.models.patient.response.SearchPatientResponse;
+import com.kltn.medical_consultation.models.patient.response.*;
 import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.patient.*;
 import com.kltn.medical_consultation.models.patient.request.*;
-import com.kltn.medical_consultation.models.patient.response.PatientProfileResponse;
-import com.kltn.medical_consultation.models.patient.response.PatientResponse;
 import com.kltn.medical_consultation.repository.database.*;
 import com.kltn.medical_consultation.utils.CustomStringUtils;
 import com.kltn.medical_consultation.utils.MessageUtils;
@@ -27,8 +24,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -193,9 +192,14 @@ public class PatientService extends BaseService{
             return new BaseResponse<>(PatientMessageCode.PATIENT_NOT_FOUND);
         }
         Patient patient = optionalPatient.get();
-        CreatePatientResponse createPatientResponse = new CreatePatientResponse(patient.getParent(), patient);
+
+        List<PatientProfile> patientProfiles = patientProfileRepository.findByPatientId(patient.getId());
+        List<PatientProfileDTO> histories = patientProfiles.stream().map(patientProfile -> new PatientProfileDTO(patientProfile))
+                .sorted(Comparator.comparing(PatientProfileDTO::getCreatedAt)).collect(Collectors.toList());
+        DetailPatientResponse detailPatientResponse = new DetailPatientResponse(patient.getParent(), patient);
+        detailPatientResponse.setHistories(histories);
         BaseResponse baseResponse = new BaseResponse<>();
-        baseResponse.setData(createPatientResponse);
+        baseResponse.setData(detailPatientResponse);
         return baseResponse;
     }
 

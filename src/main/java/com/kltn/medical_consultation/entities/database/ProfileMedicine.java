@@ -11,6 +11,7 @@ public class ProfileMedicine extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private Long quantity;
     private String unit;
     private String instruction;

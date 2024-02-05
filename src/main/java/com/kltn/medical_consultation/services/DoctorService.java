@@ -169,6 +169,14 @@ public class DoctorService extends BaseService{
                 profileMedicine.setQuantity(medicine.getQuantity());
                 profileMedicine.setInstruction(medicine.getInstruction());
                 profileMedicines.add(profileMedicine);
+            } else {
+                ProfileMedicine profileMedicine = new ProfileMedicine();
+                profileMedicine.setPatientProfile(patientProfile);
+                profileMedicine.setName(medicine.getName());
+                profileMedicine.setUnit(medicine.getUnit());
+                profileMedicine.setQuantity(medicine.getQuantity());
+                profileMedicine.setInstruction(medicine.getInstruction());
+                profileMedicines.add(profileMedicine);
             }
         }
         profileMedicineRepository.saveAll(profileMedicines);
