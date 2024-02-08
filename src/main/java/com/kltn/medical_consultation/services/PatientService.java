@@ -1,13 +1,10 @@
 package com.kltn.medical_consultation.services;
 
-import com.kltn.medical_consultation.entities.database.MedicalSchedule;
 import com.kltn.medical_consultation.entities.database.Parent;
 import com.kltn.medical_consultation.entities.database.Patient;
 import com.kltn.medical_consultation.entities.database.PatientProfile;
 import com.kltn.medical_consultation.models.*;
-import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.patient.response.*;
-import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.patient.*;
 import com.kltn.medical_consultation.models.patient.request.*;
@@ -297,18 +294,18 @@ public class PatientService extends BaseService{
         return new BasePaginationResponse<>(schedulesResponses);
     }
 
-    public BaseResponse<SchedulesResponse> detailSchedule(DetailDoctorScheduleRequest request, HttpServletRequest httpServletRequest) {
-        if (request.getScheduleId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ScheduleId"));
-        }
-
-        Optional<MedicalSchedule> optionalMedicalSchedule = scheduleRepository.findById(request.getScheduleId());
-        if (optionalMedicalSchedule.isEmpty()) {
-            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
-        }
-        SchedulesResponse response = SchedulesResponse.of(optionalMedicalSchedule.get());
-        return new BaseResponse<>(response);
-    }
+//    public BaseResponse<SchedulesResponse> detailSchedule(DetailDoctorScheduleRequest request, HttpServletRequest httpServletRequest) {
+//        if (request.getScheduleId() == null) {
+//            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ScheduleId"));
+//        }
+//
+//        Optional<MedicalSchedule> optionalMedicalSchedule = scheduleRepository.findById(request.getScheduleId());
+//        if (optionalMedicalSchedule.isEmpty()) {
+//            throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
+//        }
+//        SchedulesResponse response = SchedulesResponse.of(optionalMedicalSchedule.get());
+//        return new BaseResponse<>(response);
+//    }
 
 //    public BaseResponse<PatientProfileResponse> editPatientProfile(EditPatientProfileRequest request, Long userId, HttpServletRequest httpServletRequest) throws ApiException{
 //        if (StringUtils.isBlank(request.getFullName())) {

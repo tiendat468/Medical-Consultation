@@ -3,10 +3,8 @@ package com.kltn.medical_consultation.controller;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
-import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.patient.CreatePatientRequest;
 import com.kltn.medical_consultation.models.patient.request.*;
-import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -74,10 +72,10 @@ public class PatientController extends BaseController {
         return patientService.getSchedules(request, pageable, httpServletRequest);
     }
 
-    @PostMapping("/schedule/detail")
-    public BaseResponse<SchedulesResponse> detailSchedule(@RequestBody DetailDoctorScheduleRequest detailDoctorScheduleRequest, HttpServletRequest httpServletRequest) {
-        return patientService.detailSchedule(detailDoctorScheduleRequest, httpServletRequest);
-    }
+//    @PostMapping("/schedule/detail")
+//    public BaseResponse<SchedulesResponse> detailSchedule(@RequestBody DetailDoctorScheduleRequest detailDoctorScheduleRequest, HttpServletRequest httpServletRequest) {
+//        return patientService.detailSchedule(detailDoctorScheduleRequest, httpServletRequest);
+//    }
 
 //    @PostMapping("/edit")
 //    public BaseResponse editPatientProfile(@RequestBody EditPatientProfileRequest request, HttpServletRequest httpServletRequest)  throws ApiException{

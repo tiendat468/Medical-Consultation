@@ -3,7 +3,7 @@ package com.kltn.medical_consultation.controller;
 import com.kltn.medical_consultation.models.ApiException;
 import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
-import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
+import com.kltn.medical_consultation.models.doctor.request.DetailPatientProfileRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.doctor.request.SaveProfileRequest;
 import com.kltn.medical_consultation.models.doctor.request.MedicalPatientRequest;
@@ -39,8 +39,8 @@ public class DoctorController extends BaseController{
     }
 
     @PostMapping("/schedule/detail")
-    public BaseResponse<SchedulesResponse> detailSchedule(@RequestBody DetailDoctorScheduleRequest detailDoctorScheduleRequest, HttpServletRequest httpServletRequest) {
-        return doctorService.detailSchedule(detailDoctorScheduleRequest, httpServletRequest);
+    public BaseResponse<SchedulesResponse> detailSchedule(@RequestBody DetailPatientProfileRequest detailPatientProfileRequest, HttpServletRequest httpServletRequest) {
+        return doctorService.detailSchedule(detailPatientProfileRequest, httpServletRequest);
     }
 
     @PostMapping("/schedule/update")

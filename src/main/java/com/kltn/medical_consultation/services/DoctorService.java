@@ -10,9 +10,10 @@ import com.kltn.medical_consultation.models.doctor.MedicineDTO;
 import com.kltn.medical_consultation.models.doctor.request.SaveProfileRequest;
 import com.kltn.medical_consultation.models.doctor.request.MedicalPatientRequest;
 import com.kltn.medical_consultation.models.doctor.response.DoctorProfileResponse;
-import com.kltn.medical_consultation.models.doctor.request.DetailDoctorScheduleRequest;
+import com.kltn.medical_consultation.models.doctor.request.DetailPatientProfileRequest;
 import com.kltn.medical_consultation.models.doctor.request.ListDoctorScheduleRequest;
 import com.kltn.medical_consultation.models.patient.PatientMessageCode;
+import com.kltn.medical_consultation.models.patient.PatientProfileDTO;
 import com.kltn.medical_consultation.models.schedule.response.SchedulesResponse;
 import com.kltn.medical_consultation.models.schedule.ScheduleMessageCode;
 import com.kltn.medical_consultation.repository.database.*;
@@ -124,17 +125,19 @@ public class DoctorService extends BaseService{
         return new BasePaginationResponse<>(doctorScheduleResponses);
     }
 
-    public BaseResponse<SchedulesResponse> detailSchedule(DetailDoctorScheduleRequest request, HttpServletRequest httpServletRequest) {
-        if (request.getScheduleId() == null) {
-            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("ScheduleId"));
+    public BaseResponse<SchedulesResponse> detailSchedule(DetailPatientProfileRequest request, HttpServletRequest httpServletRequest) {
+        if (request.getPatientProfileId() == null) {
+            throw new ApiException(ERROR.INVALID_PARAM, MessageUtils.paramRequired("PatientProfileId"));
         }
 
-        Optional<MedicalSchedule> optionalMedicalSchedule = scheduleRepository.findById(request.getScheduleId());
-        if (optionalMedicalSchedule.isEmpty()) {
+        Optional<PatientProfile> optionalPatientProfile = patientProfileRepository.findByIdAndIsDeleteFalse(request.getPatientProfileId());
+        if (optionalPatientProfile.isEmpty()) {
             throw new ApiException(ScheduleMessageCode.SCHEDULE_NOT_FOUND);
         }
-        SchedulesResponse response = SchedulesResponse.of(optionalMedicalSchedule.get());
-        return new BaseResponse<>(response);
+        PatientProfileDTO patientProfileDTO = new PatientProfileDTO(optionalPatientProfile.get());
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(patientProfileDTO);
+        return baseResponse;
     }
 
     public BaseResponse medicalPatient(MedicalPatientRequest request, HttpServletRequest httpServletRequest) {
@@ -159,27 +162,33 @@ public class DoctorService extends BaseService{
 
         List<MedicineDTO> medicines = request.getMedicines();
         List<ProfileMedicine> profileMedicines = new ArrayList<>();
-        for (MedicineDTO medicine : medicines) {
-            Optional<Medicine> optionalMedicine = medicineRepository.findByIdAndIsDeleteFalse(medicine.getId());
-            if (optionalMedicine.isPresent()) {
-                ProfileMedicine profileMedicine = new ProfileMedicine();
-                profileMedicine.setPatientProfile(patientProfile);
-                profileMedicine.setMedicine(optionalMedicine.get());
-                profileMedicine.setUnit(optionalMedicine.get().getUnit());
-                profileMedicine.setQuantity(medicine.getQuantity());
-                profileMedicine.setInstruction(medicine.getInstruction());
-                profileMedicines.add(profileMedicine);
-            } else {
-                ProfileMedicine profileMedicine = new ProfileMedicine();
-                profileMedicine.setPatientProfile(patientProfile);
-                profileMedicine.setName(medicine.getName());
-                profileMedicine.setUnit(medicine.getUnit());
-                profileMedicine.setQuantity(medicine.getQuantity());
-                profileMedicine.setInstruction(medicine.getInstruction());
-                profileMedicines.add(profileMedicine);
+        if (!request.getMedicines().isEmpty()) {
+            for (MedicineDTO medicine : medicines) {
+                Optional<Medicine> optionalMedicine = medicineRepository.findByIdAndIsDeleteFalse(medicine.getId());
+                if (optionalMedicine.isPresent()) {
+                    ProfileMedicine profileMedicine = new ProfileMedicine();
+                    profileMedicine.setPatientProfile(patientProfile);
+                    profileMedicine.setMedicine(optionalMedicine.get());
+                    profileMedicine.setUnit(optionalMedicine.get().getUnit());
+                    profileMedicine.setQuantity(medicine.getQuantity());
+                    profileMedicine.setInstruction(medicine.getInstruction());
+                    profileMedicines.add(profileMedicine);
+                } else {
+                    ProfileMedicine profileMedicine = new ProfileMedicine();
+                    profileMedicine.setPatientProfile(patientProfile);
+                    profileMedicine.setName(medicine.getName());
+                    profileMedicine.setUnit(medicine.getUnit());
+                    profileMedicine.setQuantity(medicine.getQuantity());
+                    profileMedicine.setInstruction(medicine.getInstruction());
+                    profileMedicines.add(profileMedicine);
+                }
             }
         }
-        profileMedicineRepository.saveAll(profileMedicines);
-        return new BaseResponse<>();
+        profileMedicines = profileMedicineRepository.saveAll(profileMedicines);
+
+        PatientProfileDTO patientProfileDTO = new PatientProfileDTO(patientProfile, profileMedicines);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(patientProfileDTO);
+        return baseResponse;
     }
 }

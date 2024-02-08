@@ -13,5 +13,10 @@ import java.util.Optional;
 public interface PatientProfileRepository extends JpaRepository<PatientProfile, Long>, JpaSpecificationExecutor<PatientProfile> {
     @Query("select p from PatientProfile p where p.patient.id = ?1 and p.isDelete = false")
     List<PatientProfile> findByPatientId(Long id);
-//    Optional<PatientProfile> findByIdAndUserId(Long id, Long userId);
+
+    @Query("select p from PatientProfile p where p.id = ?1 and p.isDelete = false")
+    Optional<PatientProfile> findByIdAndIsDeleteFalse(Long id);
+//    Optional<PatientProfile> findById(Long id, Long userId);
+
+
 }
