@@ -24,6 +24,7 @@ public class PatientProfileDTO {
     private String advice;
     private String diagnostic;
     private List<MedicineDTO> medicines;
+    private PatientDetail patientDetail;
 
     public static PatientProfileDTO of(PatientProfile patientProfile) {
         PatientProfileDTO patientProfileDTO = new PatientProfileDTO();
@@ -53,6 +54,7 @@ public class PatientProfileDTO {
         }
 
         this.medicines = medicineDTOs;
+        this.patientDetail = new PatientDetail(patientProfile.getPatient());
     }
 
     public PatientProfileDTO(PatientProfile patientProfile, List<ProfileMedicine> profileMedicines) {
@@ -71,5 +73,6 @@ public class PatientProfileDTO {
         }
 
         this.medicines = medicineDTOs;
+        this.patientDetail = new PatientDetail(patientProfile.getPatient());
     }
 }
