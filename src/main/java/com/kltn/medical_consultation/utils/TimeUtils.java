@@ -26,6 +26,8 @@ public class TimeUtils {
 
     public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
+    public static final String DATE_FORMAT_2 = "dd-MM-yyyy";
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT_2 = new SimpleDateFormat(DATE_FORMAT_2);
 
     public static String DB_DELETE_DATE_FORMAT = "ddMMyyyy'T'HHmmss";
     public static final DateTimeFormatter DELETE_DATE_FORMAT = DateTimeFormatter.ofPattern(DB_DELETE_DATE_FORMAT);
@@ -66,6 +68,18 @@ public class TimeUtils {
         if (date == null) return null;
         try {
             return SIMPLE_DATE_FORMAT.format(date);
+
+        } catch (Exception e) {
+            log.error(e);
+
+        }
+        return null;
+    }
+
+    public static String dateToStringSimpleDateFormat2(Date date) {
+        if (date == null) return null;
+        try {
+            return SIMPLE_DATE_FORMAT_2.format(date);
 
         } catch (Exception e) {
             log.error(e);

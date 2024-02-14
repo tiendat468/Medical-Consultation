@@ -192,7 +192,7 @@ public class PatientService extends BaseService{
 
         List<PatientProfile> patientProfiles = patientProfileRepository.findByPatientId(patient.getId());
         List<PatientProfileDTO> histories = patientProfiles.stream().map(patientProfile -> new PatientProfileDTO(patientProfile))
-                .sorted(Comparator.comparing(PatientProfileDTO::getCreatedAt)).collect(Collectors.toList());
+                .sorted(Comparator.comparing(PatientProfileDTO::getCreatedAt).reversed()).collect(Collectors.toList());
         DetailPatientResponse detailPatientResponse = new DetailPatientResponse(patient.getParent(), patient);
         detailPatientResponse.setHistories(histories);
         BaseResponse baseResponse = new BaseResponse<>();

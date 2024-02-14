@@ -60,7 +60,7 @@ public class PatientProfileDTO {
     public PatientProfileDTO(PatientProfile patientProfile, List<ProfileMedicine> profileMedicines) {
         this.patientId = patientProfile.getPatient().getId();
         this.patientProfileId = patientProfile.getId();
-        this.createdAt = TimeUtils.dateToStringSimpleDateFormat(Date.from(patientProfile.getCreatedAt().toInstant()));
+        this.createdAt = TimeUtils.dateToStringSimpleDateFormat2(Date.from(patientProfile.getCreatedAt().toInstant()));
         this.symptom = patientProfile.getSymptom();
         this.anamnesis = patientProfile.getAnamnesis();
         this.advice = patientProfile.getAdvice();
