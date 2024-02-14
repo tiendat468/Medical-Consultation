@@ -23,10 +23,12 @@ public class CreatePatientResponse {
         this.parentDetail = new ParentDetail(parent);
         this.patientDetail = new PatientDetail(patient);
         List<PatientDetail> list = new ArrayList<>();
-        List<Patient> patients = parent.getPatients();
-        for (Patient p : patients) {
-            if (!p.getIsDelete()){
-                list.add(new PatientDetail(p));
+        if (parent.getPatients() != null) {
+            List<Patient> patients = parent.getPatients();
+            for (Patient p : patients) {
+                if (!p.getIsDelete()){
+                    list.add(new PatientDetail(p));
+                }
             }
         }
         this.patientDetails = list;
