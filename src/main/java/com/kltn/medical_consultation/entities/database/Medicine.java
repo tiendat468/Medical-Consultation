@@ -13,8 +13,13 @@ public class Medicine extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(name = "active_ingredient")
+    private String activeIngredient;
+    @Column(name = "dosage_strength")
+    private String dosageStrength;
     private Long quantity;
     private String unit;
+    private String note;
     @Column(name = "price_per_unit")
     private Double pricePerUnit;
 
