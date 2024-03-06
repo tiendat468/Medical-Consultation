@@ -1,11 +1,14 @@
 package com.kltn.medical_consultation.controller;
 
 import com.kltn.medical_consultation.models.ApiException;
+import com.kltn.medical_consultation.models.BasePaginationResponse;
 import com.kltn.medical_consultation.models.BaseResponse;
 import com.kltn.medical_consultation.models.medicine.AddMedicineRequest;
-import com.kltn.medical_consultation.models.patient.CreatePatientRequest;
+import com.kltn.medical_consultation.models.medicine.DeleteMedicineRequest;
+import com.kltn.medical_consultation.models.medicine.ListMedicineRequest;
 import com.kltn.medical_consultation.services.MedicineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +22,8 @@ public class MedicineController extends BaseController {
     MedicineService medicineService;
 
     @PostMapping("/list")
-    public BaseResponse listMedicine(@RequestBody AddMedicineRequest request, HttpServletRequest httpServletRequest) throws ApiException {
-        return null;
+    public BaseResponse listMedicine(@RequestBody ListMedicineRequest request, HttpServletRequest httpServletRequest) throws ApiException {
+        return medicineService.listMedicine(request);
     }
 
     @PostMapping("/search")
@@ -34,8 +37,8 @@ public class MedicineController extends BaseController {
     }
 
     @PostMapping("/delete")
-    public BaseResponse deleteMedicine(@RequestBody AddMedicineRequest request, HttpServletRequest httpServletRequest) throws ApiException {
-        return null;
+    public BaseResponse deleteMedicine(@RequestBody DeleteMedicineRequest request, HttpServletRequest httpServletRequest) throws ApiException {
+        return medicineService.deleteMedicine(request);
     }
 
     @PostMapping("/update")

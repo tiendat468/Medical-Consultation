@@ -1,9 +1,12 @@
 package com.kltn.medical_consultation.models.medicine;
 
 import com.kltn.medical_consultation.entities.database.Medicine;
+import com.kltn.medical_consultation.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 
 @Data
@@ -19,6 +22,7 @@ public class MedicineDTO {
     private String unit;
     private Double pricePerUnit;
     private String note;
+    private String createdAt;
 
     public MedicineDTO(Medicine medicine) {
         this.id = medicine.getId();
@@ -29,5 +33,6 @@ public class MedicineDTO {
         this.unit = medicine.getUnit();
         this.note = medicine.getNote();
         this.pricePerUnit = medicine.getPricePerUnit();
+        this.createdAt = TimeUtils.dateToStringSimpleDateFormat2(Date.from(medicine.getCreatedAt().toInstant()));
     }
 }
