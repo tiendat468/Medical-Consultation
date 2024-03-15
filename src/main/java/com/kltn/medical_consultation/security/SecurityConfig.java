@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${authentication.ignore:}")
     private String[] ignores;
 
-    @Value("${quotation.allow.cors:http://localhost:3000,http://localhost:4200}")
+    @Value("${medicalConsultation.allow.cors:http://localhost:3000,http://localhost:4200,http://localhost:8081}")
     private String[] allowCors;
 
 
